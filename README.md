@@ -4,6 +4,8 @@ You can use these scripts to scrape JSON-formatted book data and reviews from Go
 
 If Goodreads is updated, these scripts might no longer work correctly.
 
+<br>
+
 ## Dependencies
 
 - Python 3
