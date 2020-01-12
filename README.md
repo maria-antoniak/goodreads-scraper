@@ -35,7 +35,7 @@ This script scrapes the following information for each book.
 
 ### Usage
 
-`python get_books.py book_ids_path output_directory_path`
+`python get_books.py --book_ids_path your_file_path --output_directory_path your_directory_path`
 
 ## get_reviews.py
 
@@ -62,7 +62,7 @@ We also select a filter to only show English language reviews.
 
 ### Usage
 
-`python get_reviews.py book_ids_path output_directory_path sort_order`
+`python get_reviews.py --book_ids_path your_file_path --output_directory_path your_directory_path --sort_order your_sort_order`
 
 `sort_order` can be set to `0` (default), `1` (newest), or `2` (oldest).
 
