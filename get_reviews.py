@@ -172,7 +172,7 @@ def main():
     parser.add_argument('--sort_order', type=int)
     args = parser.parse_args()
 
-    book_ids              = [line.strip() for line in open(args.book_ids_path, 'rb') if line.strip()]
+    book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
