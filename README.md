@@ -89,4 +89,4 @@ We also select a filter to only show English language reviews.
 
 Code written by Maria Antoniak and Melanie Walsh.
 
-Feel free to use, edit, share with credit. We'd love to hear about your projects and how you use this code.
+Feel free to use, edit, and share with credit. We'd love to hear about your projects and how you use this code.
