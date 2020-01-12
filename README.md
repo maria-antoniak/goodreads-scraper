@@ -4,6 +4,12 @@ You can use these scripts to scrape JSON-formatted book data and reviews from Go
 
 If Goodreads is updated, these scripts might no longer work correctly.
 
+## Dependencies
+
+- Python 3
+- Beautiful Soup 4
+- Selenium
+
 ## get_books.py
 
 ### Input
@@ -29,7 +35,7 @@ This script scrapes the following information for each book.
 
 ### Usage
 
-`get_books.py book_ids_path output_directory_path`
+`python get_books.py book_ids_path output_directory_path`
 
 ## get_reviews.py
 
@@ -56,7 +62,7 @@ We also select a filter to only show English language reviews.
 
 ### Usage
 
-`get_reviews.py book_ids_path output_directory_path sort_order`
+`python get_reviews.py book_ids_path output_directory_path sort_order`
 
 `sort_order` can be set to `0` (default), `1` (newest), or `2` (oldest).
 
