@@ -2,7 +2,7 @@
 
 You can use these scripts to scrape JSON-formatted book data and reviews from Goodreads.
 
-If Goodreads is updated, these scripts might no longer work correctly.
+Updates to the Goodreads website can break this code. We don't guarantee that the scraper will continue to work in the future.
 
 <br>
 
