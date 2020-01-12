@@ -6,7 +6,7 @@ If Goodreads is updated, these scripts might no longer work correctly.
 
 ## get_books.py
 
-This script takes as input a list of book IDs. Book IDs are unique to Goodreads and can be found at the end of a book's URL. For example, the book ID for *Little Women* is `1934.Little_Women`. 
+This script takes as input a list of book IDs, stored in a file with one bok ID per line. Book IDs are unique to Goodreads and can be found at the end of a book's URL. For example, the book ID for *Little Women* is `1934.Little_Women`. 
 
 This script scrapes the following information for each book.
 - book ID
@@ -28,7 +28,7 @@ Usage:
 
 ## get_reviews.py
 
-This script takes as input a list of book IDS and scrapes the following information for each book.
+This script takes as input a list of book IDS, stored in a file with one bok ID per line, and scrapes the following information for each book.
 - book ID
 - review URL
 - review ID
