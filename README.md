@@ -2,6 +2,8 @@
 
 You can use these scripts to scrape JSON-formatted book data and reviews from Goodreads.
 
+If Goodreads is updated, these scripts might no longer work correctly.
+
 ## get_books.py
 
 This script takes as input a list of book IDs. Book IDs are unique to Goodreads and can be found at the end of a book's URL. For example, the book ID for *Little Women* is `1934.Little_Women`. 
@@ -9,12 +11,12 @@ This script takes as input a list of book IDs. Book IDs are unique to Goodreads 
 This script scrapes the following information for each book.
 - book ID
 - ISBN
-- year first published
+- year the book was first published
 - title
 - author
-- number of pages in book
+- number of pages in the book
 - genres
-- shelves
+- top shelves
 - lists
 - total number of ratings
 - total number of reviews
