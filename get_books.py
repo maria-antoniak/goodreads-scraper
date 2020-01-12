@@ -13,6 +13,7 @@ import bs4
 def get_all_lists(soup):
 
     lists = []
+    list_count_dict = {}
 
     if soup.find('a', text='More lists with this book...'):
 
@@ -33,17 +34,39 @@ def get_all_lists(soup):
             lists += [node.text for node in soup.find_all('div', {'class': 'cell'})]
             i += 1
 
-    return lists
+        # Format lists text.
+        for _list in lists:
+            # _list_name = ' '.join(_list.split()[:-8])
+            # _list_rank = int(_list.split()[-8][:-2]) 
+            # _num_books_on_list = int(_list.split()[-5].replace(',', ''))
+            # list_count_dict[_list_name] = _list_rank / float(_num_books_on_list)     # TODO: switch this back to raw counts
+            _list_name = _list.split()[:-2][0]
+            _list_count = int(_list.split()[-2].replace(',', ''))
+            list_count_dict[_list_name] = _list_count
+
+    return list_count_dict
 
 
 def get_shelves(soup):
-    time.sleep(2)
+
+    shelf_count_dict = {}
+    
     if soup.find('a', text='See top shelves…'):
+
+        # Find shelves text.
         shelves_url = soup.find('a', text='See top shelves…')['href']
         source = urlopen('https://www.goodreads.com' + shelves_url)
         soup = bs4.BeautifulSoup(source, 'lxml')
-        return [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'shelfStat'})]
-    return ''
+        shelves = [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'shelfStat'})]
+        
+        # Format shelves text.
+        shelf_count_dict = {}
+        for _shelf in shelves:
+            _shelf_name = _shelf.split()[:-2][0]
+            _shelf_count = int(_shelf.split()[-2].replace(',', ''))
+            shelf_count_dict[_shelf_name] = _shelf_count
+
+    return shelf_count_dict
 
 
 def get_genres(soup):
@@ -63,18 +86,25 @@ def get_isbn(soup):
         isbn_node = soup.find('div', {'class': 'infoBoxRowTitle'}, text='ISBN13')
     if isbn_node:
         isbn = ' '.join(isbn_node.find_next_sibling().text.strip().split())
-    return isbn
+    return isbn.split()[0]
 
 
 def get_rating_distribution(soup):
     distribution = re.findall(r'renderRatingGraph\([\s]*\[[0-9,\s]+', str(soup))[0]
     distribution = ' '.join(distribution.split())
-    return distribution
+    distribution = [int(c.strip()) for c in distribution.split('[')[1].split(',')]
+    distribution_dict = {'5 Stars': distribution[0],
+                         '4 Stars': distribution[1],
+                         '3 Stars': distribution[2],
+                         '2 Stars': distribution[3],
+                         '1 Star':  distribution[4]}
+    return distribution_dict
 
 
 def get_num_pages(soup):
     if soup.find('span', {'itemprop': 'numberOfPages'}):
-        return soup.find('span', {'itemprop': 'numberOfPages'}).text.strip()
+        num_pages = soup.find('span', {'itemprop': 'numberOfPages'}).text.strip()
+        return int(num_pages.split()[0])
     return ''
 
 
@@ -93,8 +123,8 @@ def scrape_book(book_id):
     return {'book_id':              book_id, 
             'isbn':                 get_isbn(soup), 
             'year_first_published': get_year_first_published(soup), 
-            'title':                soup.find('h1', {'id': 'bookTitle'}).text.strip(), 
-            'author':               soup.find('span', {'itemprop': 'name'}).text.strip(), 
+            'title':                ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()), 
+            'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()), 
             'num_pages':            get_num_pages(soup), 
             'genres':               get_genres(soup), 
             'shelves':              get_shelves(soup), 
