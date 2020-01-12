@@ -39,7 +39,7 @@ This script takes as input a list of book IDs, stored in a file with one bok ID 
 
 ### Output
 
-This script scrapes the following information for each book.
+This script scrapes the following information for each review for each book.
 - book ID
 - review URL
 - review ID
