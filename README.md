@@ -47,3 +47,7 @@ Usage:
 `get_reviews.py book_ids_path output_directory_path sort_order`
 
 `sort_order` can be set to `0` (default), `1` (newest), or `2` (oldest).
+
+## Authors
+
+Maria Antoniak and Melanie Walsh
