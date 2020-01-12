@@ -15,6 +15,14 @@ from urllib.request import urlopen
 from urllib.request import HTTPError
 
 
+RATING_STARS_DICT = {'it was amazing': 5,
+                     'really liked it': 4,
+                     'liked it': 3,
+                     'it was ok': 2,
+                     'did not like it': 1,
+                     '': None}
+
+
 def switch_reviews_mode(driver, book_id, sort_order, rating=''):
     """
     Taken from 
@@ -33,7 +41,8 @@ def switch_reviews_mode(driver, book_id, sort_order, rating=''):
 
 def get_rating(node):
     if len(node.find_all('span', {'class': 'staticStars'})) > 0:
-        return node.find_all('span', {'class': 'staticStars'})[0]['title']
+        rating = node.find_all('span', {'class': 'staticStars'})[0]['title']
+        return RATING_STARS_DICT[rating]
     return ''
 
 
@@ -50,19 +59,29 @@ def get_date(node):
 
 
 def get_text(node):
+
+    display_text = ''
+    full_text = ''
+
     if len(node.find_all('span', {'class': 'readable'})) > 0:
         for child in node.find_all('span', {'class': 'readable'})[0].children:
             if child.name == 'span' and 'style' not in child:
-                return child.text
+                display_text = child.text
             if child.name == 'span' and 'style' in child and child['style'] == 'display:none':
-                return child.text
-    return ''
+                full_text = child.text
+
+    if full_text:
+        return full_text
+        
+    return display_text
 
 
 def get_num_likes(node):
     if node.find('span', {'class': 'likesCount'}) and len(node.find('span', {'class': 'likesCount'})) > 0:
-        return node.find('span', {'class': 'likesCount'}).text
-    return ''
+        likes = node.find('span', {'class': 'likesCount'}).text
+        if 'likes' in likes:
+            return int(likes.split()[0])
+    return 0
 
 
 def get_shelves(node): 
@@ -93,7 +112,7 @@ def scrape_reviews_on_current_page(driver, url, book_id):
                         'user': get_user(node), 
                         'text': get_text(node), 
                         'num_likes': get_num_likes(node),
-                        'shelves': shelves})
+                        'shelves': get_shelves(node)})
 
     return reviews
 
@@ -145,17 +164,17 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
                     return reviews
             except NoSuchElementException or ElementNotInteractableException:
                 print('ERROR: Could not find next page link! Re-scraping this book')
-                reviews = get_reviews_first_ten_pages(driver, book_id)
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
                 return reviews
 
     except ElementClickInterceptedException:
         print('ERROR: Pop-up detected, reloading the page.')
-        reviews = get_reviews_first_ten_pages(driver, book_id)
+        reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
         return reviews
 
     if check_for_duplicates(reviews):
         print('ERROR: Duplicates found! Re-scraping this book')
-        reviews = get_reviews_first_ten_pages(driver, book_id)
+        reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
         return reviews
 
     return reviews

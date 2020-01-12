@@ -1,4 +1,2 @@
-test-output/18839.Orlando.json
-test-output/79550.The_Summer_Book.json
-test-output/374233.If_on_a_Winter_s_Night_a_Traveler.json
+test-output/*
 geckodriver.log
