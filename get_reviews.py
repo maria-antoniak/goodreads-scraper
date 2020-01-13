@@ -72,7 +72,7 @@ def get_text(node):
 
     if full_text:
         return full_text
-        
+
     return display_text
 
 
@@ -201,7 +201,7 @@ def main():
         try:
 
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
-            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1) + ' out of ' + str(len(book_ids)) + ' books')
+            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
             reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order)
 

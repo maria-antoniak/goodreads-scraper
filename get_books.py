@@ -149,12 +149,10 @@ def main():
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
-    print(str(datetime.now()) + ' ' + script_name + ': Number of books to scrape ' + str(len(books_to_scrape)))
-
     for i, book_id in enumerate(books_to_scrape):
         try:
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
-            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1) + ' out of ' + str(len(book_ids)) + ' books')
+            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
             book = scrape_book(book_id)
             json.dump(book, open(args.output_directory_path + '/' + book_id + '.json', 'w'))
