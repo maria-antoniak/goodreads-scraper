@@ -197,6 +197,7 @@ def main():
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
+    driver = webdriver.Firefox()
 
     for i, book_id in enumerate(books_to_scrape):
         try:
