@@ -13,8 +13,6 @@ from selenium.common.exceptions import NoSuchElementException, ElementNotInterac
 from selenium.webdriver.support.ui import Select
 from urllib.request import urlopen
 from urllib.request import HTTPError
-from pathlib import Path
-from selenium.webdriver.firefox.options import Options
 
 
 RATING_STARS_DICT = {'it was amazing': 5,
@@ -192,16 +190,12 @@ def main():
     parser.add_argument('--output_directory_path', type=str)
     parser.add_argument('--sort_order', type=int)
     args = parser.parse_args()
-    
-    Path(args.output_directory_path).mkdir(parents=True, exist_ok=True)
+
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
     driver = webdriver.Firefox()
-    options = Options()
-    options.headless = True
-    driver = webdriver.Firefox(options=options)
 
     for i, book_id in enumerate(books_to_scrape):
         try:
