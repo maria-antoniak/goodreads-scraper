@@ -11,6 +11,7 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.firefox.options import Options
 from urllib.request import urlopen
 from urllib.request import HTTPError
 
@@ -196,6 +197,9 @@ def main():
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
     driver = webdriver.Firefox()
+    options = Options()
+    options.headless = True
+    driver = webdriver.Firefox(options=options)
 
     for i, book_id in enumerate(books_to_scrape):
         try:
