@@ -91,4 +91,8 @@ We also select a filter to only show English language reviews.
 
 Code written by Maria Antoniak and Melanie Walsh.
 
+We used a function written by [Omar Einea](https://github.com/OmarEinea/GoodReadsScraper) for the review sorting.
+
 Feel free to use, edit, and share with credit. We'd love to hear about your projects and how you use this code.
+
+This is an open source tool licensed under GPL v3.0. A copy of the license can be found [here](https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md).
