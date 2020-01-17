@@ -11,7 +11,7 @@ Updates to the Goodreads website can break this code. We don't guarantee that th
 - Python 3
 - Beautiful Soup 4
 - Selenium
-- Firefox
+- Firefox or Chrome
 
 <br>
 
@@ -79,9 +79,11 @@ We also select a filter to only show English language reviews.
 
 ### Usage
 
-`python get_reviews.py --book_ids_path your_file_path --output_directory_path your_directory_path --sort_order your_sort_order`
+`python get_reviews.py --book_ids_path your_file_path --output_directory_path your_directory_path --browser your_browser_name --sort_order your_sort_order`
 
 `sort_order` can be set to `0` (default), `1` (newest), or `2` (oldest).
+
+`browser` can be set to `chrome` or `firefox`. 
 
 <br>
 
