@@ -189,6 +189,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
+    parser.add_argument('--browser', type=str)
     parser.add_argument('--sort_order', type=int)
     args = parser.parse_args()
 
@@ -196,10 +197,13 @@ def main():
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
-    driver = webdriver.Firefox()
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options)
+    if args.browser.lower() == 'chrome':
+        driver = webdriver.Chrome(options=options)
+    else:
+        driver = webdriver.Firefox(options=options)
+
 
     for i, book_id in enumerate(books_to_scrape):
         try:
