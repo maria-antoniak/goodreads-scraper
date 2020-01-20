@@ -26,7 +26,9 @@ RATING_STARS_DICT = {'it was amazing': 5,
 
 def switch_reviews_mode(driver, book_id, sort_order, rating=''):
     """
-    Taken from 
+    Copyright (C) 2019 by Omar Einea: https://github.com/OmarEinea/GoodReadsScraper
+    Licensed under GPL v3.0: https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md
+    Accessed on 2019-12-01.
     """
     SORTS = ['default', 'newest', 'oldest']
     edition_reviews=False
