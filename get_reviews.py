@@ -11,10 +11,11 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from urllib.request import urlopen
 from urllib.request import HTTPError
-
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 RATING_STARS_DICT = {'it was amazing': 5,
                      'really liked it': 4,
@@ -165,7 +166,11 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
                     reviews += scrape_reviews_on_current_page(driver, url, book_id)
                 else:
                     return reviews
-            except NoSuchElementException or ElementNotInteractableException:
+            except ElementNotInteractableException:
+                print('ERROR: Could not find next page link! Re-scraping this book')
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+                return reviews
+            except NoSuchElementException:
                 print('ERROR: Could not find next page link! Re-scraping this book')
                 reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
                 return reviews
@@ -199,13 +204,24 @@ def main():
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
-    options = Options()
-    options.headless = True
-    if args.browser.lower() == 'chrome':
+    def connectChrome():
+        options = ChromeOptions()
+        #options.add_argument("--headless")
         driver = webdriver.Chrome(options=options)
-    else:
-        driver = webdriver.Firefox(options=options)
+        return driver
 
+    def connectFirefox():
+        options = FirefoxOptions()
+        #options.add_argument("--headless")
+        driver = webdriver.Firefox(options=options)
+        return driver
+        
+    if args.browser.lower() == 'chrome':
+        #driver = webdriver.Chrome(options=options)
+        driver = connectChrome()
+    else:
+        #driver = webdriver.Firefox(options=options)
+        driver = connectFirefox()
 
     for i, book_id in enumerate(books_to_scrape):
         try:
