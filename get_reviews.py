@@ -9,9 +9,8 @@ import time
 import bs4
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException, ElementNotVisibleException
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.firefox.options import Options
 from urllib.request import urlopen
 from urllib.request import HTTPError
 
@@ -166,7 +165,11 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
                 else:
                     return reviews
             except NoSuchElementException or ElementNotInteractableException:
-                print('ERROR: Could not find next page link! Re-scraping this book')
+                print('ERROR: Could not find next page link! Re-scraping this book.')
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+                return reviews
+            except ElementNotVisibleException:
+                print('ERROR: Pop-up detected, reloading the page.')
                 reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
                 return reviews
 
@@ -176,7 +179,7 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
         return reviews
 
     if check_for_duplicates(reviews):
-        print('ERROR: Duplicates found! Re-scraping this book')
+        print('ERROR: Duplicates found! Re-scraping this book.')
         reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
         return reviews
 
@@ -198,14 +201,11 @@ def main():
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
-
-    options = Options()
-    options.headless = True
+    
     if args.browser.lower() == 'chrome':
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome()
     else:
-        driver = webdriver.Firefox(options=options)
-
+        driver = webdriver.Firefox()
 
     for i, book_id in enumerate(books_to_scrape):
         try:
