@@ -1,4 +1,4 @@
-# goodreads-scraper
+# Goodreads Scraper
 
 You can use these scripts to scrape JSON-formatted book data and reviews from Goodreads.
 
@@ -6,24 +6,16 @@ Updates to the Goodreads website can break this code. We don't guarantee that th
 
 <br>
 
-## Dependencies
+## What You'll Need
 
-- Python 3
-- Beautiful Soup 4
-- Selenium
+- [Python 3](https://www.anaconda.com/distribution/)
+- [Beautiful Soup 4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup)
+- [Selenium](https://selenium.dev/documentation/en/selenium_installation/installing_webdriver_binaries/)
 - Firefox or Chrome
 
 <br>
 
-## Test
-
-You can run the provided test script to check that everything is working correctly.
-
-`./test_scripts.sh`
-
-This will create a directory called `test-output` in which you'll find the scraped books and reviews.
-
-<br>
+# Scraping Goodreads Book Metadata
 
 ## get_books.py
 
@@ -52,7 +44,13 @@ This script scrapes the following information for each book.
 
 `python get_books.py --book_ids_path your_file_path --output_directory_path your_directory_path`
 
+### Example
+
+`python get_books.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_metadata`
+
 <br>
+
+# Scraping Goodreads Book Reviews
 
 ## get_reviews.py
 
@@ -84,6 +82,20 @@ We also select a filter to only show English language reviews.
 `sort_order` can be set to `0` (default), `1` (newest), or `2` (oldest).
 
 `browser` can be set to `chrome` or `firefox`. 
+
+### Example
+
+`python get_reviews.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_reviews --sort_order 1 --browser firefox`
+
+<br>
+
+## Test
+
+You can run the provided test script to check that everything is working correctly.
+
+`./test_scripts.sh`
+
+This will create a directory called `test-output` in which you'll find the scraped books and reviews.
 
 <br>
 
