@@ -8,7 +8,6 @@ import time
 from urllib.request import urlopen
 from urllib.request import HTTPError
 import bs4
-from pathlib import Path
 
 
 def get_all_lists(soup):
@@ -145,18 +144,15 @@ def main():
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
     args = parser.parse_args()
-    
-    Path(args.output_directory_path).mkdir(parents=True, exist_ok=True)
+
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
 
-    print(str(datetime.now()) + ' ' + script_name + ': Number of books to scrape ' + str(len(books_to_scrape)))
-
     for i, book_id in enumerate(books_to_scrape):
         try:
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
-            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1) + ' out of ' + str(len(book_ids)) + ' books')
+            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
             book = scrape_book(book_id)
             json.dump(book, open(args.output_directory_path + '/' + book_id + '.json', 'w'))

@@ -9,12 +9,10 @@ import time
 import bs4
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException, ElementNotVisibleException
 from selenium.webdriver.support.ui import Select
 from urllib.request import urlopen
 from urllib.request import HTTPError
-from pathlib import Path
-from selenium.webdriver.firefox.options import Options
 
 
 RATING_STARS_DICT = {'it was amazing': 5,
@@ -27,7 +25,9 @@ RATING_STARS_DICT = {'it was amazing': 5,
 
 def switch_reviews_mode(driver, book_id, sort_order, rating=''):
     """
-    Taken from 
+    Copyright (C) 2019 by Omar Einea: https://github.com/OmarEinea/GoodReadsScraper
+    Licensed under GPL v3.0: https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md
+    Accessed on 2019-12-01.
     """
     SORTS = ['default', 'newest', 'oldest']
     edition_reviews=False
@@ -74,7 +74,7 @@ def get_text(node):
 
     if full_text:
         return full_text
-        
+
     return display_text
 
 
@@ -165,7 +165,11 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
                 else:
                     return reviews
             except NoSuchElementException or ElementNotInteractableException:
-                print('ERROR: Could not find next page link! Re-scraping this book')
+                print('ERROR: Could not find next page link! Re-scraping this book.')
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+                return reviews
+            except ElementNotVisibleException:
+                print('ERROR: Pop-up detected, reloading the page.')
                 reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
                 return reviews
 
@@ -175,7 +179,7 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
         return reviews
 
     if check_for_duplicates(reviews):
-        print('ERROR: Duplicates found! Re-scraping this book')
+        print('ERROR: Duplicates found! Re-scraping this book.')
         reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
         return reviews
 
@@ -190,24 +194,24 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
+    parser.add_argument('--browser', type=str)
     parser.add_argument('--sort_order', type=int)
     args = parser.parse_args()
-    
-    Path(args.output_directory_path).mkdir(parents=True, exist_ok=True)
+
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
-
-    driver = webdriver.Firefox()
-    options = Options()
-    options.headless = True
-    driver = webdriver.Firefox(options=options)
+    
+    if args.browser.lower() == 'chrome':
+        driver = webdriver.Chrome()
+    else:
+        driver = webdriver.Firefox()
 
     for i, book_id in enumerate(books_to_scrape):
         try:
 
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
-            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1) + ' out of ' + str(len(book_ids)) + ' books')
+            print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
             reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order)
 
