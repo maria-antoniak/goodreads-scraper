@@ -19,12 +19,14 @@ Additionally, you will need the following Python libraries:
 
 You can install these Python libraries by running `pip install -r requirements.txt`
 
-Finally, you will need to install a special WebDriver for Selenium. To scrape and interact with Goodreads web pages, Selenium will programmatically open a web browser on your computer. To function properly, Selenium needs a special WebDriver that is specific to your operating system (Mac, Windows, Linux) and your web browser (Chrome or Firefox):
+Finally, you will need to install a special WebDriver for Selenium. To scrape and interact with Goodreads web pages, Selenium will programmatically open a web browser on your computer. To function properly, Selenium needs a special WebDriver that is specific to your operating system (Mac, Windows, Linux) and your web browser (Chrome or Firefox).
+
+Download and unzip one of the WebDrivers below:
 
 - [Chrome WebDriver Downloads](https://chromedriver.chromium.org/downloads)
 - [Firefox WebDriver Downloads](https://github.com/mozilla/geckodriver/releases) (Find the downloads under "Assets")
 
-Download and unzip one of the WebDrivers above. Make sure you know where the WebDriver is located on your computer. You will need to direct the Goodreads Scraper to the location of the WebDriver.
+Make sure you know where the WebDriver is located on your computer. You will need to direct the Goodreads Scraper to the location of the WebDriver.
 
 *Note: Recent versions of Mac OS may block the WebDriver from opening initially. You may get a message such as "'chromedriver' cannot be opened because the developer cannot be verified." To allow the web driver to open after this message, go to System Preferences -> Security & Privacy -> General and select "Allow Anyway."
 
