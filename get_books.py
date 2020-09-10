@@ -86,7 +86,10 @@ def get_isbn(soup):
         isbn_node = soup.find('div', {'class': 'infoBoxRowTitle'}, text='ISBN13')
     if isbn_node:
         isbn = ' '.join(isbn_node.find_next_sibling().text.strip().split())
-    return isbn.split()[0]
+    if isbn != '':
+        return isbn.split()[0]
+    else:
+        return "isbn not found"
 
 
 def get_rating_distribution(soup):
@@ -112,7 +115,10 @@ def get_year_first_published(soup):
     year_first_published = soup.find('nobr', attrs={'class':'greyText'}).string
     return re.search('([0-9]{3,4})', year_first_published).group(1)
 
-
+def get_id(bookid):
+    pattern = re.compile("([^.]+)")
+    return pattern.search(bookid).group()
+    
 def scrape_book(book_id):
     url = 'https://www.goodreads.com/book/show/' + book_id
     source = urlopen(url)
@@ -120,7 +126,8 @@ def scrape_book(book_id):
 
     time.sleep(2)
 
-    return {'book_id':              book_id, 
+    return {'book_id_title':        book_id, 
+            'book_id':              get_id(book_id), 
             'isbn':                 get_isbn(soup), 
             'year_first_published': get_year_first_published(soup), 
             'title':                ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()), 
@@ -134,6 +141,17 @@ def scrape_book(book_id):
             'average_rating':       soup.find('span', {'itemprop': 'ratingValue'}).text.strip(), 
             'rating_distribution':  get_rating_distribution(soup)}
 
+def condense_books(books_directory_path):
+
+    books = []
+
+    for file_name in os.listdir(books_directory_path):
+        if file_name.endswith('.json') and file_name != 'books.json' and not file_name.startswith('.'):
+
+            _book = json.load(open(books_directory_path + '/' + file_name, 'r')) #, encoding='utf-8', errors='ignore'))
+            books.append(_book)
+
+    return books
 
 def main():
 
@@ -143,11 +161,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
+    parser.add_argument('--format', type=str, action="store", default="json",
+                        dest="format", choices=["json", "csv"],
+                        help="set file output format")
     args = parser.parse_args()
 
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
+    condensed_books_path   = args.output_directory_path + '/all_books.json'
 
     for i, book_id in enumerate(books_to_scrape):
         try:
@@ -163,7 +185,12 @@ def main():
             print(e)
             exit(0)
 
+
+    books = condense_books(args.output_directory_path)
+    json.dump(books, open(condensed_books_path, 'w'))
+    
     print(str(datetime.now()) + ' ' + script_name + ': Run Time = ' + str(datetime.now() - start_time))
+
 
 
 if __name__ == '__main__':
