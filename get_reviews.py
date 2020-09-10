@@ -33,10 +33,10 @@ def switch_reviews_mode(driver, book_id, sort_order, rating=''):
     edition_reviews=False
     driver.execute_script(
         'document.getElementById("reviews").insertAdjacentHTML("beforeend", \'<a data-remote="true" rel="nofollow"'
-        f'class="actionLinkLite loadingLink" data-keep-on-success="true" id="switch{rating}{sort}"' +
+        f'class="actionLinkLite loadingLink" data-keep-on-success="true" id="switch{rating}{SORTS[sort_order]}"' +
         f'href="/book/reviews/{book_id}?rating={rating}&sort={SORTS[sort_order]}' +
         ('&edition_reviews=true' if edition_reviews else '') + '">Switch Mode</a>\');' +
-        f'document.getElementById("switch{rating}{sort}").click()'
+        f'document.getElementById("switch{rating}{SORTS[sort_order]}").click()'
     )
     return True
 
@@ -94,7 +94,10 @@ def get_shelves(node):
             shelves.append(_shelf_node.text)
     return shelves
 
-
+def get_id(bookid):
+    pattern = re.compile("([^.]+)")
+    return pattern.search(bookid).group()
+    
 def scrape_reviews_on_current_page(driver, url, book_id):
 
     reviews = []
@@ -106,7 +109,8 @@ def scrape_reviews_on_current_page(driver, url, book_id):
 
     # Iterate through and parse the reviews.
     for node in nodes:
-        reviews.append({'book_id': book_id, 
+        reviews.append({'book_id_title': book_id,
+                        'book_id': get_id(book_id), 
                         'review_url': url, 
                         'review_id': node['id'], 
                         'date': get_date(node), 
@@ -150,7 +154,7 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
         select = Select(driver.find_element_by_name('language_code'))
         select.select_by_value('en')
         time.sleep(4)
-
+    
         # Scrape the first page of reviews.
         reviews = scrape_reviews_on_current_page(driver, url, book_id)
 
@@ -173,18 +177,34 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
                 reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
                 return reviews
 
+    except ElementNotInteractableException:
+            print('ERROR: Pop-up detected, reloading the page.')
+            reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+            return reviews
+            
     except ElementClickInterceptedException:
         print('ERROR: Pop-up detected, reloading the page.')
         reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
         return reviews
-
+        
     if check_for_duplicates(reviews):
         print('ERROR: Duplicates found! Re-scraping this book.')
         reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
         return reviews
 
     return reviews
+    
+def condense_reviews(reviews_directory_path):
 
+    reviews = []
+
+    for file_name in os.listdir(reviews_directory_path):
+        if file_name.endswith('.json') and file_name != 'reviews.json' and not file_name.startswith('.'):
+
+            _review = json.load(open(reviews_directory_path + '/' + file_name, 'r')) #, encoding='utf-8', errors='ignore'))
+            reviews.append(_review)
+
+    return reviews
 
 def main():
 
@@ -195,17 +215,19 @@ def main():
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
     parser.add_argument('--browser', type=str)
+    parser.add_argument('--web_driver_path', type=str)
     parser.add_argument('--sort_order', type=int)
     args = parser.parse_args()
 
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
+    condensed_reviews_path   = args.output_directory_path + '/all_reviews.json'
     
     if args.browser.lower() == 'chrome':
-        driver = webdriver.Chrome()
+        driver = webdriver.Chrome(args.web_driver_path)
     else:
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(args.web_driver_path)
 
     for i, book_id in enumerate(books_to_scrape):
         try:
@@ -225,6 +247,8 @@ def main():
             pass
 
     driver.quit()
+    reviews = condense_reviews(args.output_directory_path)
+    json.dump(reviews, open(condensed_reviews_path, 'w'))
 
     print(str(datetime.now()) + ' ' + script_name + ': Run Time = ' + str(datetime.now() - start_time))
 
