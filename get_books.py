@@ -8,6 +8,7 @@ import time
 from urllib.request import urlopen
 from urllib.request import HTTPError
 import bs4
+import pandas as pd
 
 
 def get_all_lists(soup):
@@ -80,16 +81,18 @@ def get_genres(soup):
 
 
 def get_isbn(soup):
-    isbn = ''
-    isbn_node = soup.find('div', {'class': 'infoBoxRowTitle'}, text='ISBN')
-    if not isbn_node:
-        isbn_node = soup.find('div', {'class': 'infoBoxRowTitle'}, text='ISBN13')
-    if isbn_node:
-        isbn = ' '.join(isbn_node.find_next_sibling().text.strip().split())
-    if isbn != '':
-        return isbn.split()[0]
-    else:
+    try:
+        isbn = re.findall(r'nisbn: [0-9]{10}' , str(soup))[0].split()[1]
+        return isbn
+    except:
         return "isbn not found"
+
+def get_isbn13(soup):
+    try:
+        isbn13 = re.findall(r'nisbn13: [0-9]{13}' , str(soup))[0].split()[1]
+        return isbn13
+    except:
+        return "isbn13 not found"
 
 
 def get_rating_distribution(soup):
@@ -116,7 +119,7 @@ def get_year_first_published(soup):
     return re.search('([0-9]{3,4})', year_first_published).group(1)
 
 def get_id(bookid):
-    pattern = re.compile("([^.]+)")
+    pattern = re.compile("([^.-]+)")
     return pattern.search(bookid).group()
     
 def scrape_book(book_id):
@@ -128,9 +131,10 @@ def scrape_book(book_id):
 
     return {'book_id_title':        book_id, 
             'book_id':              get_id(book_id), 
-            'isbn':                 get_isbn(soup), 
+            'book_title':                ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()), 
+            'isbn':                 get_isbn(soup),
+            'isbn13':               get_isbn13(soup),
             'year_first_published': get_year_first_published(soup), 
-            'title':                ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()), 
             'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()), 
             'num_pages':            get_num_pages(soup), 
             'genres':               get_genres(soup), 
@@ -146,8 +150,7 @@ def condense_books(books_directory_path):
     books = []
 
     for file_name in os.listdir(books_directory_path):
-        if file_name.endswith('.json') and file_name != 'books.json' and not file_name.startswith('.'):
-
+        if file_name.endswith('.json') and not file_name.startswith('.') and file_name != "all_books.json":
             _book = json.load(open(books_directory_path + '/' + file_name, 'r')) #, encoding='utf-8', errors='ignore'))
             books.append(_book)
 
@@ -167,9 +170,9 @@ def main():
     args = parser.parse_args()
 
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
-    books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path)]
+    books_already_scraped =  [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_books')]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
-    condensed_books_path   = args.output_directory_path + '/all_books.json'
+    condensed_books_path   = args.output_directory_path + '/all_books'
 
     for i, book_id in enumerate(books_to_scrape):
         try:
@@ -187,9 +190,14 @@ def main():
 
 
     books = condense_books(args.output_directory_path)
-    json.dump(books, open(condensed_books_path, 'w'))
-    
-    print(str(datetime.now()) + ' ' + script_name + ': Run Time = ' + str(datetime.now() - start_time))
+    if args.format == 'json':
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+    elif args.format == 'csv':
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+        book_df = pd.read_json(f"{condensed_books_path}.json")
+        book_df.to_csv(f"{condensed_books_path}.csv", index=False, encoding='utf-8')
+        
+    print(str(datetime.now()) + ' ' + script_name + f':\n\n🎉 Success! All book metadata scraped. 🎉\n\nMetadata files have been output to /{args.output_directory_path}\nGoodreads scraping run time = ⏰ ' + str(datetime.now() - start_time) + ' ⏰')
 
 
 
