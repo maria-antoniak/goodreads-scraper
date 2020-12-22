@@ -121,9 +121,9 @@ We also select a filter to only show English language reviews.
 
 `python get_reviews.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_reviews --sort_order default --browser chrome`
 
-<br>
+<br><br>
 
-## Test
+# Test
 
 You can run the provided test script to check that everything is working correctly.
 
