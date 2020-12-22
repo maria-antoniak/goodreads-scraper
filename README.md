@@ -8,6 +8,8 @@ We used this Goodreads Scraper to collect data for our article, "The Goodreads â
 
 *Note: Updates to the Goodreads website may break this code. We don't guarantee that the scraper will continue to work in the future, but feel free to post an issue if you run into a problem.*
 
+<br><br>
+
 # What You Need
 
 To run these scripts, you will need [Python 3](https://www.anaconda.com/distribution/).
@@ -23,9 +25,13 @@ You can install these Python libraries by running `pip install -r requirements.t
 
 Finally, you will need a web browser â€” either Chrome or Firefox. We have found that the Goodreads Scraper tends to function better with Firefox.
 
+<br><br>
+
 # Tutorial
 
 We have created a [Jupyter notebook tutorial](https://github.com/maria-antoniak/goodreads-scraper/blob/master/How-To-Use-Goodreads-Scraper.ipynb) that walks through how to use the Goodreads Scraper scripts. Detailed usage instructions are also included below.
+
+<br><br>
 
 # Scraping Goodreads Book Metadata
 
@@ -68,7 +74,7 @@ This script also outputs an aggregated JSON file with information about all the 
 
 `python get_books.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_metadata --format CSV`
 
-<br>
+<br><br>
 
 # Scraping Goodreads Book Reviews
 
@@ -125,9 +131,9 @@ You can run the provided test script to check that everything is working correct
 
 This will create a directory called `test-output` in which you'll find the scraped books and reviews.
 
-<br>
+<br><br>
 
-## Credit
+# Credit
 
 This code is written by Maria Antoniak and Melanie Walsh. The code is licensed under a [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/#).
 
