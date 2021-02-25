@@ -6,7 +6,7 @@ import re
 import time
 
 from urllib.request import urlopen
-from urllib.request import HTTPError
+from urllib.error import HTTPError
 import bs4
 import pandas as pd
 
@@ -80,6 +80,24 @@ def get_genres(soup):
     return genres
 
 
+def get_series_name(soup):
+    series = soup.find(id="bookSeries").find("a")
+    if series:
+        series_name = re.search(r'\((.*?)\)', series.text).group(1)
+        return series_name
+    else:
+        return ""
+
+
+def get_series_uri(soup):
+    series = soup.find(id="bookSeries").find("a")
+    if series:
+        series_uri = series.get("href")
+        return series_uri
+    else:
+        return ""
+
+
 def get_isbn(soup):
     try:
         isbn = re.findall(r'nisbn: [0-9]{10}' , str(soup))[0].split()[1]
@@ -129,20 +147,22 @@ def scrape_book(book_id):
 
     time.sleep(2)
 
-    return {'book_id_title':        book_id, 
-            'book_id':              get_id(book_id), 
-            'book_title':                ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()), 
+    return {'book_id_title':        book_id,
+            'book_id':              get_id(book_id),
+            'book_title':           ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
+            "book_series":          get_series_name(soup),
+            "book_series_uri":      get_series_uri(soup),
             'isbn':                 get_isbn(soup),
             'isbn13':               get_isbn13(soup),
-            'year_first_published': get_year_first_published(soup), 
-            'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()), 
-            'num_pages':            get_num_pages(soup), 
-            'genres':               get_genres(soup), 
-            'shelves':              get_shelves(soup), 
-            'lists':                get_all_lists(soup), 
-            'num_ratings':          soup.find('meta', {'itemprop': 'ratingCount'})['content'].strip(), 
+            'year_first_published': get_year_first_published(soup),
+            'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()),
+            'num_pages':            get_num_pages(soup),
+            'genres':               get_genres(soup),
+            'shelves':              get_shelves(soup),
+            'lists':                get_all_lists(soup),
+            'num_ratings':          soup.find('meta', {'itemprop': 'ratingCount'})['content'].strip(),
             'num_reviews':          soup.find('meta', {'itemprop': 'reviewCount'})['content'].strip(),
-            'average_rating':       soup.find('span', {'itemprop': 'ratingValue'}).text.strip(), 
+            'average_rating':       soup.find('span', {'itemprop': 'ratingValue'}).text.strip(),
             'rating_distribution':  get_rating_distribution(soup)}
 
 def condense_books(books_directory_path):

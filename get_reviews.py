@@ -11,7 +11,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException, ElementNotVisibleException, StaleElementReferenceException
 from selenium.webdriver.support.ui import Select
 from urllib.request import urlopen
-from urllib.request import HTTPError
+from urllib.error import HTTPError
 import credentials
 from selenium.webdriver.common.by import By
 import pandas as pd
