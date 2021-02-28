@@ -29,8 +29,7 @@ Finally, you will need a web browser — either Chrome or Firefox. We have found
 
 # Tutorial
 
-We have created a [Jupyter notebook tutorial](https://github.com/maria-antoniak/goodreads-scraper/blob/master/How-To-Use-Goodreads-Scraper.ipynb) that walks through how to use the Goodreads Scraper scripts. Detailed usage instructions are also included below.
-
+We recommend running these Python scripts from the command line, as the usage instructions below describe. However, we have also created a [Jupyter notebook tutorial](https://github.com/maria-antoniak/goodreads-scraper/blob/master/How-To-Use-Goodreads-Scraper.ipynb) that demonstrates how to use the Goodreads Scraper scripts. Please note that these scripts may not work consistently from a Jupyter notebook environment and that the tutorial is mostly intended for demonstration purposes.
 <br><br>
 
 # Scraping Goodreads Book Metadata
