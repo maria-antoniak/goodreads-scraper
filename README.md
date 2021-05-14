@@ -19,7 +19,7 @@ You will also need the following Python libraries:
 - [Selenium](https://selenium-python.readthedocs.io/installation.html)
 - [lxml](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser)
 - [geckodriver-autoinstaller](https://pypi.org/project/geckodriver-autoinstaller/)
-- [chromedriver-py](https://pypi.org/project/chromedriver-py/)
+- [webdriver_manager](https://github.com/SergeyPirogov/webdriver_manager)
 
 You can install these Python libraries by running `pip install -r requirements.txt`
 
