@@ -2,7 +2,8 @@ beautifulsoup4
 selenium
 lxml
 geckodriver-autoinstaller
-chromedriver-py
+webdriver_manager
 pandas
 regex
 credentials
+
