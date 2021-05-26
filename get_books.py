@@ -133,8 +133,12 @@ def get_num_pages(soup):
 
 
 def get_year_first_published(soup):
-    year_first_published = soup.find('nobr', attrs={'class':'greyText'}).string
-    return re.search('([0-9]{3,4})', year_first_published).group(1)
+    year_first_published = soup.find('nobr', attrs={'class':'greyText'})
+    if year_first_published:
+        year_first_published = year_first_published.string
+        return re.search('([0-9]{3,4})', year_first_published).group(1)
+    else:
+        return ''
 
 def get_id(bookid):
     pattern = re.compile("([^.-]+)")
