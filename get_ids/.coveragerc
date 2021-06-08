@@ -1,0 +1,7 @@
+[run]
+omit =
+    # omit everything in tests/result/data/
+    tests/result/data/*
+
+[Report]
+show_missing = True
