@@ -20,6 +20,7 @@ You will also need the following Python libraries:
 - [lxml](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser)
 - [geckodriver-autoinstaller](https://pypi.org/project/geckodriver-autoinstaller/)
 - [chromedriver-py](https://pypi.org/project/chromedriver-py/)
+- [requests](https://docs.python-requests.org/en/master/index.html)
 
 You can install these Python libraries by running `pip install -r requirements.txt`
 
@@ -119,6 +120,50 @@ We also select a filter to only show English language reviews.
 ### Example
 
 `python get_reviews.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_reviews --sort_order default --browser chrome`
+
+<br><br>
+
+# Test
+
+You can run the provided test script to check that everything is working correctly.
+
+`./test_scripts.sh`
+
+This will create a directory called `test-output` in which you'll find the scraped books and reviews.
+
+<br><br>
+
+# Scraping Goodreads Book ids
+
+You can use the Python script `get_ids/main.py` to collect book ids which can then be used as input to any of the above scripts.
+
+## get_ids.py
+
+### Input
+
+This script takes as input a list of queries (the default location is here `input/goodreads_queries.txt`), stored as plain text with one `book_title - book_author` per line. The delimiter can be whatever you wish, but it must be specified in the config file here: `get_ids/config.ini` (the default is " - ") 
+
+### Output
+
+For matches, this script outputs a book id for each book here `get_ids/output/matches/matches.txt`
+For none matches, this script outputs the original query here `get_ids/output/no_matches/no_matches.txt`
+
+### Usage
+
+`python get_ids.py`
+
+Should you wish to change the match percentages, you can do so in the `config.ini`.
+
+Percentages are currently set as follows:
+
+`BOOK_TITLE_SIMILARITY_PERCENTAGE = 0.6`
+`AUTHOR_NAME_SIMILARITY_PERCENTAGE = 0.7`
+
+I found these to be sane defaults during testing, but it really will depend on your use case, feel free to experiment :)
+
+# Test
+
+Run tests with `pytest` from root directory.
 
 <br><br>
 
