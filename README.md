@@ -135,13 +135,13 @@ This will create a directory called `test-output` in which you'll find the scrap
 
 # Scraping Goodreads Book ids
 
-You can use the Python script `get_ids/main.py` to collect book ids which can then be used as input to any of the above scripts.
+You can use the Python script `get_ids.py` to collect book ids which can then be used as input to any of the above scripts.
 
 ## get_ids.py
 
 ### Input
 
-This script takes as input a list of queries (the default location is here `input/goodreads_queries.txt`), stored as plain text with one `book_title - book_author` per line. The delimiter can be whatever you wish, but it must be specified in the config file here: `get_ids/config.ini` (the default is " - ") 
+This script takes as input a list of queries (the default location is here `get_ids/input/goodreads_queries.txt`), stored as plain text with one `book_title - book_author` per line. The delimiter can be whatever you wish, but it must be specified in the config file here: `config.ini` (the default is " - ") 
 
 ### Output
 
