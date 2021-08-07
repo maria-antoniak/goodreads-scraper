@@ -1,4 +1,4 @@
-from get_ids.parse.parser import parse_response
+from get_book_ids.parse.parser import parse_response
 
 
 class TestParser:

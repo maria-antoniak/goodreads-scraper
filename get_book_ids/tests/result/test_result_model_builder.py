@@ -1,8 +1,8 @@
 from data.yoshimoto import yoshimoto_soup
 
-from get_ids.models.result_model import ResultModel
-from get_ids.result.result_model_builder import build_result_models
-from get_ids.result.result_parser import get_results
+from get_book_ids.models.result_model import ResultModel
+from get_book_ids.result.result_model_builder import build_result_models
+from get_book_ids.result.result_parser import get_results
 
 
 class TestResultParser:

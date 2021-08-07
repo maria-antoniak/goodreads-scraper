@@ -1,10 +1,10 @@
 import bs4
 
-from get_ids.errors.errors import return_none_for_type_error
-from get_ids.models.result_model import ResultModel
-from get_ids.result.result_parser import (_clean_author_name, _get_author_name,
-                                  _get_book_href, _get_book_title,
-                                  _get_id_from_href)
+from get_book_ids.errors.errors import return_none_for_type_error
+from get_book_ids.models.result_model import ResultModel
+from get_book_ids.result.result_parser import (_clean_author_name, _get_author_name,
+                                               _get_book_href, _get_book_title,
+                                               _get_id_from_href)
 
 
 @return_none_for_type_error

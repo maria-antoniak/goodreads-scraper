@@ -3,7 +3,7 @@ import requests
 import responses
 from requests.models import Response
 
-from get_ids.network.network import get
+from get_book_ids.network.network import get
 
 
 class TestNetwork:

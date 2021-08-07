@@ -1,11 +1,11 @@
 import pytest
 
-from get_ids.models.query_model import QueryModel
-from get_ids.query.query_model_builder import (_build_search_url_from_query,
-                                       _is_subtitle_in_book_title,
-                                       _remove_subtitle_from_book_title,
-                                       _split_on_last_delimiter,
-                                       build_query_model)
+from get_book_ids.models.query_model import QueryModel
+from get_book_ids.query.query_model_builder import (_build_search_url_from_query,
+                                                    _is_subtitle_in_book_title,
+                                                    _remove_subtitle_from_book_title,
+                                                    _split_on_last_delimiter,
+                                                    build_query_model)
 
 
 class TestQueryModelBuilder:

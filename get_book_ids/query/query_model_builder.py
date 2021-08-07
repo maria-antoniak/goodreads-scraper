@@ -3,7 +3,7 @@ import urllib
 from typing import Union
 from urllib import parse
 
-from get_ids.models.query_model import QueryModel
+from get_book_ids.models.query_model import QueryModel
 
 
 def _split_on_last_delimiter(query: str, delimiter: str) -> [str]:

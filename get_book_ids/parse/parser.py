@@ -4,7 +4,7 @@ import bs4
 from requests.models import Response
 
 
-from get_ids.errors.errors import return_none_for_attribute_error
+from get_book_ids.errors.errors import return_none_for_attribute_error
 
 
 @return_none_for_attribute_error

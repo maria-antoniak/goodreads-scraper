@@ -135,22 +135,20 @@ This will create a directory called `test-output` in which you'll find the scrap
 
 # Scraping Goodreads Book ids
 
-You can use the Python script `get_ids.py` to collect book ids which can then be used as input to any of the above scripts.
-
-## get_ids.py
+You can use the Python script `get_book_ids.py` to collect book ids which can then be used as input to any of the above scripts.
 
 ### Input
 
-This script takes as input a list of queries (the default location is here `get_ids/input/goodreads_queries.txt`), stored as plain text with one `book_title - book_author` per line. The delimiter can be whatever you wish, but it must be specified in the config file here: `config.ini` (the default is " - ") 
+This script takes as input a list of queries (the default location is here `get_book_ids/input/goodreads_queries.txt`), stored as plain text with one `book_title - book_author` per line. The delimiter can be whatever you wish, but it must be specified in the config file here: `config.ini` (the default is " - ") 
 
 ### Output
 
-For matches, this script outputs a book id for each book here `get_ids/output/matches/matches.txt`
-For none matches, this script outputs the original query here `get_ids/output/no_matches/no_matches.txt`
+For matches, this script outputs a book id for each book here `get_book_ids/output/matches/matches.txt`
+For no matches, the script outputs the original query here `get_book_ids/output/no_matches/no_matches.txt`
 
 ### Usage
 
-`python get_ids.py`
+`python get_book_ids.py`
 
 Should you wish to change the match percentages, you can do so in the `config.ini`.
 
@@ -163,19 +161,7 @@ I found these to be sane defaults during testing, but it really will depend on y
 
 # Test
 
-Run tests with `pytest` from root directory.
-
-<br><br>
-
-# Test
-
-You can run the provided test script to check that everything is working correctly.
-
-`./test_scripts.sh`
-
-This will create a directory called `test-output` in which you'll find the scraped books and reviews.
-
-<br><br>
+Run tests with `pytest` from the root directory.
 
 # Credit
 

@@ -1,7 +1,7 @@
 import codecs
 import os
 
-from get_ids.reader.exceptions import InputFileIsEmpty
+from get_book_ids.reader.exceptions import InputFileIsEmpty
 
 
 def _get_queries_from_input_file(path_to_input_file: str) -> [str]:

@@ -1,11 +1,11 @@
 import pytest
 from mock import mock_open, patch
 
-from get_ids.reader.exceptions import InputFileIsEmpty
-from get_ids.reader.reader import (_filter_queries_equal_to_none,
-                           _get_queries_from_input_file, _is_file_empty,
-                           _is_query_equal_to_none_present_in_queries,
-                           read_file)
+from get_book_ids.reader.exceptions import InputFileIsEmpty
+from get_book_ids.reader.reader import (_filter_queries_equal_to_none,
+                                        _get_queries_from_input_file, _is_file_empty,
+                                        _is_query_equal_to_none_present_in_queries,
+                                        read_file)
 
 
 class TestReader:
@@ -22,7 +22,7 @@ class TestReader:
 
     def test_ut_get_queries_from_input_file_should_return_a_list_of_lines(self):
         mock = mock_open(read_data="Reasons to Live - Amy Hempl")
-        with patch("get_ids.reader.reader.codecs.open", mock):
+        with patch("get_book_ids.reader.reader.codecs.open", mock):
             assert _get_queries_from_input_file(self.mock_path_to_file) == [
                 "Reasons to Live - Amy Hempl"
             ]
@@ -31,7 +31,7 @@ class TestReader:
         self,
     ):
         mock = mock_open(read_data=self.multiline_queries_without_none)
-        with patch("get_ids.reader.reader.codecs.open", mock):
+        with patch("get_book_ids.reader.reader.codecs.open", mock):
             assert _get_queries_from_input_file(self.mock_path_to_file) == [
                 "The Catcher in the Rye - J.D Salinger",
                 "Eternal Curse on the Reader of These Pages - Manual Puig",
@@ -100,7 +100,7 @@ class TestReader:
         with patch("os.path.getsize", return_value=self.SINGLE_QUERY):
 
             mock = mock_open(read_data=self.multiline_queries_with_none)
-            with patch("get_ids.reader.reader.codecs.open", mock):
+            with patch("get_book_ids.reader.reader.codecs.open", mock):
                 assert read_file(self.mock_path_to_file) == []
 
     def test_it_read_file_should_return_queries_where_no_queries_are_equal_to_none(
@@ -108,7 +108,7 @@ class TestReader:
     ):
         with patch("os.path.getsize", return_value=self.SINGLE_QUERY):
             mock = mock_open(read_data=self.multiline_queries_without_none)
-            with patch("get_ids.reader.reader.codecs.open", mock):
+            with patch("get_book_ids.reader.reader.codecs.open", mock):
                 assert read_file(self.mock_path_to_file) == [
                     "The Catcher in the Rye - J.D Salinger",
                     "Eternal Curse on the Reader of These Pages - Manual Puig",
