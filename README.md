@@ -4,7 +4,7 @@ These Python scripts can be used to collect book reviews and metadata from Goodr
 
 We were motivated to develop this Goodreads Scraper because the Goodreads API is difficult to work with and does not provide access to the full text of reviews. The Goodreads Scraper instead uses the web scraping libraries [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup) and [Selenium](https://selenium-python.readthedocs.io/installation.html) to collect data.
 
-We used this Goodreads Scraper to collect data for our article, "The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Literary Criticism." To allow others to reproduce (approximately) the data we used in the essay, we include a file with 144 Goodreads book IDs for the 144 classics that we analyzed (`goodreads_classics.txt`). You can use these IDs to collect corresponding reviews and metadata with the Goodreads Scraper as described below.
+We used this Goodreads Scraper to collect data for our article, ["The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Amateur Criticism."](https://post45.org/2021/04/the-goodreads-classics-a-computational-study-of-readers-amazon-and-crowdsourced-amateur-criticism) To allow others to reproduce (approximately) the data we used in the essay, we include a file with 144 Goodreads book IDs for the 144 classics that we analyzed (`goodreads_classics.txt`). You can use these IDs to collect corresponding reviews and metadata with the Goodreads Scraper as described below.
 
 *Note: Updates to the Goodreads website may break this code. We don't guarantee that the scraper will continue to work in the future, but feel free to post an issue if you run into a problem.*
 
