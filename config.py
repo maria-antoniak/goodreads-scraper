@@ -7,7 +7,7 @@ config_object.read('config.ini')
 # BOOK_DATA
 
 config_book_id_title = config_object["BOOK_DATA"].getboolean("BOOK_ID_TITLE")
-config_book_id = config_object["BOOK_DATA"].getboolean("BOOK_ID")
+config_numeric_book_id = config_object["BOOK_DATA"].getboolean("NUMERIC_BOOK_ID")
 config_book_title = config_object["BOOK_DATA"].getboolean("BOOK_TITLE")
 config_book_series = config_object["BOOK_DATA"].getboolean("BOOK_SERIES")
 config_book_series_uri = config_object["BOOK_DATA"].getboolean("BOOK_SERIES_URI")
