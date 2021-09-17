@@ -1,36 +1,22 @@
 import argparse
-from datetime import datetime
 import json
 import os
 import re
 import time
-
-from urllib.request import urlopen
+from datetime import datetime
 from urllib.error import HTTPError
+from urllib.request import urlopen
+
 import bs4
 import pandas as pd
 
-
-from config import (
-    config_book_id_title,
-    config_book_id,
-    config_book_title,
-    config_book_series,
-    config_book_series_uri,
-    config_isbn,
-    config_isbn13,
-    config_year_first_published,
-    config_author,
-    config_num_pages,
-    config_genres,
-    config_shelves,
-    config_primary_genre,
-    config_lists,
-    config_num_ratings,
-    config_num_reviews,
-    config_average_rating,
-    config_rating_distribution,
-)
+from config import (config_author, config_average_rating, config_book_id,
+                    config_book_id_title, config_book_series,
+                    config_book_series_uri, config_book_title, config_genres,
+                    config_isbn, config_isbn13, config_lists, config_num_pages,
+                    config_num_ratings, config_num_reviews,
+                    config_primary_genre, config_rating_distribution,
+                    config_shelves, config_year_first_published)
 
 
 def get_all_lists(soup):

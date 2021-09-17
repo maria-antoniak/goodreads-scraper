@@ -2,10 +2,9 @@ import pytest
 from mock import mock_open, patch
 
 from get_book_ids.reader.exceptions import InputFileIsEmpty
-from get_book_ids.reader.reader import (_filter_queries_equal_to_none,
-                                        _get_queries_from_input_file, _is_file_empty,
-                                        _is_query_equal_to_none_present_in_queries,
-                                        read_file)
+from get_book_ids.reader.reader import (
+    _filter_queries_equal_to_none, _get_queries_from_input_file,
+    _is_file_empty, _is_query_equal_to_none_present_in_queries, read_file)
 
 
 class TestReader:

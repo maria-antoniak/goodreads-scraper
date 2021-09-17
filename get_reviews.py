@@ -1,23 +1,27 @@
 import argparse
-from collections import Counter
-from datetime import datetime
 import json
 import os
-import regex as re
 import time
-import bs4
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException, ElementClickInterceptedException, ElementNotVisibleException, StaleElementReferenceException
-from selenium.webdriver.support.ui import Select
-from urllib.request import urlopen
+from collections import Counter
+from datetime import datetime
 from urllib.error import HTTPError
-import credentials
-from selenium.webdriver.common.by import By
-import pandas as pd
-from chromedriver_py import binary_path 
-import geckodriver_autoinstaller
+from urllib.request import urlopen
 
+import bs4
+import credentials
+import geckodriver_autoinstaller
+import pandas as pd
+import regex as re
+from chromedriver_py import binary_path
+from selenium import webdriver
+from selenium.common.exceptions import (ElementClickInterceptedException,
+                                        ElementNotInteractableException,
+                                        ElementNotVisibleException,
+                                        NoSuchElementException,
+                                        StaleElementReferenceException)
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 RATING_STARS_DICT = {'it was amazing': 5,
                      'really liked it': 4,
