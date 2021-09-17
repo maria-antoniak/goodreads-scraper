@@ -11,6 +11,26 @@ import bs4
 import pandas as pd
 
 
+from config import (config_book_id_title,
+                    config_book_id,
+                    config_book_title,
+                    config_book_series,
+                    config_book_series_uri,
+                    config_isbn,
+                    config_isbn13,
+                    config_year_first_published,
+                    config_author,
+                    config_num_pages,
+                    config_genres,
+                    config_shelves,
+                    config_primary_genre,
+                    config_lists,
+                    config_num_ratings,
+                    config_num_reviews,
+                    config_average_rating,
+                    config_rating_distribution)
+
+
 def get_all_lists(soup):
 
     lists = []
@@ -143,7 +163,8 @@ def get_year_first_published(soup):
 def get_id(bookid):
     pattern = re.compile("([^.-]+)")
     return pattern.search(bookid).group()
-    
+
+
 def scrape_book(book_id):
     url = 'https://www.goodreads.com/book/show/' + book_id
     source = urlopen(url)
@@ -151,23 +172,30 @@ def scrape_book(book_id):
 
     time.sleep(2)
 
-    return {'book_id_title':        book_id,
-            'book_id':              get_id(book_id),
-            'book_title':           ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
-            "book_series":          get_series_name(soup),
-            "book_series_uri":      get_series_uri(soup),
-            'isbn':                 get_isbn(soup),
-            'isbn13':               get_isbn13(soup),
-            'year_first_published': get_year_first_published(soup),
-            'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()),
-            'num_pages':            get_num_pages(soup),
-            'genres':               get_genres(soup),
-            'shelves':              get_shelves(soup),
-            'lists':                get_all_lists(soup),
-            'num_ratings':          soup.find('meta', {'itemprop': 'ratingCount'})['content'].strip(),
-            'num_reviews':          soup.find('meta', {'itemprop': 'reviewCount'})['content'].strip(),
-            'average_rating':       soup.find('span', {'itemprop': 'ratingValue'}).text.strip(),
-            'rating_distribution':  get_rating_distribution(soup)}
+    return {
+        "book_id_title": book_id if config_book_id_title is True else None,
+        "book_id": get_id(book_id) if config_book_id == True else None,
+        "book_title": ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()) if config_book_title == True else None,
+        "book_series": get_series_name(soup) if config_book_series == True else None,
+        "book_series_uri": get_series_uri(soup) if config_book_series_uri == True else None,
+        "isbn": get_isbn(soup) if config_isbn == True else None,
+        "isbn13": get_isbn13(soup) if config_isbn13 == True else None,
+        "year_first_published": get_year_first_published(soup) if config_year_first_published == True else None,
+        "author": ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()) if config_author == True else None,
+        "num_pages": get_num_pages(soup) if config_num_pages == True else None,
+        "genres": get_genres(soup) if config_genres == True else None,
+        "primary_genre": "STUB" if config_primary_genre == True else None,
+        "shelves": get_shelves(soup) if config_shelves == True else None,
+        "lists": get_all_lists(soup) if config_lists == True else None,
+        "num_ratings": soup.find('meta', {'itemprop': 'ratingCount'})[
+            'content'].strip() if config_num_ratings == True else None,
+        "num_reviews": soup.find('meta', {'itemprop': 'reviewCount'})[
+            'content'].strip() if config_num_reviews == True else None,
+        "average_rating": soup.find('span',
+                                    {'itemprop': 'ratingValue'}).text.strip() if config_average_rating == True else None,
+        "rating_distribution": get_rating_distribution(soup) if config_rating_distribution == True else None,
+
+    }
 
 def condense_books(books_directory_path):
 
@@ -181,6 +209,9 @@ def condense_books(books_directory_path):
     return books
 
 def main():
+
+    print("config")
+    print(config_book_id_title)
 
     start_time = datetime.now()
     script_name = os.path.basename(__file__)
@@ -220,9 +251,8 @@ def main():
         json.dump(books, open(f"{condensed_books_path}.json", 'w'))
         book_df = pd.read_json(f"{condensed_books_path}.json")
         book_df.to_csv(f"{condensed_books_path}.csv", index=False, encoding='utf-8')
-        
-    print(str(datetime.now()) + ' ' + script_name + f':\n\n🎉 Success! All book metadata scraped. 🎉\n\nMetadata files have been output to /{args.output_directory_path}\nGoodreads scraping run time = ⏰ ' + str(datetime.now() - start_time) + ' ⏰')
 
+    print(str(datetime.now()) + ' ' + script_name + f':\n\n🎉 Success! All book metadata scraped. 🎉\n\nMetadata files have been output to /{args.output_directory_path}\nGoodreads scraping run time = ⏰ ' + str(datetime.now() - start_time) + ' ⏰')
 
 
 if __name__ == '__main__':
