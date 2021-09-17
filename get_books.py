@@ -174,26 +174,26 @@ def scrape_book(book_id):
 
     return {
         "book_id_title": book_id if config_book_id_title is True else None,
-        "book_id": get_id(book_id) if config_book_id == True else None,
-        "book_title": ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()) if config_book_title == True else None,
-        "book_series": get_series_name(soup) if config_book_series == True else None,
-        "book_series_uri": get_series_uri(soup) if config_book_series_uri == True else None,
-        "isbn": get_isbn(soup) if config_isbn == True else None,
-        "isbn13": get_isbn13(soup) if config_isbn13 == True else None,
-        "year_first_published": get_year_first_published(soup) if config_year_first_published == True else None,
-        "author": ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()) if config_author == True else None,
-        "num_pages": get_num_pages(soup) if config_num_pages == True else None,
-        "genres": get_genres(soup) if config_genres == True else None,
-        "primary_genre": "STUB" if config_primary_genre == True else None,
-        "shelves": get_shelves(soup) if config_shelves == True else None,
-        "lists": get_all_lists(soup) if config_lists == True else None,
+        "book_id": get_id(book_id) if config_book_id is True else None,
+        "book_title": ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()) if config_book_title is True else None,
+        "book_series": get_series_name(soup) if config_book_series is True else None,
+        "book_series_uri": get_series_uri(soup) if config_book_series_uri is True else None,
+        "isbn": get_isbn(soup) if config_isbn is True else None,
+        "isbn13": get_isbn13(soup) if config_isbn13 is True else None,
+        "year_first_published": get_year_first_published(soup) if config_year_first_published is True else None,
+        "author": ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()) if config_author is True else None,
+        "num_pages": get_num_pages(soup) if config_num_pages is True else None,
+        "genres": get_genres(soup) if config_genres is True else None,
+        "primary_genre": "STUB" if config_primary_genre is True else None,
+        "shelves": get_shelves(soup) if config_shelves is True else None,
+        "lists": get_all_lists(soup) if config_lists is True else None,
         "num_ratings": soup.find('meta', {'itemprop': 'ratingCount'})[
-            'content'].strip() if config_num_ratings == True else None,
+            'content'].strip() if config_num_ratings is True else None,
         "num_reviews": soup.find('meta', {'itemprop': 'reviewCount'})[
-            'content'].strip() if config_num_reviews == True else None,
+            'content'].strip() if config_num_reviews is True else None,
         "average_rating": soup.find('span',
-                                    {'itemprop': 'ratingValue'}).text.strip() if config_average_rating == True else None,
-        "rating_distribution": get_rating_distribution(soup) if config_rating_distribution == True else None,
+                                    {'itemprop': 'ratingValue'}).text.strip() if config_average_rating is True else None,
+        "rating_distribution": get_rating_distribution(soup) if config_rating_distribution is True else None,
 
     }
 
