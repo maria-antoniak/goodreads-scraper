@@ -1,6 +1,6 @@
 import bs4
 
-from get_book_ids.errors.errors import return_none_for_type_error
+from common.errors.errors import return_none_for_type_error
 from get_book_ids.models.result_model import ResultModel
 from get_book_ids.result.result_parser import (_clean_author_name,
                                                _get_author_name,

@@ -5,6 +5,7 @@ from common.data_access.get_book import get_response, get_soup
 import bs4
 from requests.models import Response
 from typing import Union
+from common.errors.errors import return_none_for_attribute_error, return_none_for_type_error
 
 from typing import Dict
 import time
@@ -20,14 +21,17 @@ class GetBookService:
         return book_id_title.split(".")[0]
 
     def get_book_title(self) -> str:
-        return self.soup.find(id="bookTitle").find("h1").strip()
+        return self.soup.find("h1", {"id": "bookTitle"}).text.strip()
 
-    def get_book_series(self) -> str:
-        return self.soup.find(id="bookSeries").find("a").text.strip()
+    @return_none_for_attribute_error
+    def get_book_series_name(self) -> str:
+        return self.soup.find("a", {"id": "bookSeries"}).text.strip()
 
+    @return_none_for_attribute_error
+    @return_none_for_type_error
     def get_book_series_uri(self) -> str:
         BASE_URL = "https://www.goodreads.com"
-        uri = self.soup.find(id="bookSeries").find("a")['href']
+        uri = self.soup.find("a", {"id": "bookSeries"})['href'].text.strip()
         return f"{BASE_URL}{uri}"
 
     def get_isbn(self) -> str:
@@ -46,12 +50,10 @@ class GetBookService:
         except IndexError:
             return ""
 
+    @return_none_for_attribute_error
     def get_year_first_published(self) -> str:
-        try:
-            year_first_published = self.soup.find("nobr", attrs={"class": "greyText"}).string.strip()
-            return re.search("([0-9]{3,4})", year_first_published).group()
-        except AttributeError:
-            return ""
+        year_first_published = self.soup.find("nobr", attrs={"class": "greyText"}).string.strip()
+        return re.search("([0-9]{3,4})", year_first_published).group()
 
     def get_author(self) -> str:
         return self.soup.find('span', {'itemprop': 'name'}).text.split()
@@ -155,18 +157,17 @@ class GetBookService:
 url_without_year = "https://www.goodreads.com/book/show/336373.Taking_the_Path_of_Zen"
 url_without_isbn = "https://www.goodreads.com/book/show/146180.The_Adventures_of_Tintin"
 url_with_isbn = "https://www.goodreads.com/book/show/5907.The_Hobbit_or_There_and_Back_Again"
-res = get_response(url_without_isbn)
+res = get_response(url_with_isbn)
 soup = get_soup(res)
 
 get_books = GetBookService(soup)
 
-# print(get_books.get_book_title())
-# print(get_books.get_numeric_book_id())
-# print(get_books.get_book_title())
-# print(get_books.get_book_series())
-# print(get_books.get_book_series_uri())
-# print(get_books.get_isbn())
-# print(get_books.get_isbn13())
+print(get_books.get_book_title())
+print(get_books.get_numeric_book_id("5907.The_Hobbit_or_There_and_Back_Again"))
+print(get_books.get_book_series_name())
+print(get_books.get_book_series_uri())
+print(get_books.get_isbn())
+print(get_books.get_isbn13())
 print(get_books.get_year_first_published())
 # print(get_books.get_author())
 # print(get_books.get_num_pages())
