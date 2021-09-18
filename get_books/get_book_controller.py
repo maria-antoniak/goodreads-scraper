@@ -1,7 +1,7 @@
 # Call service that actually does the thing
 
 from get_book_service import GetBookService
-from common.data_access.get_book import parse_book
+from common.data_access.get_book import get_soup
 import time
 
 from config import (config_author, config_average_rating, config_numeric_book_id,
@@ -13,15 +13,15 @@ from config import (config_author, config_average_rating, config_numeric_book_id
                     config_shelves, config_year_first_published)
 
 
-def scrape_book(book_id):
-    soup = parse_book(book_id)
+def scrape_book(book_id_title):
+    soup = get_soup(book_id_title)
 
     get_book_service = GetBookService(soup)
 
     time.sleep(2)
 
     return {
-        "book_id_title": get_book_service.get_book_id_title() if config_book_id_title is True else None,
+        "book_id_title": book_id if config_book_id_title is True else None,
         "numeric_book_id": get_book_service.get_numeric_book_id() if config_numeric_book_id is True else None,
         "book_title":  get_book_service.get_book_title() if config_book_title is True else None,
         "book_series": get_book_service.get_book_series() if config_book_series is True else None,

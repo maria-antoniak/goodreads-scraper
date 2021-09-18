@@ -1,65 +1,56 @@
 # define methods to operate on data
 
 import re
-from common.data_access.get_book import get, parse_book
+from common.data_access.get_book import get_response, get_soup
 import bs4
+from requests.models import Response
+from typing import Union
 
 from typing import Dict
 import time
 
 
 class GetBookService:
-    def __init__(self, soup):
+    def __init__(self, soup: bs4.BeautifulSoup):
 
         self.soup = soup
 
-    def get_book_id_title(self) -> str:
-        return self.soup.find("a", {"class": "inter uitext greyText right"})[
-            "href"
-        ].replace("/book/edit/", "")
-
-    def get_numeric_book_id(self) -> str:
-        pattern = re.compile("([^.-]+)")
-        book_id_title = GetBookService.get_book_id_title(self)
-        return pattern.search(book_id_title).group()
+    @staticmethod
+    def get_numeric_book_id(book_id_title: str) -> str:
+        return book_id_title.split(".")[0]
 
     def get_book_title(self) -> str:
-        return self.soup.find("h1", {"id": "bookTitle"}).text.strip()
+        return self.soup.find(id="bookTitle").find("h1").strip()
 
     def get_book_series(self) -> str:
-        series = self.soup.find(id="bookSeries").find("a")
-        if series:
-            series_name = re.search(r"\((.*?)\)", series.text).group(1)
-            return series_name
-        return ""
+        return self.soup.find(id="bookSeries").find("a").text.strip()
 
     def get_book_series_uri(self) -> str:
-        series = self.soup.find(id="bookSeries").find("a")
-        if series:
-            series_uri = series.get("href")
-            return series_uri
-        return ""
+        BASE_URL = "https://www.goodreads.com"
+        uri = self.soup.find(id="bookSeries").find("a")['href']
+        return f"{BASE_URL}{uri}"
 
     def get_isbn(self) -> str:
+        isbn = re.findall(r"nisbn: [0-9]{10}", str(self.soup))
+
         try:
-            isbn = re.findall(r"nisbn: [0-9]{10}", str(self.soup))[0].split()[1]
-            return isbn
-        except:
-            return "isbn not found"
+            return isbn[0].split()[1]
+        except IndexError:
+            return ""
 
     def get_isbn13(self) -> str:
+        isbn13 = re.findall(r"nisbn13: [0-9]{13}", str(self.soup))
+
         try:
-            isbn13 = re.findall(r"nisbn13: [0-9]{13}", str(self.soup))[0].split()[1]
-            return isbn13
-        except:
-            return "isbn13 not found"
+            return isbn13[0].split()[1]
+        except IndexError:
+            return ""
 
     def get_year_first_published(self) -> str:
-        year_first_published = self.soup.find("nobr", attrs={"class": "greyText"})
-        if year_first_published:
-            year_first_published = year_first_published.string
-            return re.search("([0-9]{3,4})", year_first_published).group(1)
-        else:
+        try:
+            year_first_published = self.soup.find("nobr", attrs={"class": "greyText"}).string.strip()
+            return re.search("([0-9]{3,4})", year_first_published).group()
+        except AttributeError:
             return ""
 
     def get_author(self) -> str:
@@ -92,7 +83,7 @@ class GetBookService:
 
             # Find shelves text.
             shelves_url = self.soup.find("a", text="See top shelves…")["href"]
-            source = get("https://www.goodreads.com" + shelves_url)
+            source = get_response("https://www.goodreads.com" + shelves_url)
             soup = bs4.BeautifulSoup(source.content, "lxml")
             shelves = [
                 " ".join(node.text.strip().split())
@@ -117,7 +108,7 @@ class GetBookService:
 
             lists_url = self.soup.find('a', text='More lists with this book...')['href']
 
-            source = get('https://www.goodreads.com' + lists_url)
+            source = get_response('https://www.goodreads.com' + lists_url)
             soup = bs4.BeautifulSoup(source.content, 'lxml')
             lists += [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'cell'})]
 
@@ -125,7 +116,7 @@ class GetBookService:
             while soup.find('a', {'class': 'next_page'}) and i <= 10:
                 time.sleep(2)
                 next_url = 'https://www.goodreads.com' + soup.find('a', {'class': 'next_page'})['href']
-                source = get(next_url)
+                source = get_response(next_url)
                 soup = bs4.BeautifulSoup(source.content, 'lxml')
 
                 lists += [node.text for node in soup.find_all('div', {'class': 'cell'})]
@@ -161,26 +152,29 @@ class GetBookService:
         }
         return distribution_dict
 
-
-soup = parse_book("636223.Ice")
+url_without_year = "https://www.goodreads.com/book/show/336373.Taking_the_Path_of_Zen"
+url_without_isbn = "https://www.goodreads.com/book/show/146180.The_Adventures_of_Tintin"
+url_with_isbn = "https://www.goodreads.com/book/show/5907.The_Hobbit_or_There_and_Back_Again"
+res = get_response(url_without_isbn)
+soup = get_soup(res)
 
 get_books = GetBookService(soup)
 
-print(get_books.get_book_title())
-print(get_books.get_numeric_book_id())
-print(get_books.get_book_title())
-print(get_books.get_book_series())
-print(get_books.get_book_series_uri())
-print(get_books.get_isbn())
-print(get_books.get_isbn13())
+# print(get_books.get_book_title())
+# print(get_books.get_numeric_book_id())
+# print(get_books.get_book_title())
+# print(get_books.get_book_series())
+# print(get_books.get_book_series_uri())
+# print(get_books.get_isbn())
+# print(get_books.get_isbn13())
 print(get_books.get_year_first_published())
-print(get_books.get_author())
-print(get_books.get_num_pages())
-print(get_books.get_genres())
-print(get_books.get_primary_genre())
-print(get_books.get_shelves())
-print(get_books.get_lists())
-print(get_books.get_num_ratings())
-print(get_books.get_num_reviews())
-print(get_books.get_average_rating())
-print(get_books.get_rating_distribution())
+# print(get_books.get_author())
+# print(get_books.get_num_pages())
+# print(get_books.get_genres())
+# print(get_books.get_primary_genre())
+# print(get_books.get_shelves())
+# print(get_books.get_lists())
+# print(get_books.get_num_ratings())
+# print(get_books.get_num_reviews())
+# print(get_books.get_average_rating())
+# print(get_books.get_rating_distribution())

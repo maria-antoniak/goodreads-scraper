@@ -163,6 +163,11 @@ I found these to be sane defaults during testing, but it really will depend on y
 
 Run tests with `pytest` from the root directory.
 
+# Glossary
+
+- `book_id_title` corresponds to the id contained in the goodreads URL, e.g. `587393.The_Lost_Scrapbook` in `https://www.goodreads.com/book/show/587393.The_Lost_Scrapbook`
+- `numeric_book_id` corresponds to the numeric section of the book_id_title, e.g. `587393` in `587393.The_Lost_Scrapbook`
+
 # Credit
 
 This code is written by Maria Antoniak and Melanie Walsh. The code is licensed under a [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/#).
