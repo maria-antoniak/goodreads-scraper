@@ -10,3 +10,4 @@ input/
 pr_template.md
 venv/
 .idea
+.coverage
