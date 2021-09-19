@@ -260,13 +260,13 @@ class BookService:
 # url_without_year = "https://www.goodreads.com/book/show/336373.Taking_the_Path_of_Zen"
 # url_without_isbn = "https://www.goodreads.com/book/show/146180.The_Adventures_of_Tintin"
 
-all_the_pretty_horses = (
-    "https://www.goodreads.com/book/show/469571.All_the_Pretty_Horses"
-)
-
-res = get_response(all_the_pretty_horses)
-soup = get_soup(res)
-book_service = BookService(soup)
+# all_the_pretty_horses = (
+#     "https://www.goodreads.com/book/show/469571.All_the_Pretty_Horses"
+# )
+#
+# res = get_response(all_the_pretty_horses)
+# soup = get_soup(res)
+# book_service = BookService(soup)
 
 # print(book.get_book_title())
 # print(book.get_numeric_book_id("5907.The_Hobbit_or_There_and_Back_Again"))
@@ -282,7 +282,7 @@ book_service = BookService(soup)
 # print(book_service.get_shelves())
 
 
-print(book_service.get_lists())
+# print(book_service.get_lists())
 # print(book.get_number_of_ratings())
 # print(book.get_number_of_reviews())
 # print(book.get_average_rating())
