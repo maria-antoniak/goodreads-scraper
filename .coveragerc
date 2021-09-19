@@ -1,7 +1,9 @@
 [run]
 omit =
     # omit everything in tests/result/data/
-    tests/result/data/*
+    tests/*
+    conftest.py
+    venv/*
 
 [Report]
 show_missing = True
