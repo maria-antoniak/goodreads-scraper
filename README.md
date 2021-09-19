@@ -4,7 +4,7 @@ These Python scripts can be used to collect book reviews and metadata from Goodr
 
 We were motivated to develop this Goodreads Scraper because the Goodreads API is difficult to work with and does not provide access to the full text of reviews. The Goodreads Scraper instead uses the web scraping libraries [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup) and [Selenium](https://selenium-python.readthedocs.io/installation.html) to collect data.
 
-We used this Goodreads Scraper to collect data for our article, "The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Literary Criticism." To allow others to reproduce (approximately) the data we used in the essay, we include a file with 144 Goodreads book IDs for the 144 classics that we analyzed (`goodreads_classics.txt`). You can use these IDs to collect corresponding reviews and metadata with the Goodreads Scraper as described below.
+We used this Goodreads Scraper to collect data for our article, "The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Literary Criticism." To allow others to reproduce (approximately) the data we used in the essay, we include a file with 144 Goodreads book IDs for the 144 classics that we analyzed (`example/data/goodreads_classics.txt`). You can use these IDs to collect corresponding reviews and metadata with the Goodreads Scraper as described below.
 
 *Note: Updates to the Goodreads website may break this code. We don't guarantee that the scraper will continue to work in the future, but feel free to post an issue if you run into a problem.*
 
@@ -12,7 +12,7 @@ We used this Goodreads Scraper to collect data for our article, "The Goodreads �
 
 # What You Need
 
-To run these scripts, you will need [Python 3](https://www.anaconda.com/distribution/).
+To run these scripts, you will need [Python 3](https://www.python.org/downloads/).
 
 You will also need the following Python libraries:
 - [Beautiful Soup 4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup)
@@ -30,14 +30,14 @@ Finally, you will need a web browser — either Chrome or Firefox. We have found
 
 # Tutorial
 
-We recommend running these Python scripts from the command line, as the usage instructions below describe. However, we have also created a [Jupyter notebook tutorial](https://github.com/maria-antoniak/goodreads-scraper/blob/master/How-To-Use-Goodreads-Scraper.ipynb) that demonstrates how to use the Goodreads Scraper scripts. Please note that these scripts may not work consistently from a Jupyter notebook environment and that the tutorial is mostly intended for demonstration purposes.
+We recommend running these Python scripts from the command line, as the usage instructions below describe. However, we have also created a [Jupyter notebook tutorial](https://github.com/maria-antoniak/goodreads-scraper/blob/master/example/How-To-Use-Goodreads-Scraper.ipynb) that demonstrates how to use the Goodreads Scraper scripts. Please note that these scripts may not work consistently from a Jupyter notebook environment and that the tutorial is mostly intended for demonstration purposes.
 <br><br>
 
 # Scraping Goodreads Book Metadata
 
-You can use the Python script `get_books.py` to collect metadata about books on Goodreads, such as the total number of Goodreads reviews and ratings, average Goodreads rating, and most common Goodreads "shelves" for each book. 
+You can use the Python script `.py` to collect metadata about books on Goodreads, such as the total number of Goodreads reviews and ratings, average Goodreads rating, and most common Goodreads "shelves" for each book. 
 
-## get_books.py
+## .py
 
 ### Input
 
@@ -45,34 +45,38 @@ This script takes as input a list of book IDs, stored in a plain text file with 
 
 ### Output
 
-This script outputs a JSON file for each book with the following information:
+This script outputs a JSON file for each book with the information marked as `True` under [BOOK_DATA] in `config.ini`. By default, the following values will be included in the output:
 
-- book ID and title
-- book ID 
-- book title
-- ISBN
-- ISBN13
-- year the book was first published
-- title
-- author
-- number of pages in the book
+- book_id_title
+- numeric_book_id
+- book_title
+- book_series
+- book_series_uri
+- isbn
+- isbn13
+- year_first_published
+- author_last_name
+- author_first_name
+- author_full_name
+- num_pages
 - genres
-- top shelves
+- primary_genre
+- shelves
 - lists
-- total number of ratings
-- total number of reviews
-- average rating
-- rating distribution
+- num_ratings
+- num_reviews
+- average_rating
+- rating_distribution
 
 This script also outputs an aggregated JSON file with information about all the books that have been scraped. To output an aggregated CSV file in addition to a JSON file, use the flag `--format CSV`.
 
 ### Usage
 
-`python get_books.py --book_ids_path your_file_path --output_directory_path your_directory_path --format JSON (default) or CSV`
+`python .py --book_ids_path your_file_path --output_directory_path your_directory_path --format JSON (default) or CSV`
 
 ### Example
 
-`python get_books.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_metadata --format CSV`
+`python .py --book_ids_path example/data/most_popular_classics.txt --output_directory_path output/classic_book_metadata --format CSV`
 
 <br><br>
 
@@ -89,6 +93,7 @@ This script takes as input a list of book IDs, stored in a plain text file with 
 ### Output
 
 This script outputs a JSON file for each book with the following information:
+
 - book ID and title
 - book ID
 - book title
@@ -127,7 +132,7 @@ We also select a filter to only show English language reviews.
 
 You can run the provided test script to check that everything is working correctly.
 
-`./test_scripts.sh`
+`sh ./example/shell/test_script.sh`
 
 This will create a directory called `test-output` in which you'll find the scraped books and reviews.
 
