@@ -6,14 +6,26 @@ from get_book_service import GetBookService
 
 from src.common.network.network import get_soup
 
-from .config.config import (config_author, config_average_rating,
-                            config_book_id_title, config_book_series,
-                            config_book_series_uri, config_book_title,
-                            config_genres, config_isbn, config_isbn13,
-                            config_lists, config_num_pages, config_num_ratings,
-                            config_num_reviews, config_numeric_book_id,
-                            config_primary_genre, config_rating_distribution,
-                            config_shelves, config_year_first_published)
+from .config.config import (
+    config_author,
+    config_average_rating,
+    config_book_id_title,
+    config_book_series,
+    config_book_series_uri,
+    config_book_title,
+    config_genres,
+    config_isbn,
+    config_isbn13,
+    config_lists,
+    config_num_pages,
+    config_num_ratings,
+    config_num_reviews,
+    config_numeric_book_id,
+    config_primary_genre,
+    config_rating_distribution,
+    config_shelves,
+    config_year_first_published,
+)
 
 
 def scrape_book(book_id_title):
