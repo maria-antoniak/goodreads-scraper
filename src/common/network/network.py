@@ -1,19 +1,27 @@
+import asyncio
 from typing import Union
 
+import aiohttp
 import bs4
-import requests
-from requests.models import Response
 
 
-def get_response(url: str) -> Union[Response, None]:
-    try:
-        response = requests.get(url)
-        if response.status_code != 200:
-            return None
-        return response
-    except requests.ConnectionError:
-        return None
+def get(urls: [str]) -> [bytes]:
+    return asyncio.run(_get_response(urls))
 
 
-def get_soup(response: Union[Response, None]) -> Union[bs4.BeautifulSoup, None]:
-    return bs4.BeautifulSoup(response.content, "html.parser")
+async def _get_request(url) -> bytes:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            return await resp.read()
+
+
+async def _get_response(urls: [str]) -> [bytes]:
+    tasks = []
+    for url in urls:
+        tasks.append(asyncio.ensure_future(_get_request(url)))
+
+    return await asyncio.gather(*tasks)
+
+
+def get_soup(response: Union[bytes, None]) -> Union[bs4.BeautifulSoup, None]:
+    return bs4.BeautifulSoup(response, "html.parser")

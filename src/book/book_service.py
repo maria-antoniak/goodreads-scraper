@@ -1,8 +1,6 @@
 # define methods to operate on data
 import re
 from typing import Dict
-from src.common.utils.time_it import time_it
-import pprint
 
 import bs4
 from nameparser.parser import HumanName
@@ -12,7 +10,8 @@ from src.common.errors.errors import (
     return_none_for_index_error,
     return_none_for_type_error,
 )
-from src.common.network.network import get_response, get_soup
+from src.common.network.network import get, get_soup
+from src.common.utils.time_it import timeit
 
 
 class BookService:
@@ -114,8 +113,8 @@ class BookService:
 
         url = BookService._get_shelves_url(self)
 
-        response = get_response(url)
-        soup = get_soup(response)
+        response = get([url])
+        soup = get_soup(response[0])
 
         for shelf in BookService._get_unformatted_shelves(soup):
             name = BookService._get_shelf_name(shelf)
@@ -153,22 +152,15 @@ class BookService:
         return None
 
     @staticmethod
-    def _get_unformatted_lists(url) -> [str]:
-        response = get_response(url)
-        soup = get_soup(response)
-        return [node.text for node in soup.find_all("div", {"class": "cell"})]
+    def _get_res_for_paginated_lists(paginated_list_urls: [str]):
+        return get(paginated_list_urls)
 
+    @staticmethod
     @return_none_for_index_error
-    def _get_unformatted_lists_handler(self) -> [str]:
+    def _get_unformatted_lists_handler(paginated_list_urls: [str]) -> [str]:
         lists = []
 
-        url = BookService._get_lists_url(self)
-        response = get_response(url)
-        soup = get_soup(response)
-        paginated_urls = BookService._get_paginated_list_urls(soup, url)
-
-        for url in paginated_urls:
-            response = get_response(url)
+        for response in BookService._get_res_for_paginated_lists(paginated_list_urls):
             soup = get_soup(response)
             lists += [node.text for node in soup.find_all("div", {"class": "cell"})]
         return lists
@@ -198,15 +190,20 @@ class BookService:
         raw = "".join(_list[2]).strip().replace(",", "")
         return int(re.search(r"(\d+)(\s)(books)", raw).group(1))
 
-    @time_it
     def get_lists(self) -> [Dict]:
         # TODO: This method needs an integration test!
         """
         Initial baseline was 33 secs, now down to 16
+        As of introducing async we're down to 5 seconds
         """
         list_count_dict = []
 
-        for _list in BookService._get_unformatted_lists_handler(self):
+        url = BookService._get_lists_url(self)
+        response = get([url])
+        soup = get_soup(response[0])
+        paginated_urls = BookService._get_paginated_list_urls(soup, url)
+
+        for _list in BookService._get_unformatted_lists_handler(paginated_urls):
             list_details = BookService._split_list_details(_list)
 
             list_name = BookService._get_list_name_from_list_details(list_details)
@@ -225,7 +222,8 @@ class BookService:
                 }
             )
 
-        return BookService._sort_by_list_votes(list_count_dict)
+        result = BookService._sort_by_list_votes(list_count_dict)
+        return result
 
     @staticmethod
     def _sort_by_list_votes(lists: [Dict]) -> [Dict]:
@@ -264,7 +262,39 @@ class BookService:
 all_the_pretty_horses_url = (
     "https://www.goodreads.com/book/show/469571.All_the_Pretty_Horses"
 )
-response = get_response(all_the_pretty_horses_url)
-soup = get_soup(response)
+response = get([all_the_pretty_horses_url])
+soup = get_soup(response[0])
 book_service = BookService(soup)
 
+
+title = book_service.get_title()
+series_name = book_service.get_series_name()
+series_uri = book_service.get_series_uri()
+isbn = book_service.get_isbn()
+isbn13 = book_service.get_isbn13()
+year = book_service.get_year_first_published()
+author = book_service.get_author_full_name()
+first = book_service.get_author_first_name(author)
+last = book_service.get_author_last_name(author)
+pages = book_service.get_number_of_pages()
+genres = book_service.get_genres()
+prim_genre = book_service.get_primary_genre(genres)
+shelves = book_service.get_shelves()
+lists = book_service.get_lists()
+
+print(
+    title,
+    series_uri,
+    series_name,
+    isbn,
+    isbn13,
+    year,
+    author,
+    first,
+    last,
+    pages,
+    genres,
+    prim_genre,
+    shelves,
+    lists,
+)
