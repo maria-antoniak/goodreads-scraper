@@ -266,35 +266,38 @@ response = get([all_the_pretty_horses_url])
 soup = get_soup(response[0])
 book_service = BookService(soup)
 
+@timeit
+def main():
+    title = book_service.get_title()
+    series_name = book_service.get_series_name()
+    series_uri = book_service.get_series_uri()
+    isbn = book_service.get_isbn()
+    isbn13 = book_service.get_isbn13()
+    year = book_service.get_year_first_published()
+    author = book_service.get_author_full_name()
+    first = book_service.get_author_first_name(author)
+    last = book_service.get_author_last_name(author)
+    pages = book_service.get_number_of_pages()
+    genres = book_service.get_genres()
+    prim_genre = book_service.get_primary_genre(genres)
+    shelves = book_service.get_shelves()
+    lists = book_service.get_lists()
 
-title = book_service.get_title()
-series_name = book_service.get_series_name()
-series_uri = book_service.get_series_uri()
-isbn = book_service.get_isbn()
-isbn13 = book_service.get_isbn13()
-year = book_service.get_year_first_published()
-author = book_service.get_author_full_name()
-first = book_service.get_author_first_name(author)
-last = book_service.get_author_last_name(author)
-pages = book_service.get_number_of_pages()
-genres = book_service.get_genres()
-prim_genre = book_service.get_primary_genre(genres)
-shelves = book_service.get_shelves()
-lists = book_service.get_lists()
+    print(
+        title,
+        series_uri,
+        series_name,
+        isbn,
+        isbn13,
+        year,
+        author,
+        first,
+        last,
+        pages,
+        genres,
+        prim_genre,
+        shelves,
+        lists,
+    )
 
-print(
-    title,
-    series_uri,
-    series_name,
-    isbn,
-    isbn13,
-    year,
-    author,
-    first,
-    last,
-    pages,
-    genres,
-    prim_genre,
-    shelves,
-    lists,
-)
+main()

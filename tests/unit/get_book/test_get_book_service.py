@@ -1,4 +1,4 @@
-from src.book.book_service import BookService
+from src.books.book_service import BookService
 from data.all_the_pretty_horses import (
     all_the_pretty_horses_soup,
     all_the_pretty_horses_shelves_soup,
