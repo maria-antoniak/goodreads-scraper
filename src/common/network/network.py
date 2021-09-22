@@ -22,6 +22,3 @@ async def _get_response(urls: [str]) -> [bytes]:
 
     return await asyncio.gather(*tasks)
 
-
-def get_soup(response: Union[bytes, None]) -> Union[bs4.BeautifulSoup, None]:
-    return bs4.BeautifulSoup(response, "html.parser")

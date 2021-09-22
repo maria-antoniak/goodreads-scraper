@@ -10,9 +10,11 @@ from src.common.errors.errors import (
     return_none_for_index_error,
     return_none_for_type_error,
 )
-from src.common.network.network import get, get_soup
+from src.common.network.network import get
+from src.common.parser.parser import parse
 from src.common.utils.time_it import timeit
 
+from src.shelves.shelf_service import ShelfService
 
 class BookService:
     def __init__(self, soup: bs4.BeautifulSoup):
@@ -93,44 +95,6 @@ class BookService:
         # This is according to the genres with most votes
         return genre_list[0]
 
-    # TODO: Consider breaking shelves into a service.
-
-    @return_none_for_type_error
-    def _get_shelves_url(self):
-        shelves_url = self.soup.find("a", text="See top shelves…")["href"]
-        return f"{self.GOODREADS_BASE_URL}{shelves_url}"
-
-    @staticmethod
-    @return_none_for_index_error
-    def _get_unformatted_shelves(soup: bs4.BeautifulSoup) -> [str]:
-        nodes = soup.find_all("div", {"class": "shelfStat"})
-        return [" ".join(node.text.strip().split()) for node in nodes]
-
-    def get_shelves(self) -> Dict:
-        # TODO: This method needs an integration test!
-
-        shelves = {}
-
-        url = BookService._get_shelves_url(self)
-
-        response = get([url])
-        soup = get_soup(response[0])
-
-        for shelf in BookService._get_unformatted_shelves(soup):
-            name = BookService._get_shelf_name(shelf)
-            count = BookService._get_shelf_count(shelf)
-            shelves[name] = count
-
-        return shelves
-
-    @staticmethod
-    def _get_shelf_name(shelf: str) -> str:
-        return shelf.split()[:-2][0]
-
-    @staticmethod
-    def _get_shelf_count(shelf: str) -> int:
-        return int(shelf.split()[-2].replace(",", ""))
-
     # TODO: Consider breaking lists into a service.
 
     @return_none_for_type_error
@@ -161,7 +125,7 @@ class BookService:
         lists = []
 
         for response in BookService._get_res_for_paginated_lists(paginated_list_urls):
-            soup = get_soup(response)
+            soup = parse(response)
             lists += [node.text for node in soup.find_all("div", {"class": "cell"})]
         return lists
 
@@ -200,7 +164,7 @@ class BookService:
 
         url = BookService._get_lists_url(self)
         response = get([url])
-        soup = get_soup(response[0])
+        soup = parse(response[0])
         paginated_urls = BookService._get_paginated_list_urls(soup, url)
 
         for _list in BookService._get_unformatted_lists_handler(paginated_urls):
@@ -260,10 +224,10 @@ class BookService:
 # TESTING
 
 all_the_pretty_horses_url = (
-    "https://www.goodreads.com/book/show/469571.All_the_Pretty_Horses"
+    "https://www.goodreads.com/book/show/63033.The_Savage_Detectives"
 )
 response = get([all_the_pretty_horses_url])
-soup = get_soup(response[0])
+soup = parse(response[0])
 book_service = BookService(soup)
 
 @timeit
@@ -280,7 +244,8 @@ def main():
     pages = book_service.get_number_of_pages()
     genres = book_service.get_genres()
     prim_genre = book_service.get_primary_genre(genres)
-    shelves = book_service.get_shelves()
+    shelf_service = ShelfService(soup)
+    shelves = shelf_service.get_shelves()
     lists = book_service.get_lists()
 
     print(
