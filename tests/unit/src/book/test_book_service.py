@@ -1,4 +1,4 @@
-from src.book.book_service import BookService
+from src.book.service.book_service import BookService
 from data.all_the_pretty_horses import (
     all_the_pretty_horses_soup,
     all_the_pretty_horses_shelves_soup,
@@ -11,12 +11,16 @@ import pytest
 class TestBookService:
     def setup_method(self):
         self.book_id_title = "469571.All_the_Pretty_Horses"
+        self.book_id_title_without_decimal = "13079982-fahrenheit-451"
         self.book_service = BookService(all_the_pretty_horses_soup)
         self.book_service_empty = BookService(empty_soup)
         self.shelf = "to-read 61,056 people"
 
     def test_get_numeric_book_id(self):
         assert self.book_service.get_numeric_id(self.book_id_title) == 469571
+
+    def test_get_numeric_book_id_where_no_decimal_is_present(self):
+        assert self.book_service.get_numeric_id(self.book_id_title_without_decimal) == 13079982
 
     def test_get_book_title(self):
         assert self.book_service.get_title() == "All the Pretty Horses"

@@ -3,6 +3,7 @@
 import time
 
 from src.book.service.book_service import BookService
+
 from src.book.model.book_model import BookModel
 
 from src.common.parser.parser import parse
@@ -31,7 +32,9 @@ from src.book.config.book_config import (
     config_year_first_published,
 )
 
+from src.common.utils.time_it import timeit
 
+@timeit
 def build_book_model(book_id_title):
 
     # This method will be called from main, i.e the view
@@ -111,6 +114,6 @@ def build_book_model(book_id_title):
     #     else None,
     # }
 
-
-bs = "781410.Young_Adam"
-build_book_model(bs)
+#
+# bs = "781410.Young_Adam"
+# build_book_model(bs)

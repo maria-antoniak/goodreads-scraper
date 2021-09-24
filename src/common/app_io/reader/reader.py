@@ -1,7 +1,7 @@
 import codecs
 import os
 
-from exceptions import InputFileIsEmpty
+from .exceptions import InputFileIsEmpty
 
 
 def _get_queries_from_input_file(path_to_input_file: str) -> [str]:

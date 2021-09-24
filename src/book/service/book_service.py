@@ -25,8 +25,15 @@ class BookService:
         self.GOODREADS_BASE_URL = "https://www.goodreads.com"
 
     @staticmethod
-    def get_numeric_id(book_id_title: str) -> int:
-        return int(book_id_title.split(".")[0])
+    def split_on_delimiter(book_id_title: str, delimiter: str) -> str:
+        return book_id_title.split(delimiter, 1)[0]
+
+    @staticmethod
+    def get_numeric_id(book_id_title: str) -> [int, None]:
+        try:
+            return int(BookService.split_on_delimiter(book_id_title, "."))
+        except ValueError:
+            return int(BookService.split_on_delimiter(book_id_title, "-"))
 
     @return_none_for_attribute_error
     def get_title(self) -> str:
