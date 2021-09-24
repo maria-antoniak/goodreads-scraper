@@ -1,12 +1,7 @@
 import argparse
-from enum import Enum
 
 from src.book.controller.book_controller import build_book_model
 from src.common.app_io.reader.reader import read_file
-
-
-class Service(Enum):
-    BOOK = build_book_model
 
 
 def main():
