@@ -1,4 +1,4 @@
-from src.lists.list_service import ListService
+from src.list.list_service import ListService
 from data.all_the_pretty_horses import (
     all_the_pretty_horses_lists_soup
 )

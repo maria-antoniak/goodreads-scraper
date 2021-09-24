@@ -2,7 +2,7 @@ from configparser import ConfigParser
 
 config_object = ConfigParser()
 
-config_object.read("config.ini")
+config_object.read("/home/studs/PycharmProjects/goodreads-scraper/config.ini")
 
 # BOOK_DATA
 
@@ -16,7 +16,9 @@ config_isbn13 = config_object["BOOK_DATA"].getboolean("ISBN13")
 config_year_first_published = config_object["BOOK_DATA"].getboolean(
     "YEAR_FIRST_PUBLISHED"
 )
-config_author = config_object["BOOK_DATA"].getboolean("AUTHOR")
+config_author_full_name = config_object["BOOK_DATA"].getboolean("AUTHOR_FULL_NAME")
+config_author_first_name = config_object["BOOK_DATA"].getboolean("AUTHOR_FIRST_NAME")
+config_author_last_name = config_object["BOOK_DATA"].getboolean("AUTHOR_LAST_NAME")
 config_num_pages = config_object["BOOK_DATA"].getboolean("NUM_PAGES")
 config_genres = config_object["BOOK_DATA"].getboolean("GENRES")
 config_primary_genre = config_object["BOOK_DATA"].getboolean("PRIMARY_GENRE")

@@ -1,4 +1,4 @@
-from src.shelves.shelf_service import ShelfService
+from src.shelf.shelf_service import ShelfService
 from data.all_the_pretty_horses import (
     all_the_pretty_horses_soup,
     all_the_pretty_horses_shelves_soup)

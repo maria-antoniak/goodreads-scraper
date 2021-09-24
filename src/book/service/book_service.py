@@ -14,8 +14,8 @@ from src.common.network.network import get
 from src.common.parser.parser import parse
 from src.common.utils.time_it import timeit
 
-from src.shelves.shelf_service import ShelfService
-from src.lists.list_service import ListService
+from src.shelf.shelf_service import ShelfService
+from src.list.list_service import ListService
 
 
 class BookService:
@@ -183,4 +183,4 @@ def main():
     )
 
 
-main()
+# main()
