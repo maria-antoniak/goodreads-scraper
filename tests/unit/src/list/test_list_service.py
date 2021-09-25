@@ -11,6 +11,7 @@ class TestListService:
         self.list_service = ListService(all_the_pretty_horses_lists_soup, self.lists_url)
         self.list_service_empty = ListService(empty_soup, self.lists_url)
 
+
     def test_get_paginated_list_urls(self):
         url = "https://www.goodreads.com/list/book/469571"
         expected = [url, 'https://www.goodreads.com/list/book/469571?page=2', 'https://www.goodreads.com/list/book/469571?page=3', 'https://www.goodreads.com/list/book/469571?page=4', 'https://www.goodreads.com/list/book/469571?page=5', 'https://www.goodreads.com/list/book/469571?page=6', 'https://www.goodreads.com/list/book/469571?page=7', 'https://www.goodreads.com/list/book/469571?page=8', 'https://www.goodreads.com/list/book/469571?page=9']

@@ -17,17 +17,6 @@ class ShelfService:
         self.soup = soup
         self.GOODREADS_BASE_URL = "https://www.goodreads.com"
 
-    @return_none_for_type_error
-    def _get_shelves_url(self):
-        shelves_url = self.soup.find("a", text="See top shelves…")["href"]
-        return f"{self.GOODREADS_BASE_URL}{shelves_url}"
-
-    @staticmethod
-    @return_none_for_index_error
-    def _get_unformatted_shelves(soup: bs4.BeautifulSoup) -> [str]:
-        nodes = soup.find_all("div", {"class": "shelfStat"})
-        return [" ".join(node.text.strip().split()) for node in nodes]
-
     def get_shelves(self) -> Dict:
         # TODO: This method needs an integration test!
 
@@ -44,6 +33,17 @@ class ShelfService:
             shelves[name] = count
 
         return shelves
+
+    @return_none_for_type_error
+    def _get_shelves_url(self):
+        shelves_url = self.soup.find("a", text="See top shelves…")["href"]
+        return f"{self.GOODREADS_BASE_URL}{shelves_url}"
+
+    @staticmethod
+    @return_none_for_index_error
+    def _get_unformatted_shelves(soup: bs4.BeautifulSoup) -> [str]:
+        nodes = soup.find_all("div", {"class": "shelfStat"})
+        return [" ".join(node.text.strip().split()) for node in nodes]
 
     @staticmethod
     def _get_shelf_name(shelf: str) -> str:

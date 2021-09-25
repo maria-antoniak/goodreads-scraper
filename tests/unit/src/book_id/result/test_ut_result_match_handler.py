@@ -1,6 +1,6 @@
 from src.book_id.models.query_model import QueryModel
 from src.book_id.models.result_model import ResultModel
-from src.book_id.result.result_match_handler import (_is_input_similar,
+from src.book_id.service.result.result_match_handler import (_is_input_similar,
                                                      _is_results_equal_to_one)
 
 

@@ -19,8 +19,7 @@ def main():
     book_ids = read_file(args.book_ids_path)
 
     if args.service == "book":
-        for book_id in book_ids:
-            build_book_model(book_id)
+        list(map(build_book_model, book_ids))
 
 
 if __name__ == "__main__":

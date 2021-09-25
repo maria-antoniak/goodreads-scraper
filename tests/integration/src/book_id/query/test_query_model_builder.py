@@ -1,7 +1,7 @@
 import pytest
 
 from src.book_id.models.query_model import QueryModel
-from src.book_id.query.query_model_builder import (
+from src.book_id.service.query.query_model_builder import (
     _build_search_url_from_query, build_query_model)
 
 

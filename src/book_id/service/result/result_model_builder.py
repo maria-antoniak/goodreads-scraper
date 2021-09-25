@@ -2,7 +2,7 @@ import bs4
 
 from src.common.errors.errors import return_none_for_type_error
 from src.book_id.models.result_model import ResultModel
-from src.book_id.result.result_parser import (_clean_author_name,
+from src.book_id.service.result.result_service import (_clean_author_name,
                                               _get_author_name,
                                               _get_book_href, _get_book_title,
                                               _get_id_from_href)

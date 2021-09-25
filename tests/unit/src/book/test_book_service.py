@@ -1,9 +1,5 @@
 from src.book.service.book_service import BookService
-from data.all_the_pretty_horses import (
-    all_the_pretty_horses_soup,
-    all_the_pretty_horses_shelves_soup,
-    all_the_pretty_horses_lists_soup
-)
+from data.all_the_pretty_horses import all_the_pretty_horses_soup
 from data.empty import empty_soup
 import pytest
 
@@ -34,14 +30,14 @@ class TestBookService:
     def test_get_book_series_name_should_return_none_where_soup_find_fails(self):
         assert self.book_service_empty.get_series_name() is None
 
-    def test_get_book_series_uri(self):
+    def test_get_book_series_url(self):
         assert (
-            self.book_service.get_series_uri()
+            self.book_service.get_series_url()
             == "https://www.goodreads.com/series/44780-the-border-trilogy"
         )
 
-    def test_get_book_series_uri_should_return_none_where_soup_find_fails(self):
-        assert self.book_service_empty.get_series_uri() is None
+    def test_get_book_series_url_should_return_none_where_soup_find_fails(self):
+        assert self.book_service_empty.get_series_url() is None
 
     def test_get_isbn(self):
         assert self.book_service.get_isbn() == int("0330510932")
@@ -55,11 +51,17 @@ class TestBookService:
     def test_get_isbn13_should_return_none_where_soup_findall_fails(self):
         assert self.book_service_empty.get_isbn() is None
 
-    def test_get_year_first_published(self):
-        assert self.book_service.get_year_first_published() == 1992
+    def test_get_lists_url(self):
+        assert self.book_service.get_lists_url(self) == "https://www.goodreads.com/list/book/469571"
 
-    def test_get_year_first_published_should_return_none_where_soup_find_fails(self):
-        assert self.book_service_empty.get_year_first_published() is None
+    def test_get_lists_url_should_return_none_where_soup_find_fails(self):
+        assert self.book_service.get_lists_url(self) is None
+
+    def test_get_year_of_publication(self):
+        assert self.book_service.get_year_of_publication() == 1992
+
+    def test_get_year_of_publication_should_return_none_where_soup_find_fails(self):
+        assert self.book_service_empty.get_year_of_publication() is None
 
     def test_get_author_full_name(self):
         assert self.book_service.get_author_full_name() == "Cormac McCarthy"
@@ -133,7 +135,7 @@ class TestBookService:
         assert self.book_service.get_primary_genre(genre_list) == "Fiction"
 
     def test_get_primary_genre_should_return_none_where_genre_list_is_empty(self):
-        assert self.book_service_empty.get_number_of_pages() is None
+        assert self.book_service_empty.get_primary_genre() is None
 
     def test_get_lists_url(self):
         assert self.book_service.get_lists_url() == "https://www.goodreads.com/list/book/469571"
@@ -141,17 +143,28 @@ class TestBookService:
     def test_get_lists_url_should_return_none_where_soup_find_fails(self):
         assert self.book_service_empty.get_lists_url() is None
 
-    # def test_get_lists_url(self):
-    #     assert self.book_service._get_lists_url(self) == "https://www.goodreads.com/list/book/469571"
-    #
-    # def test_get_lists_url_should_return_none_where_soup_find_fails(self):
-    #     assert self.book_service_empty._get_lists_url(self) is None
-    #
-    # def test_get_paginated_list_urls(self):
-    #     url = "https://www.goodreads.com/list/book/469571"
-    #     expected = [url, 'https://www.goodreads.com/list/book/469571?page=2', 'https://www.goodreads.com/list/book/469571?page=3', 'https://www.goodreads.com/list/book/469571?page=4', 'https://www.goodreads.com/list/book/469571?page=5', 'https://www.goodreads.com/list/book/469571?page=6', 'https://www.goodreads.com/list/book/469571?page=7', 'https://www.goodreads.com/list/book/469571?page=8', 'https://www.goodreads.com/list/book/469571?page=9']
-    #     assert self.book_service._get_paginated_list_urls(all_the_pretty_horses_lists_soup, url) == expected
-    #
-    # def test_get_paginated_list_urls_should_return_none_where_soup_find_fails(self):
-    #     url = "https://www.goodreads.com/list/book/469571"
-    #     assert self.book_service_empty._get_paginated_list_urls(empty_soup, url) is None
+    def test_get_number_of_reviews(self):
+        assert self.book_service.get_number_of_reviews() == 6587
+
+    def test_get_number_of_reviews_should_return_none_where_soup_find_fails(self):
+        assert self.book_service_empty.get_number_of_reviews() is None
+
+    def test_get_number_of_ratings(self):
+        assert self.book_service.get_number_of_ratings() == 99515
+
+    def test_get_number_of_ratings_should_return_none_where_soup_find_fails(self):
+        assert self.book_service_empty.get_number_of_ratings() is None
+
+    def test_get_average_rating(self):
+        assert self.book_service.get_average_rating() == 4.00
+
+    def test_get_average_rating_should_return_none_where_soup_find_fails(self):
+        assert self.book_service_empty.get_average_rating() is None
+
+    def test_get_rating_distribution(self):
+        expected = {'fiveStar': 34341, 'fourStar': 39797, 'oneStar': 1838, 'threeStar': 18678, 'twoStar': 4861}
+        assert self.book_service.get_rating_distribution() == expected
+
+    def test_get_rating_distribution_should_return_none_where_soup_find_fails(self):
+        assert self.book_service_empty.get_average_rating() is None
+

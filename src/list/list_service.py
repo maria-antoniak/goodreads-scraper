@@ -2,13 +2,11 @@ import bs4
 
 from src.common.errors.errors import (
     return_none_for_index_error,
-    return_none_for_type_error,
 )
 
 import re
 from src.common.network.network import get
 from src.common.parser.parser import parse
-from src.common.utils.time_it import timeit
 
 from typing import Dict
 
@@ -77,7 +75,7 @@ class ListService:
         # TODO: This method needs an integration test!
         """
         Initial baseline was 33 secs, now down to 16
-        As of introducing async we're down to 5 seconds
+        As of introducing async we're down to 5 seconds!
         """
         list_count_dict = []
 

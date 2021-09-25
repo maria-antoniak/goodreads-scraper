@@ -1,27 +1,29 @@
 from dataclasses import dataclass
-from typing import Union, Dict
-from dataclasses_json.api import dataclass_json, LetterCase
+from typing import Dict, Union
+
+from dataclasses_json.api import LetterCase, dataclass_json
 
 
-@dataclass_json(letter_case=LetterCase.CAMEL)  # now all fields are encoded/decoded from camelCase@dataclass
+@dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class BookModel:
-    title_id: Union[str, None]
-    numeric_id: Union[int, None]
-    title: Union[str, None]
-    series: Union[str, None]
-    book_series_uri: Union[str, None]
-    isbn: Union[str, None]
-    isbn13: Union[str, None]
-    author_full_name: Union[str, None]
     author_first_name: Union[str, None]
+    author_full_name: Union[str, None]
     author_last_name: Union[str, None]
-    number_of_pages: Union[int, None]
+    average_rating: Union[float, None]
     genres: Union[str, None]
+    isbn13: Union[str, None]
+    isbn: Union[str, None]
+    lists: Union[str, None]
+    number_of_pages: Union[int, None]
+    number_of_ratings: Union[int, None]
+    number_of_reviews: Union[int, None]
+    numeric_id: Union[int, None]
     primary_genre: Union[str, None]
-    # shelves: Union[Dict, None]
-    # lists: Union[Dict, None]
-    # num_ratings: Union[int, None]
-    # num_reviews: Union[int, None]
-    # average_rating: Union[float, None]
-    # rating_distribution: Union[Dict, None]
+    rating_distribution: Union[Dict, None]
+    series_name: Union[str, None]
+    series_url: Union[str, None]
+    shelves: Union[Dict, None]
+    title: Union[str, None]
+    title_id: Union[str, None]
+    year_of_publication: Union[int, None]

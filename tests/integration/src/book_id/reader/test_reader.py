@@ -1,8 +1,8 @@
 import pytest
 from mock import mock_open, patch
 
-from src.book_id.reader.exceptions import InputFileIsEmpty
-from src.book_id.reader.reader import read_file
+from src.common.app_io.reader.exceptions import InputFileIsEmpty
+from src.common.app_io.reader.reader import read_file
 
 
 class TestReader:
@@ -41,7 +41,7 @@ class TestReader:
         with patch("os.path.getsize", return_value=self.SINGLE_QUERY):
 
             mock = mock_open(read_data=self.multiline_queries_with_none)
-            with patch("src.get_book_ids.reader.reader.codecs.open", mock):
+            with patch("src.common.app_io.reader.reader.codecs.open", mock):
                 assert read_file(self.mock_path_to_file) == []
 
     def test_read_file_should_return_queries_where_no_queries_are_equal_to_none(
@@ -49,7 +49,7 @@ class TestReader:
     ):
         with patch("os.path.getsize", return_value=self.SINGLE_QUERY):
             mock = mock_open(read_data=self.multiline_queries_without_none)
-            with patch("src.get_book_ids.reader.reader.codecs.open", mock):
+            with patch("src.common.app_io.reader.reader.codecs.open", mock):
                 assert read_file(self.mock_path_to_file) == [
                     "The Catcher in the Rye - J.D Salinger",
                     "Eternal Curse on the Reader of These Pages - Manual Puig",

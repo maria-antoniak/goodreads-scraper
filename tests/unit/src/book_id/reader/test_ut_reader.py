@@ -1,6 +1,6 @@
 from mock import mock_open, patch
 
-from src.book_id.reader.reader import (
+from src.common.app_io.reader.reader import (
     _filter_queries_equal_to_none, _get_queries_from_input_file,
     _is_file_empty, _is_query_equal_to_none_present_in_queries)
 
@@ -18,7 +18,7 @@ class TestReader:
 
     def test_get_queries_from_input_file_should_return_a_list_of_lines(self):
         mock = mock_open(read_data="Reasons to Live - Amy Hempl")
-        with patch("src.book_id.reader.reader.codecs.open", mock):
+        with patch("src.common.app_io.reader.reader.codecs.open", mock):
             assert _get_queries_from_input_file(self.mock_path_to_file) == [
                 "Reasons to Live - Amy Hempl"
             ]
@@ -27,7 +27,7 @@ class TestReader:
         self,
     ):
         mock = mock_open(read_data=self.multiline_queries_without_none)
-        with patch("src.book_id.reader.reader.codecs.open", mock):
+        with patch("src.common.app_io.reader.reader.codecs.open", mock):
             assert _get_queries_from_input_file(self.mock_path_to_file) == [
                 "The Catcher in the Rye - J.D Salinger",
                 "Eternal Curse on the Reader of These Pages - Manual Puig",
