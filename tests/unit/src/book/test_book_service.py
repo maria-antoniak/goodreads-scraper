@@ -1,7 +1,8 @@
-from src.book.book_service import BookService
+import pytest
 from data.all_the_pretty_horses import all_the_pretty_horses_soup
 from data.empty import empty_soup
-import pytest
+
+from src.book.book_service import BookService
 
 
 class TestBookService:
@@ -16,7 +17,10 @@ class TestBookService:
         assert self.book_service.get_numeric_id(self.book_id_title) == 469571
 
     def test_get_numeric_book_id_where_no_decimal_is_present(self):
-        assert self.book_service.get_numeric_id(self.book_id_title_without_decimal) == 13079982
+        assert (
+            self.book_service.get_numeric_id(self.book_id_title_without_decimal)
+            == 13079982
+        )
 
     def test_get_book_title(self):
         assert self.book_service.get_title() == "All the Pretty Horses"
@@ -52,7 +56,10 @@ class TestBookService:
         assert self.book_service_empty.get_isbn() is None
 
     def test_get_lists_url(self):
-        assert self.book_service.get_lists_url(self) == "https://www.goodreads.com/list/book/469571"
+        assert (
+            self.book_service.get_lists_url(self)
+            == "https://www.goodreads.com/list/book/469571"
+        )
 
     def test_get_lists_url_should_return_none_where_soup_find_fails(self):
         assert self.book_service.get_lists_url(self) is None
@@ -138,7 +145,10 @@ class TestBookService:
         assert self.book_service_empty.get_primary_genre() is None
 
     def test_get_lists_url(self):
-        assert self.book_service.get_lists_url() == "https://www.goodreads.com/list/book/469571"
+        assert (
+            self.book_service.get_lists_url()
+            == "https://www.goodreads.com/list/book/469571"
+        )
 
     def test_get_lists_url_should_return_none_where_soup_find_fails(self):
         assert self.book_service_empty.get_lists_url() is None
@@ -162,9 +172,14 @@ class TestBookService:
         assert self.book_service_empty.get_average_rating() is None
 
     def test_get_rating_distribution(self):
-        expected = {'fiveStar': 34341, 'fourStar': 39797, 'oneStar': 1838, 'threeStar': 18678, 'twoStar': 4861}
+        expected = {
+            "fiveStar": 34341,
+            "fourStar": 39797,
+            "oneStar": 1838,
+            "threeStar": 18678,
+            "twoStar": 4861,
+        }
         assert self.book_service.get_rating_distribution() == expected
 
     def test_get_rating_distribution_should_return_none_where_soup_find_fails(self):
         assert self.book_service_empty.get_average_rating() is None
-

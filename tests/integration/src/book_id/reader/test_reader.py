@@ -14,7 +14,6 @@ class TestReader:
         self.multiline_queries_with_none = None
         self.multiline_queries_without_none = "The Catcher in the Rye - J.D Salinger\nEternal Curse on the Reader of These Pages - Manual Puig\n"
 
-
     def test_read_file_should_raise_input_file_is_empty_exception_where_file_is_empty(
         self,
     ):

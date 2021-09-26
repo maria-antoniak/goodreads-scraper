@@ -22,7 +22,6 @@ class TestQueryModelBuilder:
         self.book_title_with_parenthesis_subtitle_false_positive = "H(A)PPY"
         self.book_title_without_subtitle = "My Year of Rest and Relaxation"
 
-
     def test_split_on_last_delimiter_should_return_book_title_and_author_where_the_delimiter_appears_once(
         self,
     ):

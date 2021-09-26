@@ -1,7 +1,9 @@
 import pytest
 from mock import mock_open, patch
 
-from src.common.app_io.writer.writer import _is_directory_created, write_to_file
+from src.common.app_io.writer.writer import (_is_directory_created,
+                                             write_to_file)
+
 
 class TestWriter:
     def setup_method(self):
@@ -9,7 +11,9 @@ class TestWriter:
 
     def test_write_file_should_write_book_id_to_empty_file(self):
         open_mock = mock_open()
-        with patch("src.common.app_io.writer.writer.codecs.open", open_mock, create=True):
+        with patch(
+            "src.common.app_io.writer.writer.codecs.open", open_mock, create=True
+        ):
             write_to_file("/output", "results", "160653.Actual_Air")
 
         open_mock.assert_called_with("/output/results.txt", "a", encoding="UTF-8")

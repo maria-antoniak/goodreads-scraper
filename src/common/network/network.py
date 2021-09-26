@@ -3,6 +3,9 @@ from typing import Union
 
 import aiohttp
 
+import wikipedia
+from wikipedia.wikipedia import WikipediaPage
+
 from aiohttp.client_exceptions import ClientConnectionError
 
 
@@ -25,3 +28,13 @@ async def _get_response(urls: [str]) -> [bytes]:
         tasks.append(asyncio.ensure_future(_get_request(url)))
 
     return await asyncio.gather(*tasks)
+
+
+def search_for_wikipedia_result(author_full_name: str) -> Union[WikipediaPage, None]:
+    results = wikipedia.page(author_full_name)
+    if results:
+        return results
+
+
+def _is_wikipedia_result_an_exact_match(author_full_name: str, wikipedia_result: WikipediaPage) -> bool:
+    return True if author_full_name in wikipedia_result.title else False
