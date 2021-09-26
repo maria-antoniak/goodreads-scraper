@@ -1,6 +1,6 @@
 import argparse
 
-from src.book.controller.book_controller import build_book_model
+from src.book.book_controller import build_book_model
 from src.common.app_io.reader.reader import read_file
 
 
@@ -20,6 +20,10 @@ def main():
 
     if args.service == "book":
         list(map(build_book_model, book_ids))
+
+    if args.service == "book_id":
+        pass
+        # list(map(build_book_model, book_ids))
 
 
 if __name__ == "__main__":

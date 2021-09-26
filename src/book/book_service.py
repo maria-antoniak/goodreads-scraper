@@ -11,8 +11,6 @@ from src.common.errors.errors import (
 )
 from src.common.utils.string_operators import split_on_delimiter
 
-from collections import OrderedDict
-
 
 class BookService:
     def __init__(self, soup: bs4.BeautifulSoup):

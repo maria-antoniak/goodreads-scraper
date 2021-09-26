@@ -1,9 +1,9 @@
 # Call service that actually does the thing
 import pprint
 
-from src.book.config.book_config import *
-from src.book.model.book_model import BookModel
-from src.book.service.book_service import BookService
+from src.book.book_config import *
+from src.book.book_model import BookModel
+from src.book.book_service import BookService
 from src.common.formatters.json.to_json import to_json
 from src.common.network.network import get
 from src.common.parser.parser import parse

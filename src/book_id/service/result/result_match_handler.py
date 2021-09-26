@@ -4,16 +4,19 @@ from src.book_id.models.query_model import QueryModel
 from src.book_id.models.result_model import ResultModel
 
 
-def _is_results_equal_to_one(result_models: [ResultModel]):
+def _is_results_equal_to_one(result_models: [ResultModel]) -> True:
     """Where a single result is returned for a query, we can assume it is correct."""
     if len(result_models) == 1:
         return True
     return False
 
 
-def _is_input_similar(a, b, similarity_percentage: float):
-    # 1.0 == Exact match
-    # 0.0 most permissive / 0.99 least permissiveness
+def _is_input_similar(a, b, similarity_percentage: float) -> bool:
+    """
+    1.0 == Exact match
+    0.0 is most permissive
+    0.99 is least permissiveness
+    """
     seq = SequenceMatcher(a=a, b=b)
     if seq.ratio() >= similarity_percentage:
         return True

@@ -1,4 +1,4 @@
-from src.book.service.book_service import BookService
+from src.book.book_service import BookService
 from data.all_the_pretty_horses import all_the_pretty_horses_soup
 from data.empty import empty_soup
 import pytest
