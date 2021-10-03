@@ -1,5 +1,6 @@
 # Call service that actually does the thing
 import pprint
+from typing import Dict
 
 from src.book.book_config import *
 from src.book.book_model import BookModel
@@ -8,7 +9,6 @@ from src.common.formatters.json.to_json import to_json
 from src.common.network.network import get
 from src.common.parser.parser import parse
 from src.common.utils.time_it import timeit
-from typing import Dict
 from src.list.list_service import ListService
 from src.shelf.shelf_service import ShelfService
 
@@ -37,7 +37,6 @@ def build_book_model(book_id_title: str) -> Dict:
     soup = parse(response[0])
 
     lists_service = ListService(soup, lists_url)
-
 
     book_model = BookModel(
         author_first_name=book_service.get_author_first_name(author_full_name)

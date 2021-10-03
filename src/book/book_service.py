@@ -4,11 +4,10 @@ from typing import Dict, Union
 import bs4
 from nameparser.parser import HumanName
 
-from src.common.errors.errors import (
-    return_none_for_attribute_error,
-    return_none_for_index_error,
-    return_none_for_type_error,
-)
+from src.common.errors.errors import (return_none_for_attribute_error,
+                                      return_none_for_index_error,
+                                      return_none_for_type_error)
+from src.common.utils.dict_operators import sort_by_value
 from src.common.utils.string_operators import split_on_delimiter
 
 
@@ -55,6 +54,7 @@ class BookService:
 
     @return_none_for_attribute_error
     def get_genres(self) -> [str]:
+        # TODO: It might be nice build a list of dicts considering the votes here.
         genres = []
         for node in self.soup.find_all("div", {"class": "left"}):
             current_genres = node.find_all(
@@ -74,7 +74,8 @@ class BookService:
     @return_none_for_attribute_error
     def get_series_name(self) -> str:
         book_series_name = self.soup.find("h2", {"id": "bookSeries"}).text.strip()
-        return re.search("[^()]+", book_series_name).group()
+        match = re.search("[^()]+", book_series_name).group()
+        return match.strip()
 
     @return_none_for_attribute_error
     @return_none_for_type_error
@@ -117,17 +118,18 @@ class BookService:
         return float(value)
 
     @return_none_for_attribute_error
-    def get_rating_distribution(self) -> Dict:
-        #  TODO: Sorted return results
+    def get_rating_distribution(self) -> Dict[str, int]:
         distribution = re.findall(
             r"renderRatingGraph\([\s]*\[[0-9,\s]+", str(self.soup)
         )[0]
         distribution = " ".join(distribution.split())
         distribution = [int(c.strip()) for c in distribution.split("[")[1].split(",")]
-        return {
+        result = {
             "fiveStar": distribution[0],
             "fourStar": distribution[1],
             "threeStar": distribution[2],
             "twoStar": distribution[3],
             "oneStar": distribution[4],
         }
+
+        return dict(sort_by_value(result))

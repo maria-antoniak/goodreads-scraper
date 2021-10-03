@@ -173,11 +173,11 @@ class TestBookService:
 
     def test_get_rating_distribution(self):
         expected = {
-            "fiveStar": 34341,
             "fourStar": 39797,
-            "oneStar": 1838,
+            "fiveStar": 34341,
             "threeStar": 18678,
             "twoStar": 4861,
+            "oneStar": 1838,
         }
         assert self.book_service.get_rating_distribution() == expected
 

@@ -1,7 +1,7 @@
 from difflib import SequenceMatcher
 
-from src.book_id.models.query_model import QueryModel
-from src.book_id.models.result_model import ResultModel
+from src.book_id.query.query_model import QueryModel
+from src.book_id.result.result_model import ResultModel
 
 
 def _is_results_equal_to_one(result_models: [ResultModel]) -> True:

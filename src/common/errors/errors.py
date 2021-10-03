@@ -5,7 +5,7 @@ def return_none_for_attribute_error(func):
     @functools.wraps(func)
     def wrapper(*args):
         """
-        e.g Trying to convert bs4 object into text when it is not present.
+        e.g Trying to get href from a non existent bs4 object.
         """
         try:
             return func(args[0])
@@ -38,6 +38,17 @@ def return_none_for_index_error(func):
         try:
             return func(args[0])
         except IndexError:
+            return None
+
+    return wrapper
+
+
+def return_none_for_assertion_error(func):
+    @functools.wraps(func)
+    def wrapper(*args):
+        try:
+            return func(args[0])
+        except AssertionError:
             return None
 
     return wrapper

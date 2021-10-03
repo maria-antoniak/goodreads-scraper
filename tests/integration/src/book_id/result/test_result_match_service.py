@@ -1,9 +1,9 @@
-from src.book_id.models.query_model import QueryModel
-from src.book_id.models.result_model import ResultModel
-from src.book_id.service.result.result_match_handler import get_match
+from src.book_id.query.query_model import QueryModel
+from src.book_id.result.match_service import get_match
+from src.book_id.result.result_model import ResultModel
 
 
-class TestResultMatchHandler:
+class TestResultMatchService:
     def setup_method(self):
 
         self.kafka_query_model = QueryModel(

@@ -2,37 +2,31 @@ from typing import Dict
 
 import bs4
 
-from src.common.errors.errors import (
-    return_none_for_index_error,
-    return_none_for_type_error,
-)
-from src.common.network.network import get
-from src.common.parser.parser import parse
+from src.common.errors.errors import (return_none_for_index_error,
+                                      return_none_for_type_error)
+from src.shelf.shelf_config import *
 
 
 class ShelfService:
-
     def __init__(self, soup: bs4.BeautifulSoup):
 
         self.soup = soup
         self.GOODREADS_BASE_URL = "https://www.goodreads.com"
 
-    def get_shelves(self) -> Dict:
-        # TODO: This method needs an integration test!
+    def get_shelves(self) -> [Dict]:
+        #  The amount of results returned is dependent on `config_number_of_shelf_results`
 
-        shelves = {}
+        shelves = []
 
-        url = ShelfService._get_shelves_url(self)
-
-        response = get([url])
-        soup = parse(response[0])
-
-        for shelf in ShelfService._get_unformatted_shelves(soup):
+        for shelf in ShelfService._get_unformatted_shelves(self.soup):
             name = ShelfService._get_shelf_name(shelf)
             count = ShelfService._get_shelf_count(shelf)
-            shelves[name] = count
 
-        return shelves
+            shelves.append(
+                {"shelfName": name, "AmountOfUsersWhoAddedBookToList": count}
+            )
+
+        return shelves[:config_number_of_shelf_results]
 
     @return_none_for_type_error
     def _get_shelves_url(self):

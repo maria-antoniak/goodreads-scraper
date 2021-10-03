@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
 
-no_result = BeautifulSoup(
+empty_soup = BeautifulSoup(
     """
-   
-    """,
+""",
     "html.parser",
 )

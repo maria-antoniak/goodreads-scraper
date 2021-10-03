@@ -1,14 +1,12 @@
+import re
+from typing import Dict
+
 import bs4
 
-from src.common.errors.errors import (
-    return_none_for_index_error,
-)
-
-import re
+from src.common.errors.errors import return_none_for_index_error
 from src.common.network.network import get
 from src.common.parser.parser import parse
-
-from typing import Dict
+from src.list.list_config import *
 
 
 class ListService:
@@ -18,6 +16,39 @@ class ListService:
         self.lists_url = lists_url
         self.GOODREADS_BASE_URL = "https://www.goodreads.com"
 
+    def get_lists(self) -> [Dict]:
+        # TODO: This method needs an integration test!
+        """
+        Initial baseline was 33 secs, now down to 16
+        As of introducing async we're down to 5 seconds!
+        """
+        lists = []
+
+        response = get([self.lists_url])
+        soup = parse(response[0])
+        paginated_urls = ListService._get_paginated_list_urls(soup, self.lists_url)
+
+        for _list in ListService._get_unformatted_lists_handler(paginated_urls):
+            list_details = ListService._split_list_details(_list)
+
+            list_name = ListService._get_list_name_from_list_details(list_details)
+            list_votes = ListService._get_list_votes_from_list_details(list_details)
+            list_rank = ListService._get_list_rank_from_list_details(list_details)
+            number_of_books_on_list = (
+                ListService._get_number_of_books_on_list_from_list_details(list_details)
+            )
+
+            lists.append(
+                {
+                    "listName": list_name,
+                    "listVotes": list_votes,
+                    "listRank": list_rank,
+                    "numberOfBooksOnList": number_of_books_on_list,
+                }
+            )
+
+        result = ListService._sort_by_list_votes(lists)
+        return result[:config_number_of_list_results]
 
     @staticmethod
     def _get_paginated_list_urls(soup: bs4.BeautifulSoup, lists_url: str) -> [str]:
@@ -70,40 +101,6 @@ class ListService:
     def _get_number_of_books_on_list_from_list_details(_list) -> int:
         raw = "".join(_list[2]).strip().replace(",", "")
         return int(re.search(r"(\d+)(\s)(books)", raw).group(1))
-
-    def get_lists(self) -> [Dict]:
-        # TODO: This method needs an integration test!
-        """
-        Initial baseline was 33 secs, now down to 16
-        As of introducing async we're down to 5 seconds!
-        """
-        list_count_dict = []
-
-        response = get([self.lists_url])
-        soup = parse(response[0])
-        paginated_urls = ListService._get_paginated_list_urls(soup, self.lists_url)
-
-        for _list in ListService._get_unformatted_lists_handler(paginated_urls):
-            list_details = ListService._split_list_details(_list)
-
-            list_name = ListService._get_list_name_from_list_details(list_details)
-            list_votes = ListService._get_list_votes_from_list_details(list_details)
-            list_rank = ListService._get_list_rank_from_list_details(list_details)
-            number_of_books_on_list = (
-                ListService._get_number_of_books_on_list_from_list_details(list_details)
-            )
-
-            list_count_dict.append(
-                {
-                    "listName": list_name,
-                    "listVotes": list_votes,
-                    "listRank": list_rank,
-                    "numberOfBooksOnList": number_of_books_on_list,
-                }
-            )
-
-        result = ListService._sort_by_list_votes(list_count_dict)
-        return result
 
     @staticmethod
     def _sort_by_list_votes(lists: [Dict]) -> [Dict]:
