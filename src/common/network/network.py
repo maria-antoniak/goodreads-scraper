@@ -2,9 +2,7 @@ import asyncio
 from typing import Union
 
 import aiohttp
-import wikipedia
 from aiohttp.client_exceptions import ClientConnectionError
-from wikipedia.wikipedia import WikipediaPage
 
 
 def get(urls: [str]) -> [bytes]:
