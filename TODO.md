@@ -1,7 +1,5 @@
 # Discussion Points
 
-- Project name change (a few other projects with this name)
-
 - Refactor of book service
   - Move toward common layers, i.e. multi-tier architecture
   - Async
@@ -20,6 +18,8 @@
 
 # Additional Ideas
 
+- Project name change (see README)
+  - There a few other projects with this name
 - Setup CI with Travis
     - Setup main/prod branch
 - Write an API
