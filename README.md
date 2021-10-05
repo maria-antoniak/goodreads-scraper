@@ -1,23 +1,25 @@
-# Goodreads Scraper
+# Carver
 
-These services can be used to collect metadata, reviews and generate book ids from Goodreads.
+<img src="/home/studs/PycharmProjects/goodreads-scraper/logo.png" alt="Project Logo" width="300"/>
 
-We were motivated to develop this Goodreads Scraper because the Goodreads API is difficult to work with 
+Carver is a series of services can be used to collect metadata, reviews and generate book ids from Goodreads.
+
+We were motivated to develop this because the Goodreads API is difficult to work with 
 and does not provide access to the full text of reviews. 
-The Goodreads Scraper instead uses the following libraries to collect data:
+Carver instead uses the following libraries to collect data:
 
 - [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup) 
 - [Selenium](https://selenium-python.readthedocs.io/installation.html)
  
-We used this Goodreads Scraper to collect data for our article, 
+We used Carver to collect data for our article, 
 "The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Literary Criticism." 
 To allow others to reproduce (approximately) the data we used in the essay, we include a file 
 with 144 Goodreads book IDs for the 144 classics that we analyzed (`example/data/goodreads_classics.txt`). 
 
-You can use these book IDs to collect corresponding reviews and metadata with the Goodreads Scraper as described below.
+You can use these book IDs to collect corresponding reviews and metadata with Carver as described below.
 
 *Note: Updates to the Goodreads website may break this code. 
-We don't guarantee that the scraper will continue to work in the future, 
+We don't guarantee that Carver will continue to work in the future, 
 but feel free to post an issue if you run into a problem.*
 
 # What You Need
@@ -36,7 +38,7 @@ You will also need the following Python libraries:
 You can install these Python libraries by running `pip install -r requirements.txt`
 
 Finally, you will need a web browser — either Chrome or Firefox. 
-We have found that the Goodreads Scraper tends to function better with Firefox.
+We have found Carver tends to function better with Firefox.
 
 # Tests
 
@@ -181,6 +183,6 @@ I found these to be sane defaults during testing, but it really will depend on y
 
 This code is written by Maria Antoniak and Melanie Walsh. The code is licensed under a [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/#).
 
-If you use this scraper, we'd love to hear about your project and how you use the code.
+If you use Carver, we'd love to hear about your project and how you use the code.
 
 We used a function written by [Omar Einea](https://github.com/OmarEinea/GoodReadsScraper), licensed under [GPL v3.0](https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md), for the Goodreads review sorting.

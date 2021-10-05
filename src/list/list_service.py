@@ -20,7 +20,7 @@ class ListService:
         # TODO: This method needs an integration test!
         """
         Initial baseline was 33 secs, now down to 16
-        As of introducing async we're down to 5 seconds!
+        As of introducing async we're down to 5 seconds
         """
         lists = []
 
