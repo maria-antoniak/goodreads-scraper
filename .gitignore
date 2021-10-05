@@ -1,5 +1,4 @@
-test-output/test-books/*
-test-output/test-reviews/*
+user_io/test_output/*
 geckodriver.log
 .DS_Store
 .pytest_cache

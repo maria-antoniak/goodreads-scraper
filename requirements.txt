@@ -43,3 +43,6 @@ typing-extensions==3.10.0.0
 urllib3==1.26.5
 yarl==1.6.3
 zipp==3.4.1
+
+SPARQLWrapper~=1.8.5
+wikipedia~=1.4.0

@@ -2,7 +2,7 @@ import pytest
 from mock import mock_open, patch
 
 from src.common.app_io.writer.writer import (_is_directory_created,
-                                             write_to_file)
+                                             write_to_txt)
 
 
 class TestWriter:
@@ -14,7 +14,7 @@ class TestWriter:
         with patch(
             "src.common.app_io.writer.writer.codecs.open", open_mock, create=True
         ):
-            write_to_file("/output", "results", "160653.Actual_Air")
+            write_to_txt("/output", "results", "160653.Actual_Air")
 
         open_mock.assert_called_with("/output/results.txt", "a", encoding="UTF-8")
         open_mock.return_value.write.assert_called_once_with("160653.Actual_Air\n")
@@ -23,7 +23,7 @@ class TestWriter:
         self,
     ):
         with pytest.raises(FileNotFoundError):
-            write_to_file("/output", "results", "160653.Actual_Air")
+            write_to_txt("/output", "results", "160653.Actual_Air")
 
     def test_write_file_should_true_for_existing_directory(self):
         with patch("os.path.isdir") as mock:

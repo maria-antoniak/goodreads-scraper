@@ -7,7 +7,6 @@ from src.book.book_service import BookService
 from src.common.formatters.json.to_json import to_json
 from src.common.network.network import get
 from src.common.parser.parser import parse
-from src.common.utils.time_it import timeit
 from src.list.list_service import ListService
 from src.shelf.shelf_service import ShelfService
 

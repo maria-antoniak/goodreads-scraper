@@ -1,3 +1,4 @@
+import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Union
 
@@ -7,14 +8,14 @@ from src.book_id.query.query_model import QueryModel
 from src.book_id.result.match_service import get_match
 from src.book_id.result.result_controller import build_result_models
 from src.book_id.result.result_model import ResultModel
-from src.common.app_io.reader.reader import read_file
 from src.book_id.result.result_service import ResultService
-from src.common.app_io.writer.writer import write_to_file
+from src.common.app_io.reader.reader import read_file
+from src.common.app_io.writer.writer import write_to_txt
 from src.common.network.network import get
 from src.common.parser.parser import parse
-import logging
 
 MAX_THREADS = 25
+
 
 def match_handler(query_model: QueryModel) -> Union[ResultModel, QueryModel]:
     search_strategies = [
@@ -59,14 +60,14 @@ def run():
             result = future.result()
 
             if isinstance(result, ResultModel):
-                logging.info(result.book_id)
-                write_to_file(
+                logging.info(f"Found '{result.book_id}'")
+                write_to_txt(
                     path_to_output_directory=config_matches_directory_path,
                     output_filename=config_matches_filename,
                     book_id=result.book_id,
                 )
             else:
-                write_to_file(
+                write_to_txt(
                     path_to_output_directory=config_no_matches_directory_path,
                     output_filename=config_no_matches_filename,
                     book_id=f"{result.book_title} - {result.author_name}",

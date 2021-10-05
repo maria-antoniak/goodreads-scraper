@@ -2,7 +2,6 @@ from typing import Dict, Union
 
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
-
 from src.common.utils.dict_operators import deep_get
 
 
@@ -33,7 +32,10 @@ class AuthorService:
 
     def get_date_of_birth(self) -> Union[str, None]:
         #  P569
-        return deep_get(self.json, "dateOfBirthLabel.value")
+        dob = deep_get(self.json, "dateOfBirthLabel.value")
+        if dob:
+            return dob.replace("T00:00:00Z", "")
+        return None
 
     def get_place_of_birth(self) -> Union[str, None]:
         #  P19
@@ -41,7 +43,10 @@ class AuthorService:
 
     def get_date_of_death(self) -> Union[str, None]:
         #  P570
-        return deep_get(self.json, "dateOfDeathLabel.value")
+        dod = deep_get(self.json, "dateOfDeathLabel.value")
+        if dod:
+            return dod.replace("T00:00:00Z", "")
+        return None
 
     def get_place_of_death(self) -> Union[str, None]:
         #  P20
@@ -56,12 +61,17 @@ class AuthorService:
         return deep_get(self.json, "causeOfDeathLabel.value")
 
     @staticmethod
-    def _calculate_age_at_death(date_of_death: str, date_of_birth: str) -> int:
-        date_of_death_datetime_object = parser.parse(date_of_death).date()
-        date_of_birth_datetime_object = parser.parse(date_of_birth).date()
-        return relativedelta(
-            date_of_death_datetime_object, date_of_birth_datetime_object
-        ).years
+    def _calculate_age_at_death(
+        date_of_death: str, date_of_birth: str
+    ) -> Union[int, None]:
+
+        if date_of_death:
+            date_of_death_datetime_object = parser.parse(date_of_death).date()
+            date_of_birth_datetime_object = parser.parse(date_of_birth).date()
+            return relativedelta(
+                date_of_death_datetime_object, date_of_birth_datetime_object
+            ).years
+        return None
 
     def get_age_at_death(self) -> Union[int, None]:
         return deep_get(self.json, "ageAtDeathLabel.value")
@@ -72,7 +82,7 @@ class AuthorService:
 
     def get_native_language(self) -> Union[str, None]:
         #  P103
-        return deep_get(self.json, "nativeLanguage.value")
+        return deep_get(self.json, "writingLanguageLabel.value")
 
     def get_writing_language(self) -> Union[str, None]:
         #  P6886

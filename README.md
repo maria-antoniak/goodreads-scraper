@@ -1,6 +1,6 @@
 # Goodreads Scraper
 
-These services can be used to collect metadata, book reviews and generate ids from Goodreads.
+These services can be used to collect metadata, reviews and generate book ids from Goodreads.
 
 We were motivated to develop this Goodreads Scraper because the Goodreads API is difficult to work with 
 and does not provide access to the full text of reviews. 
@@ -42,28 +42,34 @@ We have found that the Goodreads Scraper tends to function better with Firefox.
 
 Run tests with `pytest --cov-report term-missing --cov=src/` from the root directory.
 
+You can also functionally test all services by simply running from the root directory:
+
+`sh example/shell/test_script.sh
+`
+
+# Config
+
+Please note, many defaults can be configured via the project `config.ini`.
+This currently relates primarily to fields for collecting book metadata.
+
+Under `[BOOK]`, mark fields as either `True` or `False` and corresponding limits as desired.
+
 # Tutorial
 
-We recommend running these services from the command line, as the usage instructions below describe.  
-However, we have also created a Jupyter notebook tutorial that demonstrates proper usage. 
+We recommend running these services from the command line, as the usage instructions below describe.
+
+However, we have also created a Jupyter notebook tutorial that demonstrates proper usage (out of date as of 05.10.2021).
 
 Please note that these services may not work consistently from a Jupyter notebook environment 
 and that the tutorial is mostly intended for demonstration purposes.
 
 - [Jupyter notebook tutorial](https://github.com/maria-antoniak/goodreads-scraper/blob/master/example/How-To-Use-Goodreads-Scraper.ipynb) 
 
-# Scraping Goodreads Book Metadata
+# Collect Metadata
 
 You can use the below commands to collect metadata about books on Goodreads, 
 such as the total number of Goodreads reviews and ratings, average Goodreads rating, 
-and most common Goodreads "shelves" for each book. 
-
-`python main.py --service book ---book_ids_path example/data/goodreads_classics.txt --output_directory_path . --format csv`
-
-or
-
-`python main.py -s book -bip example/data/goodreads_classics_sample.txt -odp . -f csv`
-
+and most common Goodreads "shelves" for each book.
 
 ### Input
 
@@ -75,7 +81,7 @@ is `1934.Little_Women`.
 
 ### Output
 
-The service outputs a JSON file for each book with the information marked as `True` under [BOOK_DATA] in `config.ini`. 
+The service outputs a JSON file for each book with the information marked as `True` under `[BOOK_DATA]` in `config.ini`. 
 By default, all values listed will be included in the output.
 
 This service also outputs an aggregated JSON file with information about all the books that have been scraped. 
@@ -85,9 +91,13 @@ To output an aggregated CSV file in addition to a JSON file, use the flag `--for
 
 Note: JSON is the default export format if not explicitly provided
 
-`python main.py -s book -bip example/data/goodreads_classics_sample.txt -odp ./_output/ -f csv`
+`python main.py --service book ---book_ids_path example/data/goodreads_classics.txt --output_directory_path . --format csv`
 
-# Scraping Goodreads Book Reviews
+or
+
+`python main.py -s book -bip example/data/goodreads_classics_sample.txt -odp . -f csv`
+
+# Collect Book Reviews
 
 You can use the review service to collect reviews and review metadata about books on Goodreads, 
 including the text of the review, star rating, username of the reviewer, number of likes, 
@@ -132,15 +142,7 @@ We also select a filter to only show English language reviews.
 - `browser` can be set to `chrome` or `firefox`. 
 - `format` can be set to `JSON` (default) or `CSV`.
 
-# Test
-
-You can run the provided test script to check that everything is working correctly.
-
-`sh ./example/shell/test_script.sh`
-
-This will create a directory called `test-output` in which you'll find the scraped books and reviews.
-
-# Scraping Goodreads Book ids
+# Collect Book Ids
 
 You can use the service `book_id` to collect book ids which can then be used as input to any of the above services.
 
@@ -152,8 +154,8 @@ The delimiter can be whatever you wish, but it must be specified in the config f
 
 ### Output
 
-For matches, this script outputs a book id for each book here `user_io/output/matches/matches.txt`
-For no matches, the script outputs the original query here `user_io/output/matches/no_matches.txt`
+For matches, this service outputs a book id for each book here `user_io/output/matches/matches.txt`
+For no matches, the service outputs the original query here `user_io/output/matches/no_matches.txt`
 
 ### Usage
 
@@ -168,11 +170,12 @@ Percentages are currently set as follows:
 
 I found these to be sane defaults during testing, but it really will depend on your use case, feel free to experiment :)
 
-
 # Glossary
 
-- `book_id_title` corresponds to the id contained in the goodreads URL, e.g. `587393.The_Lost_Scrapbook` in `https://www.goodreads.com/book/show/587393.The_Lost_Scrapbook`
-- `numeric_book_id` corresponds to the numeric section of the book_id_title, e.g. `587393` in `587393.The_Lost_Scrapbook`
+- `book_id_title` corresponds to the id contained in the goodreads URL, 
+  e.g. `587393.The_Lost_Scrapbook` in `https://www.goodreads.com/book/show/587393.The_Lost_Scrapbook`
+- `numeric_book_id` corresponds to the numeric section of the book_id_title, 
+  e.g. `587393` in `587393.The_Lost_Scrapbook`
 
 # Credit
 

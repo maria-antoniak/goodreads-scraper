@@ -5,10 +5,8 @@ import time
 from collections import Counter
 from datetime import datetime
 from urllib.error import HTTPError
-from urllib.request import urlopen
 
 import bs4
-import credentials
 import geckodriver_autoinstaller
 import pandas as pd
 import regex as re
@@ -19,7 +17,6 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotVisibleException,
                                         NoSuchElementException,
                                         StaleElementReferenceException)
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
@@ -287,12 +284,15 @@ def condense_reviews(reviews_directory_path):
     return reviews
 
 
-def main():
+def run():
 
     start_time = datetime.now()
     script_name = os.path.basename(__file__)
 
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-s", "--service", type=str, choices=["book", "book_id", "review"]
+    )
     parser.add_argument("--book_ids_path", type=str)
     parser.add_argument("--output_directory_path", type=str)
     parser.add_argument("--browser", type=str)
@@ -392,7 +392,3 @@ def main():
         + str(datetime.now() - start_time)
         + " ⏰"
     )
-
-
-if __name__ == "__main__":
-    main()

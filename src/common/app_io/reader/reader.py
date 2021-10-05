@@ -65,7 +65,7 @@ def _is_file_valid(file_name: str):
     return False
 
 
-def condense_books(output_directory_path: str) -> [Dict]:
+def aggregate_books(output_directory_path: str) -> [Dict]:
     books = []
     valid = filter(_is_file_valid, os.listdir(output_directory_path))
     paths = [f"{output_directory_path}/{f}" for f in valid]

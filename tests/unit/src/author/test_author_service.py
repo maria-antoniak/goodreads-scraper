@@ -24,13 +24,13 @@ class TestBookService:
         assert self.author_service.get_birth_full_name() == "Doris May Tayler"
 
     def test_get_date_of_birth(self):
-        assert self.author_service.get_date_of_birth() == "1919-10-22T00:00:00Z"
+        assert self.author_service.get_date_of_birth() == "1919-10-22"
 
     def test_get_place_of_birth(self):
         assert self.author_service.get_place_of_birth() is None
 
     def test_get_date_of_death(self):
-        assert self.author_service.get_date_of_death() == "2013-11-17T00:00:00Z"
+        assert self.author_service.get_date_of_death() == "2013-11-17"
 
     def test_get_place_of_death(self):
         assert self.author_service.get_place_of_death() is None
@@ -42,8 +42,8 @@ class TestBookService:
         assert self.author_service.get_cause_of_death() is None
 
     def test_calculate_age_at_death(self):
-        date_of_death = "2013-11-17T00:00:00Z"
-        date_of_birth = "1919-10-22T00:00:00Z"
+        date_of_death = "2013-11-17"
+        date_of_birth = "1919-10-22"
         assert (
             self.author_service._calculate_age_at_death(date_of_death, date_of_birth)
             == 94

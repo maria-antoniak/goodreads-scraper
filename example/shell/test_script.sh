@@ -1,7 +1,14 @@
-mkdir -p test-output
-mkdir -p test-output/test-books
-mkdir -p test-output/test-reviews
+mkdir -p user_io/test_output/book
+mkdir -p user_io/test_output/review
 
-python .py --book_ids_path test_book_ids.txt --output_directory_path test-output/test-books
+echo 'TESTING GET BOOK METADATA:'
+echo '==========================\n'
+python main.py -s book --book_ids_path example/data/goodreads_classics_sample.txt --output_directory_path user_io/test_output/book -f csv
 
-python .py --book_ids_path test_book_ids.txt --output_directory_path test-output/test-reviews --sort_order 0 --browser firefox
+echo 'TESTING GENERATE BOOK IDS:'
+echo '==========================\n'
+python main.py -s book_id -f csv
+
+echo 'TESTING GET BOOK REVIEWS:'
+echo '=========================\n'
+python main.py -s review --book_ids_path example/data/goodreads_classics_sample.txt --output_directory_path user_io/test_output/review --browser firefox --sort_order default  --format csv
