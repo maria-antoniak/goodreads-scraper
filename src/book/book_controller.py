@@ -1,5 +1,4 @@
-# Call service that actually does the thing
-import pprint
+import logging
 from typing import Dict
 
 from src.book.book_config import *
@@ -13,9 +12,8 @@ from src.list.list_service import ListService
 from src.shelf.shelf_service import ShelfService
 
 
-@timeit
 def build_book_model(book_id_title: str) -> Dict:
-
+    logging.info(f"Scraping '{book_id_title}'")
     BASE = "https://www.goodreads.com/book/show/"
     url = f"{BASE}{book_id_title}"
 
@@ -85,5 +83,4 @@ def build_book_model(book_id_title: str) -> Dict:
 
     model = book_model
     result = to_json(model)
-    pprint.pprint(result, indent=4)
     return result

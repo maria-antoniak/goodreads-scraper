@@ -3,6 +3,8 @@ from typing import Dict, Union
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
+from src.common.utils.dict_operators import deep_get
+
 
 class AuthorService:
     def __init__(self, json: Dict):
@@ -11,15 +13,15 @@ class AuthorService:
 
     def get_gender(self) -> Union[str, None]:
         #  P21
-        pass
+        return deep_get(self.json, "genderLabel.value")
 
     def get_country_of_citizenship(self) -> Union[str, None]:
         #  P27
-        pass
+        return deep_get(self.json, "countryOfCitizenshipLabel.value")
 
     def get_birth_full_name_in_native_language(self) -> Union[str, None]:
         #  P1559
-        pass
+        return deep_get(self.json, "birthFullNameInNativeLanguageLabel.value")
 
     def get_birth_full_name(self) -> Union[str, None]:
         """
@@ -27,32 +29,31 @@ class AuthorService:
         Example: `Doris Lessing` was born `Doris May Tayler`
         Or in the case of `Octavio Paz Lozano` where `Lozano` is dropped
         """
-        pass
+        return deep_get(self.json, "birthFullName.value")
 
     def get_date_of_birth(self) -> Union[str, None]:
         #  P569
-        pass
+        return deep_get(self.json, "dateOfBirthLabel.value")
 
     def get_place_of_birth(self) -> Union[str, None]:
         #  P19
-        pass
+        return deep_get(self.json, "placeOfBirthLabel.value")
 
     def get_date_of_death(self) -> Union[str, None]:
         #  P570
-        pass
+        return deep_get(self.json, "dateOfDeathLabel.value")
 
     def get_place_of_death(self) -> Union[str, None]:
         #  P20
-        pass
+        return deep_get(self.json, "placeOfDeathLabel.value")
 
     def get_manner_of_death(self) -> Union[str, None]:
         #  P1196
-        pass
+        return deep_get(self.json, "mannerOfDeathLabel.value")
 
-    @staticmethod
     def get_cause_of_death(self) -> Union[str, None]:
         #  P509
-        pass
+        return deep_get(self.json, "causeOfDeathLabel.value")
 
     @staticmethod
     def _calculate_age_at_death(date_of_death: str, date_of_birth: str) -> int:
@@ -62,64 +63,52 @@ class AuthorService:
             date_of_death_datetime_object, date_of_birth_datetime_object
         ).years
 
-    @staticmethod
-    def get_age_at_death() -> Union[int, None]:
-        pass
+    def get_age_at_death(self) -> Union[int, None]:
+        return deep_get(self.json, "ageAtDeathLabel.value")
 
-    @staticmethod
-    def get_place_of_burial() -> Union[str, None]:
+    def get_place_of_burial(self) -> Union[str, None]:
         #  P119
-        pass
+        return deep_get(self.json, "placeOfBurialLabel.value")
 
-    @staticmethod
-    def get_native_language() -> Union[str, None]:
+    def get_native_language(self) -> Union[str, None]:
         #  P103
-        pass
+        return deep_get(self.json, "nativeLanguage.value")
 
-    @staticmethod
-    def get_writing_language() -> Union[str, None]:
+    def get_writing_language(self) -> Union[str, None]:
         #  P6886
-        pass
+        return deep_get(self.json, "writingLanguageLabel.value")
 
-    @staticmethod
-    def get_occupation() -> Union[str, None]:
+    def get_occupation(self) -> Union[str, None]:
         #  P106
-        pass
+        return deep_get(self.json, "occupationLabel.value")
 
-    @staticmethod
-    def get_literary_movement() -> Union[str, None]:
+    def get_literary_movement(self) -> Union[str, None]:
         #  P135
-        pass
+        return deep_get(self.json, "literaryMovementLabel.value")
 
-    @staticmethod
-    def get_educated_at() -> Union[str, None]:
+    def get_educated_at(self) -> Union[str, None]:
         #  P69
-        pass
+        return deep_get(self.json, "educatedAt.value")
 
-    @staticmethod
-    def get_lifestyle() -> Union[str, None]:
+    def get_lifestyle(self) -> Union[str, None]:
         #  P1576
-        pass
+        return deep_get(self.json, "lifestyleLabel.value")
 
-    @staticmethod
-    def get_religion() -> Union[str, None]:
+    def get_religion(self) -> Union[str, None]:
         #  P140
-        pass
+        return deep_get(self.json, "religionLabel.value")
 
-    @staticmethod
-    def get_last_words() -> Union[str, None]:
+    def get_last_words(self) -> Union[str, None]:
         #  P1455
-        pass
+        return deep_get(self.json, "lastWordsLabel.value")
 
-    @staticmethod
-    def get_notable_works() -> Union[Dict, None]:
+    def get_notable_works(self) -> Union[str, None]:
         #  P800
-        pass
+        return deep_get(self.json, "notableWorksLabel.value")
 
-    @staticmethod
-    def get_genre() -> Union[str, None]:
+    def get_genre(self) -> Union[str, None]:
         #  P136
-        pass
+        return deep_get(self.json, "genreLabel.value")
 
 
 """

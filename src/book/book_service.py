@@ -96,6 +96,7 @@ class BookService:
         return int(isbn13[0].split()[1])
 
     @return_none_for_type_error
+    @return_none_for_attribute_error
     def get_lists_url(self) -> str:
         lists_url = self.soup.find("a", text="More lists with this book...")["href"]
         return f"{self.GOODREADS_BASE_URL}{lists_url}"

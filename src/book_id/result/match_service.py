@@ -11,7 +11,7 @@ def _is_results_equal_to_one(result_models: [ResultModel]) -> True:
     return False
 
 
-def _is_input_similar(a, b, similarity_percentage: float) -> bool:
+def _is_input_similar(a: str, b: str, similarity_percentage: float) -> bool:
     """
     1.0 == Exact match
     0.0 is most permissive
@@ -29,7 +29,6 @@ def get_match(
     book_title_similarity_percentage: float,
     author_name_similarity_percentage: float,
 ) -> [ResultModel, None]:
-
     if result_models:
         result_models = result_models[:]
 
