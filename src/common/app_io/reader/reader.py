@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Dict
 
-from .exceptions import InputFileIsEmpty
+from src.common.app_io.reader.exceptions import InputFileIsEmpty
 
 
 def read_file(path_to_input_file: str) -> [str]:

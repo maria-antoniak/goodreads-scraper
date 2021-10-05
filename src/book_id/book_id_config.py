@@ -6,11 +6,11 @@ config_object.read("config.ini")
 
 # INPUT
 
-config_path_to_input_file = config_object["INPUT"]["PATH_TO_INPUT_FILE"]
+config_path_to_input_file = config_object["INPUT"].get("PATH_TO_INPUT_FILE")
 
 # DELIMITER
 
-config_input_file_delimiter = config_object["DELIMITER"]["INPUT_FILE_DELIMITER"]
+config_delimiter = config_object["QUERY"].get("DELIMITER")
 
 # OUTPUT
 

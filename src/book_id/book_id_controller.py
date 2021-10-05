@@ -8,12 +8,13 @@ from src.book_id.result.match_service import get_match
 from src.book_id.result.result_controller import build_result_models
 from src.book_id.result.result_model import ResultModel
 from src.common.app_io.reader.reader import read_file
+from src.book_id.result.result_service import ResultService
 from src.common.app_io.writer.writer import write_to_file
 from src.common.network.network import get
 from src.common.parser.parser import parse
+import logging
 
 MAX_THREADS = 25
-
 
 def match_handler(query_model: QueryModel) -> Union[ResultModel, QueryModel]:
     search_strategies = [
@@ -25,9 +26,14 @@ def match_handler(query_model: QueryModel) -> Union[ResultModel, QueryModel]:
     for search_strategy in search_strategies:
         if search_strategy is not None:
             url = search_strategy
-            response = get(url)
-            soup = parse(response)
-            result_models = build_result_models(parse(soup))
+
+            response = get([url])
+            soup = parse(response[0])
+
+            result_service = ResultService(soup)
+            results = result_service.get_results()
+            result_models = build_result_models(results)
+
             match = get_match(
                 query_model,
                 result_models,
@@ -40,7 +46,7 @@ def match_handler(query_model: QueryModel) -> Union[ResultModel, QueryModel]:
     return query_model
 
 
-if __name__ == "__main__":
+def run():
 
     queries = read_file(path_to_input_file=config_path_to_input_file)
     query_models = [build_query_model(query) for query in queries]
@@ -51,8 +57,9 @@ if __name__ == "__main__":
         )
         for future in as_completed(futures):
             result = future.result()
+
             if isinstance(result, ResultModel):
-                print(result.book_id)
+                logging.info(result.book_id)
                 write_to_file(
                     path_to_output_directory=config_matches_directory_path,
                     output_filename=config_matches_filename,
@@ -62,5 +69,5 @@ if __name__ == "__main__":
                 write_to_file(
                     path_to_output_directory=config_no_matches_directory_path,
                     output_filename=config_no_matches_filename,
-                    book_id=f"{result.book_title}-{result.author_name}",
+                    book_id=f"{result.book_title} - {result.author_name}",
                 )
