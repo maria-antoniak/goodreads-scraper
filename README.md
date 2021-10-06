@@ -6,11 +6,12 @@ Carver is a series of services that can be used to:
 
 1. [Collect Metadata](#collect-metadata)
 2. [Collect Book Reviews](#collect-book-reviews)
-3. [Generate Book Ids](#generate-book-ids)
+3. [Generate Book Id Titles](#generate-book-id-titles)
 
+# Motivation/History
 
 We were motivated to develop this because the Goodreads API is difficult to work with 
-and does not provide access to the full text of reviews. 
+and doesn't provide access to the full text of reviews. 
 Carver instead uses the following libraries to collect data:
 
 - [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup) 
@@ -20,7 +21,7 @@ We used Carver to collect data for our article,
 "The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Literary Criticism." 
 
 To allow others to reproduce (approximately) the data we used in the essay, we've included a file 
-—`example/data/goodreads_classics.txt`— with 144 of the Goodreads book IDs we analyzed.
+— `example/data/goodreads_classics.txt` — with 144 of the Goodreads book IDs we analyzed.
 
 You can use these IDs to collect corresponding reviews and metadata with Carver as described below.
 
@@ -30,9 +31,9 @@ but feel free to post an issue if you run into a problem.*
 
 # What You Need
 
-To run these services, you will need [Python 3](https://www.python.org/downloads/).
+To run these services, you'll need [Python 3](https://www.python.org/downloads/).
 
-You will also need the following Python libraries:
+You'll also need the following Python libraries:
 
 - [Beautiful Soup 4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup)
 - [Selenium](https://selenium-python.readthedocs.io/installation.html)
@@ -41,19 +42,18 @@ You will also need the following Python libraries:
 - [lxml](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser)
 - [requests](https://docs.python-requests.org/en/master/index.html)
 
-You can install these Python libraries by running `pip install -r requirements.txt`
+You can install these libraries by running `pip install -r requirements.txt`
 
-Finally, you will need a web browser — either Chrome or Firefox. 
-We have found Carver tends to function better with Firefox.
+Finally, you'll need a web browser — either Chrome or Firefox. 
+We've found Carver tends to function better with Firefox.
 
 # Tests
 
-Run tests with `pytest --cov-report term-missing --cov=src/` from the root directory.
+Run tests with `pytest --cov-report term-missing --cov=src/` from root.
 
-You can also functionally test all services by simply running from the root directory:
+You can also functionally test all services by running the follow shell script:
 
-`sh example/shell/test_script.sh
-`
+`sh example/shell/test_script.sh`
 
 # Config
 
@@ -66,7 +66,7 @@ Under `[BOOK]`, mark fields as either `True` or `False` and corresponding limits
 
 We recommend running these services from the command line, as the usage instructions below describe.
 
-However, we have also created a Jupyter notebook tutorial that demonstrates proper usage (out of date as of 05.10.2021).
+However, we've also created a Jupyter notebook tutorial that demonstrates proper usage (out of date as of 05.10.2021).
 
 Please note that these services may not work consistently from a Jupyter notebook environment 
 and that the tutorial is mostly intended for demonstration purposes.
@@ -81,11 +81,14 @@ and most common Goodreads "shelves" for each book.
 
 ### Input
 
-This service takes as input a list of book IDs, stored in a plain text file with one book ID per line. 
-Book IDs are unique to Goodreads and can be found at the end of a book's URL. 
-For example, the book ID for *Little Women* 
+This service takes as input a list of book id titles, stored in a plain text file with one book id title per line. 
+Book id titles are unique to Goodreads and can be found at the end of a book's URL. 
+For example, the book id title for *Little Women* 
 ([https://www.goodreads.com/book/show/1934.Little_Women](https://www.goodreads.com/book/show/1934.Little_Women)) 
-is `1934.Little_Women`. 
+is `1934.Little_Women`.
+
+Note: If you don't have these ids to hand but only a list of books/authors, Carver can automate the process for you, 
+see: [Generate Book Ids](#generate-book-ids)
 
 ### Output
 
@@ -150,9 +153,9 @@ We also select a filter to only show English language reviews.
 - `browser` can be set to `chrome` or `firefox`. 
 - `format` can be set to `JSON` (default) or `CSV`.
 
-# Generate Book Ids
+# Generate Book Id Titles
 
-You can use the service `book_id` to collect book ids which can then be used as input to any of the above services.
+You can use the service `book_id` to collect book id titles which can then be used as input to any of the above services.
 
 ### Input
 
@@ -162,7 +165,7 @@ The delimiter can be whatever you wish, but it must be specified in the config f
 
 ### Output
 
-For matches, this service outputs a book id for each book here `user_io/output/matches/matches.txt`
+For matches, this service outputs a book id title for each book here `user_io/output/matches/matches.txt`
 For no matches, the service outputs the original query here `user_io/output/matches/no_matches.txt`
 
 ### Usage
