@@ -5,7 +5,7 @@ import time
 from collections import Counter
 from datetime import datetime
 from urllib.error import HTTPError
-
+from src.common.app_io.writer.writer import write_to_json
 import bs4
 import geckodriver_autoinstaller
 import pandas as pd
@@ -377,10 +377,12 @@ def run():
     driver.quit()
 
     reviews = condense_reviews(args.output_directory_path)
+    path = f"{condensed_reviews_path}.json"
+
     if args.format == "json":
-        json.dump(reviews, open(f"{condensed_reviews_path}.json", "w"))
+        write_to_json(reviews, path)
     elif args.format == "csv":
-        json.dump(reviews, open(f"{condensed_reviews_path}.json", "w"))
+        write_to_json(reviews, path)
         review_df = pd.read_json(f"{condensed_reviews_path}.json")
         review_df.to_csv(f"{condensed_reviews_path}.csv", index=False, encoding="utf-8")
 

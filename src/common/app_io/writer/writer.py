@@ -1,7 +1,7 @@
 import codecs
 import json
 import os
-from typing import Dict
+from typing import Dict, List, Union
 
 import pandas as pd
 
@@ -19,7 +19,7 @@ def write_to_txt(path_to_output_directory: str, output_filename: str, book_id: s
         return SOURCE.write(f"{book_id}\n")
 
 
-def write_to_json(data: Dict, _path: str):
+def write_to_json(data: Union[Dict, List], _path: str):
     with open(_path, "w") as p:
         return json.dump(data, p, ensure_ascii=False, sort_keys=True, indent=4)
 
