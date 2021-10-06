@@ -33,7 +33,7 @@ class ListService:
 
             list_name = ListService._get_list_name_from_list_details(list_details)
             list_votes = ListService._get_list_votes_from_list_details(list_details)
-            list_rank = ListService._get_list_rank_from_list_details(list_details)
+            book_rank_in_list = ListService._get_book_rank_in_list_from_list_details(list_details)
             number_of_books_on_list = (
                 ListService._get_number_of_books_on_list_from_list_details(list_details)
             )
@@ -42,7 +42,7 @@ class ListService:
                 {
                     "listName": list_name,
                     "listVotes": list_votes,
-                    "listRank": list_rank,
+                    "bookRankInList": book_rank_in_list,
                     "numberOfBooksOnList": number_of_books_on_list,
                 }
             )
@@ -86,7 +86,7 @@ class ListService:
         return _list[0]
 
     @staticmethod
-    def _get_list_rank_from_list_details(_list) -> int:
+    def _get_book_rank_in_list_from_list_details(_list) -> int:
         raw = "".join(_list[2]).strip()
         return int(re.search(r"(\d+)(.+out of)", raw).group(1))
 

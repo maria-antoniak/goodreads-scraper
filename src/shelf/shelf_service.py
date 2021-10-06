@@ -1,3 +1,5 @@
+# TODO Figure out why this service is failing
+
 from typing import Dict
 
 import bs4
@@ -28,11 +30,6 @@ class ShelfService:
 
         return shelves[:config_number_of_shelf_results]
 
-    @return_none_for_type_error
-    def _get_shelves_url(self) -> str:
-        shelves_url = self.soup.find("a", text="See top shelves…")["href"]
-        return f"{self.GOODREADS_BASE_URL}{shelves_url}"
-
     @staticmethod
     @return_none_for_index_error
     def _get_unformatted_shelves(soup: bs4.BeautifulSoup) -> [str]:
@@ -46,3 +43,13 @@ class ShelfService:
     @staticmethod
     def _get_shelf_count(shelf: str) -> int:
         return int(shelf.split()[-2].replace(",", ""))
+
+    @return_none_for_type_error
+    def _get_shelves_url(self) -> str:
+        shelves_url = self.soup.find("a", text="See top shelves…")["href"]
+        return f"{self.GOODREADS_BASE_URL}{shelves_url}"
+
+
+
+
+
