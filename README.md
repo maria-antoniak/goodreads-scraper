@@ -2,7 +2,12 @@
 
 <img src="/home/studs/PycharmProjects/goodreads-scraper/logo.png" alt="Project Logo" width="300"/>
 
-Carver is a series of services can be used to collect metadata, reviews and generate book ids from Goodreads.
+Carver is a series of services that can be used to:
+
+1. [Collect Metadata](#collect-metadata)
+2. [Collect Book Reviews](#collect-book-reviews)
+3. [Generate Book Ids](#generate-book-ids)
+
 
 We were motivated to develop this because the Goodreads API is difficult to work with 
 and does not provide access to the full text of reviews. 
@@ -13,10 +18,11 @@ Carver instead uses the following libraries to collect data:
  
 We used Carver to collect data for our article, 
 "The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Literary Criticism." 
-To allow others to reproduce (approximately) the data we used in the essay, we include a file 
-with 144 Goodreads book IDs for the 144 classics that we analyzed (`example/data/goodreads_classics.txt`). 
 
-You can use these book IDs to collect corresponding reviews and metadata with Carver as described below.
+To allow others to reproduce (approximately) the data we used in the essay, we've included a file 
+—`example/data/goodreads_classics.txt`— with 144 of the Goodreads book IDs we analyzed.
+
+You can use these IDs to collect corresponding reviews and metadata with Carver as described below.
 
 *Note: Updates to the Goodreads website may break this code. 
 We don't guarantee that Carver will continue to work in the future, 
@@ -144,7 +150,7 @@ We also select a filter to only show English language reviews.
 - `browser` can be set to `chrome` or `firefox`. 
 - `format` can be set to `JSON` (default) or `CSV`.
 
-# Collect Book Ids
+# Generate Book Ids
 
 You can use the service `book_id` to collect book ids which can then be used as input to any of the above services.
 
