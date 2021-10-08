@@ -2,23 +2,22 @@
 
 <img src="/home/studs/PycharmProjects/goodreads-scraper/logo.png" alt="Project Logo" width="300"/>
 
-What to pull reams of data for a large collection of books? Carver has you covered. 
+Want to pull reams of data for a large collection of books? Carver has you covered. 
 With speed and accuracy, Carver aims to facilitate the generation of large data sets without use of the Goodreads API. 
 
 # TOC
 
-1. [Motivation/History](#motivation/history)
-2. [How to install](#how-to-install)
-3. [How to use](#how-to-use)
+1. [How to install](#how-to-install)
+2. [How to use](#how-to-use)
    - [Config](#config)
    - [Tests](#tests)
-4. [Services](#services)     
-   - [Collect Metadata](#collect-metadata)
-   - [Collect Book Reviews](#collect-book-reviews)
-   - [Generate Book Id Titles](#generate-book-id-titles)
-5. [Technologies used](#technologies-used)
-6. [Glossary](#glossary)
-6. [Acknowledgments](#acknowledgments)
+3. [Services](#services)
+   1. [Collect Metadata](#collect-metadata)
+   2. [Collect Book Reviews](#collect-book-reviews)
+   3. [Generate Book Id Titles](#generate-book-id-titles)
+4. [Technologies used](#technologies-used)
+5. [Glossary](#glossary)
+6. [Acknowledgements](#acknowledgements)
 
 # How to install
 
@@ -54,7 +53,7 @@ e.g. if you're not interested in exporting the genres to which a book belongs, c
 
 # Tests
 
-Should you wish to extend Carver or simple check everything is working as expected, please follow the instructions below.
+Should you wish to extend Carver or simply check everything is working as expected, please follow the instructions below.
 
 Run tests with `pytest --cov-report term-missing --cov=src/` from root.
 
@@ -124,14 +123,16 @@ This service outputs a JSON file for each book with the following information:
 - number of likes the review received from other users
 - shelves to which the reviewer added the book
 
-This service also outputs an aggregated JSON file with information about all the reviews
-for all the books that have been scraped.  
 To output an aggregated CSV file in addition to a JSON file, use the flag `--format csv`.
 
 Goodreads only allows the first 10 pages of reviews to be shown for each book. 
 There are 30 reviews per page, so you should expect a maximum of 300 reviews per book. 
+
 By default, the reviews are sorted by their popularity. 
+
 They can also be sorted chronologically to show either the newest or oldest reviews.
+
+- `sort_order` can be set to `default`,`newest` or `oldest`.
 
 We also select a filter to only show English language reviews. 
 
@@ -139,7 +140,6 @@ We also select a filter to only show English language reviews.
 
 `python src/review/review_service.py --book_ids_path example/data/goodreads_classics_sample.txt --output_directory_path . --browser firefox --sort_order newest --format json`
 
-- `sort_order` can be set to `default`,`newest` or `oldest`.
 - `browser` can be set to `chrome` or `firefox`. 
 - `format` can be set to `JSON` (default) or `CSV`.
 
@@ -187,12 +187,12 @@ I found these to be sane defaults during testing, but it really will depend on y
 
 Carver is a fork of the excellent `goodreads-scraper` project started by Maria Antoniak and Melanie Walsh. 
 
-Carver was motivated to move the project forward in lieu of time constraints on the part of the original owners. 
+This fork was motivated by moving the project forward in lieu of time constraints on the part of the original owners. 
 Plus the vision/intention is slightly different. 
-I am in debt for their initial efforts and thank them for helping to get this project off the ground.
+I am indebted to them for their initial efforts and thank them for helping to get this project off the ground.
 
 *Note: Updates to the Goodreads website may break this code. 
-We don't guarantee that Carver will continue to work in the future, 
-but feel free to post an issue if you run into a problem.*
+We don't guarantee that Carver will continue to work in the future.
+Feel free to post an issue if you run into a problem.*
 
 The code is licensed under a GNU General Public License v3.0.

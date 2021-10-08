@@ -2,26 +2,25 @@
 
 - Refactor of book service
   - Move toward common layers, i.e. multi-tier architecture
-  - Async
-  - Error handling
+  - Async networking
+  - Improved error handling
   - Config options
 
 - Refactor/Creation of list/shelf service
+
+The initial baseline full pulling a list was 33 secs, as of introducing async we're down to 5 seconds.
 
 - Author Module
 - Common Module
 
 # Points to note
 
-- Jupyter (out of date)
 - Having not refactored reviews
 
 # Additional Ideas
 
 - Project name change (see README)
   - There a few other projects with this name
-- Setup CI with Travis
-    - Setup main/prod branch
 - Write an API
 - Write tool to calculate diversity percentage
 - Refactor reviews service, so it's not dependent on Selenium (Selenium is slow and brittle)
