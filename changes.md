@@ -1,6 +1,6 @@
 # Changes
 
-The changes made were motivated by maintainability, speed and additional features.
+The changes made relate to 3 main areas; maintainability, speed and additional features.
 
 ## Maintainability
 
@@ -28,11 +28,11 @@ Gives the user the option to easily choose the data they're interested in. In ad
 ### Generating Ids
 
 This is helpful where a user has a data set of books/authors but no corresponding goodreads ids. 
-Carver will help generate this data for you so you can use the other service unencumbered.
+Carver will help generate this data for you so you can use the other services unencumbered.
 
 ### Author Service
 
-This is still in development, but the idea is by the power of SPARQL to 
+This is still in development, but the idea is — by the power of SPARQL — to 
 give the user the option to pull author information as part of the metadata for a given book.
 This can then to be used to classify on gender, country, language etc. I envisage it may help better understand 
 the diversity (or sadly lack thereof) of a data set.
@@ -45,5 +45,5 @@ the diversity (or sadly lack thereof) of a data set.
 
 - Write an API.
 - Write a service to calculate diversity percentage of dataset.
-- Refactor reviews service, so it's not dependent on Selenium (Selenium is slow and brittle).
+- Refactor review service, so it's not dependent on Selenium (Selenium is slow and brittle).
 - Continue to extend tests (this should be a requirement for new code committed).
