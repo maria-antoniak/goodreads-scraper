@@ -1,7 +1,9 @@
+import pytest
+
 from src.book_id.query.query_model import QueryModel
 from src.book_id.result.match_service import get_match
 from src.book_id.result.result_model import ResultModel
-import pytest
+
 
 class TestResultMatchService:
     def setup_method(self):

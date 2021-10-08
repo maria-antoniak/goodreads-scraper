@@ -13,15 +13,21 @@ class TestBookService:
 
     def test_get_shelves(self):
         expected = [
-            {"AmountOfUsersWhoAddedBookToList": 61211, "shelfName": "to-read"},
-            {"AmountOfUsersWhoAddedBookToList": 3989, "shelfName": "currently-reading"},
-            {"AmountOfUsersWhoAddedBookToList": 2581, "shelfName": "fiction"},
-            {"AmountOfUsersWhoAddedBookToList": 1013, "shelfName": "favorites"},
-            {"AmountOfUsersWhoAddedBookToList": 782, "shelfName": "western"},
-            {"AmountOfUsersWhoAddedBookToList": 495, "shelfName": "own"},
-            {"AmountOfUsersWhoAddedBookToList": 430, "shelfName": "owned"},
-            {"AmountOfUsersWhoAddedBookToList": 424, "shelfName": "historical-fiction"},
-            {"AmountOfUsersWhoAddedBookToList": 399, "shelfName": "classics"},
-            {"AmountOfUsersWhoAddedBookToList": 294, "shelfName": "literature"},
+            {"AmountOfUsersWhoAddedBookToShelf": 61211, "shelfName": "to-read"},
+            {
+                "AmountOfUsersWhoAddedBookToShelf": 3989,
+                "shelfName": "currently-reading",
+            },
+            {"AmountOfUsersWhoAddedBookToShelf": 2581, "shelfName": "fiction"},
+            {"AmountOfUsersWhoAddedBookToShelf": 1013, "shelfName": "favorites"},
+            {"AmountOfUsersWhoAddedBookToShelf": 782, "shelfName": "western"},
+            {"AmountOfUsersWhoAddedBookToShelf": 495, "shelfName": "own"},
+            {"AmountOfUsersWhoAddedBookToShelf": 430, "shelfName": "owned"},
+            {
+                "AmountOfUsersWhoAddedBookToShelf": 424,
+                "shelfName": "historical-fiction",
+            },
+            {"AmountOfUsersWhoAddedBookToShelf": 399, "shelfName": "classics"},
+            {"AmountOfUsersWhoAddedBookToShelf": 294, "shelfName": "literature"},
         ]
         assert self.shelf_service.get_shelves() == expected

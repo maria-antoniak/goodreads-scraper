@@ -1,5 +1,4 @@
-from data.all_the_pretty_horses import (all_the_pretty_horses_shelves_soup,
-                                        all_the_pretty_horses_soup)
+from data.all_the_pretty_horses import all_the_pretty_horses_shelves_soup
 from data.empty import empty_soup
 
 from src.shelf.shelf_service import ShelfService
@@ -7,18 +6,9 @@ from src.shelf.shelf_service import ShelfService
 
 class TestBookService:
     def setup_method(self):
-        self.shelf_service = ShelfService(all_the_pretty_horses_soup)
+        self.shelf_service = ShelfService(all_the_pretty_horses_shelves_soup)
         self.shelf_service_empty = ShelfService(empty_soup)
         self.shelf = "to-read 61,056 people"
-
-    def test_get_shelves_url(self):
-        assert (
-            self.shelf_service._get_shelves_url()
-            == "https://www.goodreads.com/book/shelves/469571.All_the_Pretty_Horses"
-        )
-
-    def test_get_shelves_url_should_return_none_where_soup_find_fails(self):
-        assert self.shelf_service_empty._get_shelves_url() is None
 
     def test_get_unformatted_shelves(self):
         expected = [
@@ -123,15 +113,12 @@ class TestBookService:
             "1001-books-you-must-read-before-you 25 people",
             "of 25 people",
         ]
-        assert (
-            self.shelf_service._get_unformatted_shelves(
-                all_the_pretty_horses_shelves_soup
-            )
-            == expected
-        )
+        assert self.shelf_service._get_unformatted_shelves() == expected
 
-    def test_get_unformatted_shelves_should_return_none_where_soup_find_fails(self):
-        assert self.shelf_service._get_unformatted_shelves() is None
+    def test_get_unformatted_shelves_should_return_empty_where_soup_find_all_fails(
+        self,
+    ):
+        assert self.shelf_service_empty._get_unformatted_shelves() == []
 
     def test_get_shelf_name(self):
         assert self.shelf_service._get_shelf_name(self.shelf) == "to-read"

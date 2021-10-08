@@ -4,8 +4,7 @@ from typing import Dict
 
 import bs4
 
-from src.common.errors.errors import (return_none_for_index_error,
-                                      return_none_for_type_error)
+from src.common.errors.errors import return_none_for_index_error, return_none_for_assertion_error
 from src.shelf.shelf_config import *
 
 
@@ -20,20 +19,18 @@ class ShelfService:
 
         shelves = []
 
-        for shelf in ShelfService._get_unformatted_shelves(self.soup):
+        for shelf in ShelfService._get_unformatted_shelves(self):
             name = ShelfService._get_shelf_name(shelf)
             count = ShelfService._get_shelf_count(shelf)
 
             shelves.append(
-                {"shelfName": name, "AmountOfUsersWhoAddedBookToList": count}
+                {"shelfName": name, "AmountOfUsersWhoAddedBookToShelf": count}
             )
 
         return shelves[:config_number_of_shelf_results]
 
-    @staticmethod
-    @return_none_for_index_error
-    def _get_unformatted_shelves(soup: bs4.BeautifulSoup) -> [str]:
-        nodes = soup.find_all("div", {"class": "shelfStat"})
+    def _get_unformatted_shelves(self) -> [str]:
+        nodes = self.soup.find_all("div", {"class": "shelfStat"})
         return [" ".join(node.text.strip().split()) for node in nodes]
 
     @staticmethod
@@ -43,13 +40,4 @@ class ShelfService:
     @staticmethod
     def _get_shelf_count(shelf: str) -> int:
         return int(shelf.split()[-2].replace(",", ""))
-
-    @return_none_for_type_error
-    def _get_shelves_url(self) -> str:
-        shelves_url = self.soup.find("a", text="See top shelves…")["href"]
-        return f"{self.GOODREADS_BASE_URL}{shelves_url}"
-
-
-
-
 

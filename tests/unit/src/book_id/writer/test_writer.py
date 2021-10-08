@@ -1,8 +1,7 @@
 import pytest
 from mock import mock_open, patch
 
-from src.common.app_io.writer.writer import (_is_directory_created,
-                                             write_to_txt)
+from src.common.app_io.writer.writer import _is_directory_created, write_to_txt
 
 
 class TestWriter:

@@ -183,3 +183,12 @@ class TestBookService:
 
     def test_get_rating_distribution_should_return_none_where_soup_find_fails(self):
         assert self.book_service_empty.get_average_rating() is None
+
+    def test_get_shelves_url(self):
+        assert (
+            self.book_service._get_shelves_url()
+            == "https://www.goodreads.com/book/shelves/469571.All_the_Pretty_Horses"
+        )
+
+    def test_get_shelves_url_should_return_none_where_soup_find_fails(self):
+        assert self.book_service_empty._get_shelves_url() is None

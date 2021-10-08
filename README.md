@@ -12,12 +12,14 @@ With speed and accuracy, Carver aims to facilitate the generation of large data 
    - [Config](#config)
    - [Tests](#tests)
 3. [Services](#services)
-   1. [Collect Metadata](#collect-metadata)
+   1. [Collect Book Metadata](#collect-book-metadata)
    2. [Collect Book Reviews](#collect-book-reviews)
    3. [Generate Book Id Titles](#generate-book-id-titles)
 4. [Technologies used](#technologies-used)
 5. [Glossary](#glossary)
 6. [Acknowledgements](#acknowledgements)
+7. [Notes](#notes)
+
 
 # How to install
 
@@ -62,7 +64,7 @@ You can also functionally test all services by running the follow shell script:
 `sh example/shell/test_script.sh`
 
 
-# Collect Metadata
+# Collect Book Metadata
 
 You can use the below commands to collect metadata about books on Goodreads, 
 such as the total number of Goodreads reviews and ratings, average Goodreads rating, 
@@ -169,7 +171,7 @@ Percentages are currently set as follows:
 `BOOK_TITLE_SIMILARITY_PERCENTAGE = 0.6`
 `AUTHOR_NAME_SIMILARITY_PERCENTAGE = 0.7`
 
-I found these to be sane defaults during testing, but it really will depend on your use case, feel free to experiment :)
+We found these to be sane defaults during testing, but it really will depend on your use case, feel free to experiment :)
 
 # Technologies Used
 
@@ -185,14 +187,23 @@ I found these to be sane defaults during testing, but it really will depend on y
 
 # Acknowledgements
 
-Carver is a fork of the excellent `goodreads-scraper` project started by Maria Antoniak and Melanie Walsh. 
+Carver is a fork of the excellent `goodreads-scraper` project 
+started by [Maria Antoniak](https://github.com/maria-antoniak) and [Melanie Walsh](https://github.com/melaniewalsh). 
 
-This fork was motivated by moving the project forward in lieu of time constraints on the part of the original owners. 
-Plus the vision/intention is slightly different. 
+It was motivated by moving that project forward given time constraints on the part of the original owners. 
+Plus the vision/intention is slightly different. For a list of changes/motivation see: 
+[changes](./changes.md)
+
 I am indebted to them for their initial efforts and thank them for helping to get this project off the ground.
+For full details of the original project, please see [the repo](https://github.com/maria-antoniak/goodreads-scraper).
 
-*Note: Updates to the Goodreads website may break this code. 
+# Notes
+
+- Updates to the Goodreads website may break this code. 
 We don't guarantee that Carver will continue to work in the future.
-Feel free to post an issue if you run into a problem.*
+Feel free to post an issue if you run into a problem.
+  
+- The refactoring effort will continue for the next month or so. **This extends in particular to the reviews service 
+which at the time of writing has received the least attention.**
 
 The code is licensed under a GNU General Public License v3.0.

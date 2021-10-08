@@ -24,6 +24,3 @@ async def _get_request(url) -> Union[bytes, None]:
                 return await resp.read()
     except ClientConnectionError:
         return None
-
-
-

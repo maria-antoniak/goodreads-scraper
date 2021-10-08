@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
 from dataclasses_json.api import LetterCase, dataclass_json
 
@@ -11,6 +11,7 @@ class BookModel:
     author_full_name: Union[str, None]
     author_last_name: Union[str, None]
     average_rating: Union[float, None]
+    author_profile: Dict
     genres: Union[str, None]
     isbn13: Union[str, None]
     isbn: Union[str, None]

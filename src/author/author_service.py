@@ -1,69 +1,92 @@
-from typing import Dict, Union, List
+from typing import Dict, List, Optional
 
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
+
 from src.common.utils.dict_operators import deep_get
+from src.common.errors.errors import return_none_for_attribute_error
+import string
 
 
 class AuthorService:
-    def __init__(self, json: Dict):
+    def __init__(self, author_details_json: [Dict]):
 
-        self.json = json
+        self.author_details_json = author_details_json
 
-    def get_gender(self) -> Union[str, None]:
-        #  P21
-        return deep_get(self.json, "genderLabel.value")
+    def _get_nested_result(self, key: str, first_result=True):
+        results = list(
+            set([deep_get(v, f"{key}.value") for v in self.author_details_json])
+        )
+        if first_result:
+            return string.capwords(results[0])
+        return [string.capwords(result) for result in results]
 
-    def get_country_of_citizenship(self) -> Union[str, None]:
-        #  P27
-        return deep_get(self.json, "countryOfCitizenshipLabel.value")
-
-    def get_birth_full_name_in_native_language(self) -> Union[str, None]:
-        #  P1559
-        return deep_get(self.json, "birthFullNameInNativeLanguageLabel.value")
-
-    def get_birth_full_name(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_birth_full_name(self) -> Optional[str]:
         """
         P1477
         Example: `Doris Lessing` was born `Doris May Tayler`
         Or in the case of `Octavio Paz Lozano` where `Lozano` is dropped
         """
-        return deep_get(self.json, "birthFullName.value")
+        return AuthorService._get_nested_result(self, "birthFullName")
 
-    def get_date_of_birth(self) -> Union[str, None]:
-        #  P569
-        dob = deep_get(self.json, "dateOfBirthLabel.value")
-        if dob:
-            return dob.replace("T00:00:00Z", "")
-        return None
+    @return_none_for_attribute_error
+    def get_birth_full_name_in_native_language(self) -> Optional[str]:
+        #  P1559
+        return AuthorService._get_nested_result(
+            self, "birthFullNameInNativeLanguageLabel"
+        )
 
-    def get_place_of_birth(self) -> Union[str, None]:
-        #  P19
-        return deep_get(self.json, "placeOfBirthLabel.value")
-
-    def get_date_of_death(self) -> Union[str, None]:
-        #  P570
-        dod = deep_get(self.json, "dateOfDeathLabel.value")
-        if dod:
-            return dod.replace("T00:00:00Z", "")
-        return None
-
-    def get_place_of_death(self) -> Union[str, None]:
-        #  P20
-        return deep_get(self.json, "placeOfDeathLabel.value")
-
-    def get_manner_of_death(self) -> Union[str, None]:
-        #  P1196
-        return deep_get(self.json, "mannerOfDeathLabel.value")
-
-    def get_cause_of_death(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_cause_of_death(self) -> Optional[str]:
         #  P509
-        return deep_get(self.json, "causeOfDeathLabel.value")
+        return AuthorService._get_nested_result(self, "causeOfDeathLabel")
+
+    @return_none_for_attribute_error
+    def get_country_of_citizenship(self) -> Optional[str]:
+        #  P27
+        return AuthorService._get_nested_result(self, "countryOfCitizenshipLabel")
+
+    @return_none_for_attribute_error
+    def get_gender(self) -> Optional[str]:
+        #  P21
+        return AuthorService._get_nested_result(self, "genderLabel")
+
+    @return_none_for_attribute_error
+    def get_date_of_birth(self) -> Optional[str]:
+        #  P569
+        dob = AuthorService._get_nested_result(self, "dateOfBirthLabel")
+        if dob:
+            return dob.replace("t00:00:00z", "")
+        return None
+
+    @return_none_for_attribute_error
+    def get_place_of_birth(self) -> Optional[str]:
+        #  P19
+        return AuthorService._get_nested_result(self, "placeOfBirthLabel")
+
+    @return_none_for_attribute_error
+    def get_date_of_death(self) -> Optional[str]:
+        #  P570
+        dod = AuthorService._get_nested_result(self, "dateOfDeathLabel")
+        if dod:
+            return dod.replace("t00:00:00z", "")
+        return None
+
+    @return_none_for_attribute_error
+    def get_place_of_death(self) -> Optional[str]:
+        #  P20
+        return AuthorService._get_nested_result(self, "placeOfDeathLabel")
+
+    @return_none_for_attribute_error
+    def get_manner_of_death(self) -> Optional[str]:
+        #  P1196
+        return AuthorService._get_nested_result(self, "mannerOfDeathLabel")
 
     @staticmethod
     def _calculate_age_at_death(
         date_of_death: str, date_of_birth: str
-    ) -> Union[int, None]:
+    ) -> Optional[int]:
 
         if date_of_death:
             date_of_death_datetime_object = parser.parse(date_of_death).date()
@@ -73,49 +96,73 @@ class AuthorService:
             ).years
         return None
 
-    def get_age_at_death(self) -> Union[int, None]:
-        return deep_get(self.json, "ageAtDeathLabel.value")
+    @return_none_for_attribute_error
+    def get_age_at_death(self) -> Optional[str]:
+        return AuthorService._get_nested_result(self, "ageAtDeathLabel")
 
-    def get_place_of_burial(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_place_of_burial(self) -> Optional[str]:
         #  P119
-        return deep_get(self.json, "placeOfBurialLabel.value")
+        return AuthorService._get_nested_result(self, "placeOfBurialLabel")
 
-    def get_native_language(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_native_language(self) -> Optional[List[str]]:
         #  P103
-        return deep_get(self.json, "writingLanguageLabel.value")
+        return AuthorService._get_nested_result(self, "writingLanguageLabel")
 
-    def get_writing_language(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_writing_languages(self) -> Optional[List[str]]:
         #  P6886
-        return deep_get(self.json, "writingLanguageLabel.value")
+        return AuthorService._get_nested_result(
+            self, "writingLanguageLabel", first_result=False
+        )
 
-    def get_occupation(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_occupations(self) -> Optional[List[str]]:
         #  P106
-        return deep_get(self.json, "occupationLabel.value")
+        return sorted(AuthorService._get_nested_result(
+            self, "occupationLabel", first_result=False
+        ))
 
-    def get_literary_movement(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_literary_movements(self) -> Optional[List[str]]:
         #  P135
-        return deep_get(self.json, "literaryMovementLabel.value")
+        return AuthorService._get_nested_result(
+            self, "literaryMovementLabel", first_result=False
+        )
 
-    def get_educated_at(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_educated_at(self) -> Optional[List[str]]:
         #  P69
-        return deep_get(self.json, "educatedAt.value")
+        return AuthorService._get_nested_result(
+            self, "educatedAtLabel", first_result=False
+        )
 
-    def get_lifestyle(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_lifestyle(self) -> Optional[List[str]]:
         #  P1576
-        return deep_get(self.json, "lifestyleLabel.value")
+        return AuthorService._get_nested_result(
+            self, "lifestyleLabel", first_result=False
+        )
 
-    def get_religion(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_religion(self) -> Optional[str]:
         #  P140
-        return deep_get(self.json, "religionLabel.value")
+        return AuthorService._get_nested_result(self, "religionLabel")
 
-    def get_last_words(self) -> Union[str, None]:
-        #  P1455
-        return deep_get(self.json, "lastWordsLabel.value")
+    @return_none_for_attribute_error
+    def get_last_words(self) -> Optional[str]:
+        #  P3909
+        return AuthorService._get_nested_result(self, "lastWordsLabel")
 
-    def get_notable_works(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_notable_works(self) -> Optional[List[str]]:
         #  P800
-        return deep_get(self.json, "notableWorksLabel.value")
+        return sorted(AuthorService._get_nested_result(
+            self, "notableWorksLabel", first_result=False
+        ))
 
-    def get_genre(self) -> Union[str, None]:
+    @return_none_for_attribute_error
+    def get_genres(self) -> Optional[List[str]]:
         #  P136
-        return deep_get(self.json, "genreLabel.value")
+        return AuthorService._get_nested_result(self, "genreLabel", first_result=False)

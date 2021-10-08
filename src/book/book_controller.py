@@ -9,18 +9,26 @@ from src.common.network.network import get
 from src.common.parser.parser import parse
 from src.list.list_service import ListService
 from src.shelf.shelf_service import ShelfService
-
+from src.author.author_controller import build_author_model
+import pprint
 
 def build_book_model(book_id_title: str) -> Dict:
     logging.info(f"Scraping '{book_id_title}'")
     BASE = "https://www.goodreads.com/book/show/"
     url = f"{BASE}{book_id_title}"
 
-    response = get([url])
-    soup = parse(response[0])
+    # BOOK
 
-    book_service = BookService(soup)
-    shelf_service = ShelfService(soup)
+    book_response = get([url])
+    book_soup = parse(book_response[0])
+    book_service = BookService(book_soup)
+
+    # SHELF
+
+    shelf_url = book_service._get_shelves_url()
+    shelf_response = get([shelf_url])
+    shelf_soup = parse(shelf_response[0])
+    shelf_service = ShelfService(shelf_soup)
 
     author_full_name = (
         book_service.get_author_full_name() if config_author_full_name is True else None
@@ -35,6 +43,8 @@ def build_book_model(book_id_title: str) -> Dict:
 
     lists_service = ListService(soup, lists_url)
 
+
+
     book_model = BookModel(
         author_first_name=book_service.get_author_first_name(author_full_name)
         if config_author_first_name is True
@@ -46,6 +56,7 @@ def build_book_model(book_id_title: str) -> Dict:
         average_rating=book_service.get_average_rating()
         if config_average_rating is True
         else None,
+        author_profile=build_author_model(author_full_name),
         genres=genres,
         isbn13=book_service.get_isbn13() if config_isbn13 is True else None,
         isbn=book_service.get_isbn() if config_isbn is True else None,

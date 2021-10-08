@@ -33,7 +33,9 @@ class ListService:
 
             list_name = ListService._get_list_name_from_list_details(list_details)
             list_votes = ListService._get_list_votes_from_list_details(list_details)
-            book_rank_in_list = ListService._get_book_rank_in_list_from_list_details(list_details)
+            book_rank_in_list = ListService._get_book_rank_in_list_from_list_details(
+                list_details
+            )
             number_of_books_on_list = (
                 ListService._get_number_of_books_on_list_from_list_details(list_details)
             )

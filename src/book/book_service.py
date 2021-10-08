@@ -134,3 +134,8 @@ class BookService:
         }
 
         return dict(sort_by_value(result))
+
+    @return_none_for_type_error
+    def _get_shelves_url(self) -> str:
+        shelves_url = self.soup.find("a", text="See top shelves…")["href"]
+        return f"{self.GOODREADS_BASE_URL}{shelves_url}"

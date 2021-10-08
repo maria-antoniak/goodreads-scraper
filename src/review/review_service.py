@@ -5,7 +5,7 @@ import time
 from collections import Counter
 from datetime import datetime
 from urllib.error import HTTPError
-from src.common.app_io.writer.writer import write_to_json
+
 import bs4
 import geckodriver_autoinstaller
 import pandas as pd
@@ -19,6 +19,8 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         StaleElementReferenceException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+
+from src.common.app_io.writer.writer import write_to_json
 
 RATING_STARS_DICT = {
     "it was amazing": 5,
