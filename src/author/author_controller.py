@@ -70,7 +70,7 @@ def get_results(endpoint_url, query):
     return sparql.query().convert()
 
 
-query = sparql_search_query.replace("QUERY", "George Orwell")
+query = sparql_search_query.replace("QUERY", "Franz Kafka")
 
 
 results = get_results(endpoint_url, query)["results"]["bindings"][0]
@@ -83,42 +83,61 @@ author_query = sparql_author_details_query.replace("QUERY", code)
 author_details = get_results(endpoint_url, author_query)
 #  TODO Iterate over results to get a complete profile of author
 # print(author_details['results']['bindings'])
-author_details_json = author_details["results"]["bindings"][0]
+author_details_json = author_details["results"]["bindings"]
 
+# Testing
 
-def build_author_model(json: Dict) -> Dict:
+notable_works = set()
+writing_language = set()
+occupations = set()
+literary_movement = set()
 
+for json in author_details_json:
     author_service = AuthorService(json)
+    notable_works.add(author_service.get_notable_works())
+    writing_language.add(author_service.get_writing_language())
+    occupations.add(author_service.get_occupation())
+    literary_movement.add(author_service.get_literary_movement())
 
-    author_model = AuthorModel(
-        age_at_death=author_service._calculate_age_at_death(
-            author_service.get_date_of_death(), author_service.get_date_of_birth()
-        ),
-        birth_full_name=author_service.get_birth_full_name(),
-        birth_full_name_in_native_language=author_service.get_birth_full_name_in_native_language(),
-        cause_of_death=author_service.get_cause_of_death(),
-        country_of_citizenship=author_service.get_country_of_citizenship(),
-        date_of_birth=author_service.get_date_of_birth(),
-        date_of_death=author_service.get_date_of_death(),
-        educated_at=author_service.get_educated_at(),
-        gender=author_service.get_gender(),
-        genre=author_service.get_genre(),
-        lifestyle=author_service.get_lifestyle(),
-        literary_movement=author_service.get_literary_movement(),
-        manner_of_death=author_service.get_manner_of_death(),
-        native_language=author_service.get_native_language(),
-        notable_works=author_service.get_notable_works(),
-        occupation=author_service.get_occupation(),
-        place_of_birth=author_service.get_place_of_birth(),
-        place_of_burial=author_service.get_place_of_burial(),
-        place_of_death=author_service.get_place_of_death(),
-        religion=author_service.get_religion(),
-        writing_language=author_service.get_writing_language(),
-    )
-
-    model = author_model
-    result = to_json(model)
-    return result
+print(list(notable_works))
+print(list(writing_language))
+print(list(occupations))
+print(list(literary_movement))
 
 
-pprint.pprint(build_author_model(author_details_json))
+# def build_author_model(json: Dict) -> Dict:
+#
+#     author_service = AuthorService(json)
+#
+#     author_model = AuthorModel(
+#         age_at_death=author_service._calculate_age_at_death(
+#             author_service.get_date_of_death(), author_service.get_date_of_birth()
+#         ),
+#         birth_full_name=author_service.get_birth_full_name(),
+#         birth_full_name_in_native_language=author_service.get_birth_full_name_in_native_language(),
+#         cause_of_death=author_service.get_cause_of_death(),
+#         country_of_citizenship=author_service.get_country_of_citizenship(),
+#         date_of_birth=author_service.get_date_of_birth(),
+#         date_of_death=author_service.get_date_of_death(),
+#         educated_at=author_service.get_educated_at(),
+#         gender=author_service.get_gender(),
+#         genre=author_service.get_genre(),
+#         lifestyle=author_service.get_lifestyle(),
+#         literary_movement=author_service.get_literary_movement(),
+#         manner_of_death=author_service.get_manner_of_death(),
+#         native_language=author_service.get_native_language(),
+#         notable_works=author_service.get_notable_works(),
+#         occupation=author_service.get_occupation(),
+#         place_of_birth=author_service.get_place_of_birth(),
+#         place_of_burial=author_service.get_place_of_burial(),
+#         place_of_death=author_service.get_place_of_death(),
+#         religion=author_service.get_religion(),
+#         writing_language=author_service.get_writing_language(),
+#     )
+#
+#     model = author_model
+#     result = to_json(model)
+#     return result
+#
+#
+# pprint.pprint(build_author_model(author_details_json))

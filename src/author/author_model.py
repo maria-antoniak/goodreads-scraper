@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List
 
 from dataclasses_json.api import LetterCase, dataclass_json
 

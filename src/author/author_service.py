@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Union, List
 
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
@@ -119,58 +119,3 @@ class AuthorService:
     def get_genre(self) -> Union[str, None]:
         #  P136
         return deep_get(self.json, "genreLabel.value")
-
-
-"""
-
-SELECT ?item ?itemLabel WHERE {
-  ?item wdt:P31 wd:Q5.
-  ?item ?label "Doris Lessing"@en .
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-} LIMIT 10
-
-
-"""
-
-"""
-SELECT DISTINCT
-
-?item ?itemLabel 
-?gender ?genderLabel 
-?countryOfCitizenship ?countryOfCitizenshipLabel
-?birthFullName ?birthFullNameLabel
-?dateOfBirth ?dateOfBirthLabel
-?dateOfDeath ?dateOfDeathLabel
-?nativeLanguage ?nativeLanguageLabel
-?writingLanguage ?writingLanguageLabel
-?occupation ?occupationLabel
-?literaryMovement ?literaryMovementLabel
-?lifestyle ?lifestyleLabel
-?religion ?religionLabel
-?notableWorks ?notableWorksLabel
-?genre ?genreLabel
-{
-
-  VALUES (?item) { (wd:Q905) }
-  
-  
-OPTIONAL { ?item wdt:P21 ?gender . }
-OPTIONAL { ?item wdt:P27 ?countryOfCitizenship . }
-OPTIONAL { ?item wdt:P1477 ?birthFullName . }
-OPTIONAL { ?item wdt:P569 ?dateOfBirth . }
-OPTIONAL { ?item wdt:P570 ?dateOfDeath . }
-OPTIONAL { ?item wdt:P103 ?nativeLanguage . }
-OPTIONAL { ?item wdt:P6886 ?writingLanguage . }
-OPTIONAL { ?item wdt:P106 ?occupation . }
-OPTIONAL { ?item wdt:P135 ?literaryMovement . }
-OPTIONAL { ?item wdt:P1576 ?lifestyle . }
-OPTIONAL { ?item wdt:P140 ?religion . }
-OPTIONAL { ?item wdt:P800 ?notableWorks . }
-OPTIONAL { ?item wdt:P136 ?genre . }
-
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-
-}
-
-
-"""

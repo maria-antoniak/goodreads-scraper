@@ -2,34 +2,25 @@
 
 <img src="/home/studs/PycharmProjects/goodreads-scraper/logo.png" alt="Project Logo" width="300"/>
 
-Carver is a series of services that can be used to:
+What to pull reams of data for a large collection of books? Carver has you covered. 
+With speed and accuracy, Carver aims to facilitate the generation of large data sets without use of the Goodreads API. 
 
-1. [Collect Metadata](#collect-metadata)
-2. [Collect Book Reviews](#collect-book-reviews)
-3. [Generate Book Id Titles](#generate-book-id-titles)
+# TOC
 
-# Motivation/History
+1. [Motivation/History](#motivation/history)
+2. [How to install](#how-to-install)
+3. [How to use](#how-to-use)
+   - [Config](#config)
+   - [Tests](#tests)
+4. [Services](#services)     
+   - [Collect Metadata](#collect-metadata)
+   - [Collect Book Reviews](#collect-book-reviews)
+   - [Generate Book Id Titles](#generate-book-id-titles)
+5. [Technologies used](#technologies-used)
+6. [Glossary](#glossary)
+6. [Acknowledgments](#acknowledgments)
 
-We were motivated to develop this because the Goodreads API is difficult to work with 
-and doesn't provide access to the full text of reviews. 
-Carver instead uses the following libraries to collect data:
-
-- [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup) 
-- [Selenium](https://selenium-python.readthedocs.io/installation.html)
- 
-We used Carver to collect data for our article, 
-"The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Literary Criticism." 
-
-To allow others to reproduce (approximately) the data we used in the essay, we've included a file 
-— `example/data/goodreads_classics.txt` — with 144 of the Goodreads book IDs we analyzed.
-
-You can use these IDs to collect corresponding reviews and metadata with Carver as described below.
-
-*Note: Updates to the Goodreads website may break this code. 
-We don't guarantee that Carver will continue to work in the future, 
-but feel free to post an issue if you run into a problem.*
-
-# What You Need
+# How to install
 
 To run these services, you'll need [Python 3](https://www.python.org/downloads/).
 
@@ -42,12 +33,28 @@ You'll also need the following Python libraries:
 - [lxml](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser)
 - [requests](https://docs.python-requests.org/en/master/index.html)
 
-You can install these libraries by running `pip install -r requirements.txt`
+You can do so by running `pip install -r requirements.txt`
 
 Finally, you'll need a web browser — either Chrome or Firefox. 
 We've found Carver tends to function better with Firefox.
 
+# How to use
+
+We recommend running these services from the command line, as the usage instructions below describe.
+
+## Config
+
+Many defaults can be configured via the project `config.ini`.
+This currently relates primarily to fields for collecting book metadata.
+
+Under `[BOOK]`, mark fields as either `True` or `False` and corresponding limits as desired.
+
+e.g. if you're not interested in exporting the genres to which a book belongs, change `GENRES = True` to `GENRES = False`
+
+
 # Tests
+
+Should you wish to extend Carver or simple check everything is working as expected, please follow the instructions below.
 
 Run tests with `pytest --cov-report term-missing --cov=src/` from root.
 
@@ -55,23 +62,6 @@ You can also functionally test all services by running the follow shell script:
 
 `sh example/shell/test_script.sh`
 
-# Config
-
-Please note, many defaults can be configured via the project `config.ini`.
-This currently relates primarily to fields for collecting book metadata.
-
-Under `[BOOK]`, mark fields as either `True` or `False` and corresponding limits as desired.
-
-# Tutorial
-
-We recommend running these services from the command line, as the usage instructions below describe.
-
-However, we've also created a Jupyter notebook tutorial that demonstrates proper usage (out of date as of 05.10.2021).
-
-Please note that these services may not work consistently from a Jupyter notebook environment 
-and that the tutorial is mostly intended for demonstration purposes.
-
-- [Jupyter notebook tutorial](https://github.com/maria-antoniak/goodreads-scraper/blob/master/example/How-To-Use-Goodreads-Scraper.ipynb) 
 
 # Collect Metadata
 
@@ -181,6 +171,11 @@ Percentages are currently set as follows:
 
 I found these to be sane defaults during testing, but it really will depend on your use case, feel free to experiment :)
 
+# Technologies Used
+
+- [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup)
+- [Selenium](https://selenium-python.readthedocs.io/installation.html)
+
 # Glossary
 
 - `book_id_title` corresponds to the id contained in the goodreads URL, 
@@ -188,10 +183,16 @@ I found these to be sane defaults during testing, but it really will depend on y
 - `numeric_book_id` corresponds to the numeric section of the book_id_title, 
   e.g. `587393` in `587393.The_Lost_Scrapbook`
 
-# Credit
+# Acknowledgements
 
-This code is written by Maria Antoniak and Melanie Walsh. The code is licensed under a [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/#).
+Carver is a fork of the excellent `goodreads-scraper` project started by Maria Antoniak and Melanie Walsh. 
 
-If you use Carver, we'd love to hear about your project and how you use the code.
+Carver was motivated to move the project forward in lieu of time constraints on the part of the original owners. 
+Plus the vision/intention is slightly different. 
+I am in debt for their initial efforts and thank them for helping to get this project off the ground.
 
-We used a function written by [Omar Einea](https://github.com/OmarEinea/GoodReadsScraper), licensed under [GPL v3.0](https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md), for the Goodreads review sorting.
+*Note: Updates to the Goodreads website may break this code. 
+We don't guarantee that Carver will continue to work in the future, 
+but feel free to post an issue if you run into a problem.*
+
+The code is licensed under a GNU General Public License v3.0.
