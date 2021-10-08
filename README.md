@@ -46,9 +46,10 @@ We recommend running these services from the command line, as the usage instruct
 ## Config
 
 Many defaults can be configured via the project `config.ini`.
-This currently relates primarily to fields for collecting book metadata.
 
-Under `[BOOK]`, mark fields as either `True` or `False` and corresponding limits as desired.
+You'll currently find fields related to book/author metadata.
+
+Under `[BOOK]` or `[AUTHOR]`, mark fields as either `True` or `False` and corresponding limits as desired.
 
 e.g. if you're not interested in exporting the genres to which a book belongs, change `GENRES = True` to `GENRES = False`
 
