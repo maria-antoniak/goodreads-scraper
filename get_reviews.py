@@ -158,7 +158,7 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
             time.sleep(2)
 
         if sort_order == 'newest' or sort_order == 'oldest':
-            select = Select(driver.find_element_by_name('language_code'))
+            select = Select(driver.find_element(By.NAME, str('language_code')))
             select.select_by_value('en')
             time.sleep(4)
     
@@ -170,8 +170,8 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
         page_counter = 2
         while page_counter <=10:
             try:
-                if driver.find_element_by_link_text(str(page_counter)):
-                    driver.find_element_by_link_text(str(page_counter)).click()
+                if driver.find_element(By.LINK_TEXT, str(page_counter)):
+                    driver.find_element(By.LINK_TEXT, str(page_counter)).click()
                     time.sleep(3)
                     reviews += scrape_reviews_on_current_page(driver, url, book_id, sort_order)
                     print(f"Scraped page {page_counter}")
@@ -182,19 +182,14 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
             except NoSuchElementException:
                 if page_counter == 10:
                     try:
-                        driver.find_element_by_link_text(str(9)).click()
+                        driver.find_element(By.LINK_TEXT, str(9)).click()
                         time.sleep(2)
                         continue
                     except:
                         return reviews
                 else:
-                    try:
-                        if driver.find_element(By.CLASS_NAME, 'next_page'):
-                            driver.find_element(By.CLASS_NAME, 'next_page').click()
-                            continue
-                    except NoSuchElementException:
-                        print("'next' button not found either")
-                        return reviews
+                    print(f'{book_id} has less than 10 pages of reviews!')
+                    return reviews
             
             except ElementNotVisibleException:
                 print('ERROR ElementNotVisibleException: Pop-up detected, reloading the page.')
