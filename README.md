@@ -138,5 +138,9 @@ This code is written by Maria Antoniak and Melanie Walsh. The code is licensed u
 
 If you use this scraper, we'd love to hear about your project and how you use the code.
 
+If you use this scraper as part of an academic publication, you can credit us by citing the following paper.
+
+Walsh, Melanie, and Maria Antoniak. ["The Goodreads ‘Classics’: A Computational Study of Readers, Amazon, and Crowdsourced Amateur Criticism."](https://maria-antoniak.github.io/resources/2021_ca_classics.pdf) Journal of Cultural Analytics 4 (2021): 243-287.
+
 We used a function written by [Omar Einea](https://github.com/OmarEinea/GoodReadsScraper), licensed under [GPL v3.0](https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md), for the Goodreads review sorting.
 
