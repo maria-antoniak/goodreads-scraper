@@ -12,11 +12,11 @@ from selenium.common.exceptions import NoSuchElementException, ElementNotInterac
 from selenium.webdriver.support.ui import Select
 from urllib.request import urlopen
 from urllib.error import HTTPError
-import credentials
 from selenium.webdriver.common.by import By
 import pandas as pd
-from chromedriver_py import binary_path 
 import geckodriver_autoinstaller
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 
 RATING_STARS_DICT = {'it was amazing': 5,
@@ -248,28 +248,35 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
-    parser.add_argument('--browser', type=str)
-    parser.add_argument('--sort_order', type=str)
+    parser.add_argument('--browser', type=str, help="choose a browser")
+    parser.add_argument('--sort_order', default='default', type=str)
     parser.add_argument('--format', type=str, action="store", default="json",
-                        dest="format", choices=["json", "csv"],
+                        dest="format",
                         help="set file output format")
+    
     args = parser.parse_args()
+    
+    if not args.book_ids_path:
+        parser.error("\n\nPlease add the --book_ids_path flag and choose a filepath that contains Goodreads book IDs\n")
+    if not args.output_directory_path:
+        parser.error("\n\nPlease add the --output_directory_path and choose a directory filepath to output your reviews\n")
+    if not args.browser:
+        parser.error("\n\nPlease add the --browser flag and choose a browser: either Firefox or Chrome\n")
 
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
     books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_reviews')]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
     condensed_reviews_path   = args.output_directory_path + '/all_reviews'
     
-  
-    
     #Set up driver
-    
-    if args.browser.lower() == 'chrome':
-        driver = webdriver.Chrome(executable_path=binary_path)
-        #driver = webdriver.Chrome(args.web_driver_path)
-    elif args.browser.lower() == 'firefox':
-        geckodriver_autoinstaller.install()
-        driver = webdriver.Firefox()
+    if args.browser is not None:
+        if args.browser.lower() == 'chrome':
+            driver = webdriver.Chrome(ChromeDriverManager().install())
+        elif args.browser.lower() == 'firefox':
+            geckodriver_autoinstaller.install()
+            driver = webdriver.Firefox()
+        else:
+            print('Please select a web browser: Chrome or Firefox')
     else:
         print('Please select a web browser: Chrome or Firefox')
     
@@ -293,9 +300,9 @@ def main():
     driver.quit()
     
     reviews = condense_reviews(args.output_directory_path)
-    if args.format == 'json':
+    if args.format.lower() == 'json':
         json.dump(reviews, open(f"{condensed_reviews_path}.json", 'w'))
-    elif args.format == 'csv':
+    elif args.format.lower() == 'csv':
         json.dump(reviews, open(f"{condensed_reviews_path}.json", 'w'))
         review_df = pd.read_json(f"{condensed_reviews_path}.json")
         review_df.to_csv(f"{condensed_reviews_path}.csv", index=False, encoding='utf-8')
