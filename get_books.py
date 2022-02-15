@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime
+import feedparser
 import json
 import os
 import re
@@ -10,6 +11,14 @@ from urllib.error import HTTPError
 import bs4
 import pandas as pd
 
+
+def get_books_from_shelf(userid, shelfname):
+    rss_url = "https://www.goodreads.com/review/list_rss/" + userid + "?shelf=" + shelfname
+    parsed_rss = feedparser.parse(rss_url)
+    book_ids = []
+    for entry in parsed_rss["entries"]:
+        book_ids.append(entry["book_id"])
+    return book_ids
 
 def get_all_lists(soup):
 
@@ -188,12 +197,31 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
+    parser.add_argument('--l', action=argparse.BooleanOptionalAction,
+                      help="use if you'll be pulling the book list from a goodreads shelf instead of a text file")
+    parser.add_argument('--user_id', type=str)
+    parser.add_argument('--shelf_name', type=str)
     parser.add_argument('--format', type=str, action="store", default="json",
                         dest="format", choices=["json", "csv"],
                         help="set file output format")
     args = parser.parse_args()
 
-    book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
+    book_ids, list_source = None, None
+    if(args.l):
+        if (args.user_id == None):
+            print("To use a goodreads shelf, you must provide a user_id")
+            return
+        if (args.shelf_name == None):
+            print("To use a goodreads shelf, you must provide a shelf_name")
+            return
+        book_ids = get_books_from_shelf(args.user_id, args.shelf_name)
+        list_source = args.shelf_name
+    else:
+        book_ids = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
+        list_source = args.book_ids_path
+    
+    print(str(datetime.now()) + " " + script_name + ": Found " + str(len(book_ids)) + " book_ids in list " + list_source)
+    
     books_already_scraped =  [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_books')]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
     condensed_books_path   = args.output_directory_path + '/all_books'
