@@ -142,7 +142,7 @@ def check_for_duplicates(reviews):
     num_duplicates = len([_id for _id, _count in Counter(review_ids).items() if _count > 1])
     return num_duplicates
 
-def get_reviews_first_ten_pages(driver, book_id, sort_order):
+def get_reviews_first_ten_pages(driver, book_id, sort_order, rating):
 
     reviews = []
     url = 'https://www.goodreads.com/book/show/' + book_id
@@ -153,8 +153,8 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
     try:
         time.sleep(4)
         # Re-order the reviews so that we scrape the newest or oldest reviews instead of the default.
-        if sort_order != 'default':
-            switch_reviews_mode(driver, book_id, sort_order)
+        if sort_order != 'default' or rating is not None:
+            switch_reviews_mode(driver, book_id, sort_order, rating=str(rating))
             time.sleep(2)
 
         if sort_order == 'newest' or sort_order == 'oldest':
@@ -193,7 +193,7 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
             
             except ElementNotVisibleException:
                 print('ERROR ElementNotVisibleException: Pop-up detected, reloading the page.')
-                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
                 return reviews
                         
             except ElementClickInterceptedException:
@@ -214,18 +214,18 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
                 print(f'🚨 ElementClickInterceptedException (Likely a pop-up)🚨\n🔄 Refreshing Goodreads site and rescraping book🔄')
                 driver.get(url)
                 time.sleep(3)
-                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
                 return reviews
                 
     except ElementNotInteractableException:
             print('🚨 ElementNotInteractableException🚨 \n🔄 Refreshing Goodreads site and rescraping book🔄')
-            reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+            reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
             return reviews
 
         
     if check_for_duplicates(reviews) >= 30:
         print(f'ERROR: {check_for_duplicates(reviews)} duplicates found! Re-scraping this book.')
-        reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+        reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
         return reviews
     else:
         return reviews
@@ -286,11 +286,13 @@ def main():
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
-            reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order)
+            for rating in range(1, 6):
+                print(f'Scraping {rating} star reviews')
+                reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order, rating=rating)
 
-            if reviews:
-                print(str(datetime.now()) + ' ' + script_name + ': Scraped ✨' + str(len(reviews)) + '✨ reviews for ' + book_id)
-                json.dump(reviews, open(args.output_directory_path + '/' + book_id + '.json', 'w'))
+                if reviews:
+                    print(str(datetime.now()) + ' ' + script_name + ': Scraped ✨' + str(len(reviews)) + '✨ reviews for ' + book_id)
+                    json.dump(reviews, open(args.output_directory_path + '/' + book_id + f'{rating}_stars' + '.json', 'w'))
 
             print('=============================')
 
