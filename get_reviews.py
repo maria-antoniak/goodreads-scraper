@@ -27,13 +27,14 @@ RATING_STARS_DICT = {'it was amazing': 5,
                      '': None}
 
 
-def switch_reviews_mode(driver, book_id, sort_order, rating=''):
+def switch_reviews_mode(driver, book_id, sort_order, rating=None):
     """
     Copyright (C) 2019 by Omar Einea: https://github.com/OmarEinea/GoodReadsScraper
     Licensed under GPL v3.0: https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md
     Accessed on 2019-12-01.
     """
     edition_reviews=False
+    rating = str(rating) if rating else ''
     driver.execute_script(
         'document.getElementById("reviews").insertAdjacentHTML("beforeend", \'<a data-remote="true" rel="nofollow"'
         f'class="actionLinkLite loadingLink" data-keep-on-success="true" id="switch{rating}{sort_order}"' +
@@ -152,10 +153,10 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order, rating):
 
     try:
         time.sleep(4)
-        # Re-order the reviews so that we scrape the newest or oldest reviews instead of the default.
-        if sort_order != 'default' or rating is not None:
-            switch_reviews_mode(driver, book_id, sort_order, rating=str(rating))
-            time.sleep(2)
+
+        # Refresh the reviews so that we account for a non-default sort order or a changed rating filter
+        switch_reviews_mode(driver, book_id, sort_order, rating=rating)
+        time.sleep(2)
 
         if sort_order == 'newest' or sort_order == 'oldest':
             select = Select(driver.find_element(By.NAME, str('language_code')))
@@ -249,6 +250,7 @@ def main():
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
     parser.add_argument('--browser', type=str, help="choose a browser")
+    parser.add_argument('--rating_filter', default=None, type=int)
     parser.add_argument('--sort_order', default='default', type=str)
     parser.add_argument('--format', type=str, action="store", default="json",
                         dest="format",
@@ -286,13 +288,18 @@ def main():
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
-            for rating in range(1, 6):
-                print(f'Scraping {rating} star reviews')
-                reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order, rating=rating)
+            reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order, rating=args.rating_filter)
 
-                if reviews:
-                    print(str(datetime.now()) + ' ' + script_name + ': Scraped ✨' + str(len(reviews)) + '✨ reviews for ' + book_id)
-                    json.dump(reviews, open(args.output_directory_path + '/' + book_id + f'{rating}_stars' + '.json', 'w'))
+            if reviews:
+                print(str(datetime.now()) + ' ' + script_name + ': Scraped ✨' + str(len(reviews)) + '✨ reviews for ' + book_id)
+
+                if args.rating_filter:
+                    filename_rating_suffix = f'_{args.rating_filter}_stars'
+                else:
+                    filename_rating_suffix = ''
+                file_name = book_id + filename_rating_suffix + '.json'
+
+                json.dump(reviews, open(args.output_directory_path + '/' + file_name, 'w'))
 
             print('=============================')
 
