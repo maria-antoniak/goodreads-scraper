@@ -108,9 +108,11 @@ We also select a filter to only show English language reviews.
 
 ### Usage
 
-`python get_reviews.py --book_ids_path your_file_path --output_directory_path your_directory_path --browser your_browser_name --sort_order your_sort_order  --format JSON (default) or CSV`
+`python get_reviews.py --book_ids_path your_file_path --output_directory_path your_directory_path --browser your_browser_name --sort_order your_sort_order --rating_filter your_rating_filter  --format JSON (default) or CSV`
 
 `sort_order` can be set to `default`,`newest` or `oldest`.
+
+`rating_filter` can be omitted or set to any number in the range 1-5.
 
 `browser` can be set to `chrome` or `firefox`. 
 
@@ -118,7 +120,7 @@ We also select a filter to only show English language reviews.
 
 ### Example
 
-`python get_reviews.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_reviews --sort_order default --browser chrome`
+`python get_reviews.py --book_ids_path most_popular_classics.txt --output_directory_path goodreads_project/classic_book_reviews --sort_order default --rating_filter 5 --browser chrome`
 
 <br><br>
 

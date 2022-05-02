@@ -27,13 +27,14 @@ RATING_STARS_DICT = {'it was amazing': 5,
                      '': None}
 
 
-def switch_reviews_mode(driver, book_id, sort_order, rating=''):
+def switch_reviews_mode(driver, book_id, sort_order, rating=None):
     """
     Copyright (C) 2019 by Omar Einea: https://github.com/OmarEinea/GoodReadsScraper
     Licensed under GPL v3.0: https://github.com/OmarEinea/GoodReadsScraper/blob/master/LICENSE.md
     Accessed on 2019-12-01.
     """
     edition_reviews=False
+    rating = str(rating) if rating else ''
     driver.execute_script(
         'document.getElementById("reviews").insertAdjacentHTML("beforeend", \'<a data-remote="true" rel="nofollow"'
         f'class="actionLinkLite loadingLink" data-keep-on-success="true" id="switch{rating}{sort_order}"' +
@@ -142,7 +143,7 @@ def check_for_duplicates(reviews):
     num_duplicates = len([_id for _id, _count in Counter(review_ids).items() if _count > 1])
     return num_duplicates
 
-def get_reviews_first_ten_pages(driver, book_id, sort_order):
+def get_reviews_first_ten_pages(driver, book_id, sort_order, rating):
 
     reviews = []
     url = 'https://www.goodreads.com/book/show/' + book_id
@@ -152,10 +153,10 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
 
     try:
         time.sleep(4)
-        # Re-order the reviews so that we scrape the newest or oldest reviews instead of the default.
-        if sort_order != 'default':
-            switch_reviews_mode(driver, book_id, sort_order)
-            time.sleep(2)
+
+        # Refresh the reviews so that we account for a non-default sort order or a changed rating filter
+        switch_reviews_mode(driver, book_id, sort_order, rating=rating)
+        time.sleep(2)
 
         if sort_order == 'newest' or sort_order == 'oldest':
             select = Select(driver.find_element(By.NAME, str('language_code')))
@@ -193,7 +194,7 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
             
             except ElementNotVisibleException:
                 print('ERROR ElementNotVisibleException: Pop-up detected, reloading the page.')
-                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
                 return reviews
                         
             except ElementClickInterceptedException:
@@ -214,18 +215,18 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order):
                 print(f'🚨 ElementClickInterceptedException (Likely a pop-up)🚨\n🔄 Refreshing Goodreads site and rescraping book🔄')
                 driver.get(url)
                 time.sleep(3)
-                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+                reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
                 return reviews
                 
     except ElementNotInteractableException:
             print('🚨 ElementNotInteractableException🚨 \n🔄 Refreshing Goodreads site and rescraping book🔄')
-            reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+            reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
             return reviews
 
         
     if check_for_duplicates(reviews) >= 30:
         print(f'ERROR: {check_for_duplicates(reviews)} duplicates found! Re-scraping this book.')
-        reviews = get_reviews_first_ten_pages(driver, book_id, sort_order)
+        reviews = get_reviews_first_ten_pages(driver, book_id, sort_order, rating)
         return reviews
     else:
         return reviews
@@ -249,6 +250,7 @@ def main():
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
     parser.add_argument('--browser', type=str, help="choose a browser")
+    parser.add_argument('--rating_filter', default=None, type=int)
     parser.add_argument('--sort_order', default='default', type=str)
     parser.add_argument('--format', type=str, action="store", default="json",
                         dest="format",
@@ -286,11 +288,18 @@ def main():
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
-            reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order)
+            reviews = get_reviews_first_ten_pages(driver, book_id, args.sort_order, rating=args.rating_filter)
 
             if reviews:
                 print(str(datetime.now()) + ' ' + script_name + ': Scraped ✨' + str(len(reviews)) + '✨ reviews for ' + book_id)
-                json.dump(reviews, open(args.output_directory_path + '/' + book_id + '.json', 'w'))
+
+                if args.rating_filter:
+                    filename_rating_suffix = f'_{args.rating_filter}_stars'
+                else:
+                    filename_rating_suffix = ''
+                file_name = book_id + filename_rating_suffix + '.json'
+
+                json.dump(reviews, open(args.output_directory_path + '/' + file_name, 'w'))
 
             print('=============================')
 
