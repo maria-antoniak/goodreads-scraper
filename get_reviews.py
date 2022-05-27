@@ -277,6 +277,13 @@ def main():
         elif args.browser.lower() == 'firefox':
             geckodriver_autoinstaller.install()
             driver = webdriver.Firefox()
+       # Get an option to work with Google Colab
+       elif args.browser.lower() == "colab":
+          from selenium.webdriver.chrome.options import Options
+          chrome_options = Options()
+          chrome_options.add_argument("--headless")
+          chrome_options.add_argument('--no-sandbox')
+          driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver', options=chrome_options)
         else:
             print('Please select a web browser: Chrome or Firefox')
     else:
