@@ -172,9 +172,10 @@ def scrape_book(book_id):
 def condense_books(books_directory_path):
 
     books = []
-
+    
+    # Look for all the files in the directory and if they contain "book-metadata," then load them all and condense them into a single file
     for file_name in os.listdir(books_directory_path):
-        if file_name.endswith('.json') and not file_name.startswith('.') and file_name != "all_books.json":
+        if file_name.endswith('.json') and not file_name.startswith('.') and file_name != "all_books.json" and "book-metadata" in file_name:
             _book = json.load(open(books_directory_path + '/' + file_name, 'r')) #, encoding='utf-8', errors='ignore'))
             books.append(_book)
 
@@ -194,7 +195,7 @@ def main():
     args = parser.parse_args()
 
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
-    books_already_scraped =  [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_books')]
+    books_already_scraped =  [file_name.replace('_book-metadata.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_books')]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
     condensed_books_path   = args.output_directory_path + '/all_books'
 
@@ -204,7 +205,8 @@ def main():
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
 
             book = scrape_book(book_id)
-            json.dump(book, open(args.output_directory_path + '/' + book_id + '.json', 'w'))
+            # Add book metadata to file name to be more specific
+            json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'))
 
             print('=============================')
 
