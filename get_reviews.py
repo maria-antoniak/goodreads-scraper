@@ -278,7 +278,7 @@ def main():
             geckodriver_autoinstaller.install()
             driver = webdriver.Firefox()
        # Get an option to work with Google Colab
-       elif args.browser.lower() == "colab":
+        elif args.browser.lower() == "colab":
             from selenium.webdriver.chrome.options import Options
             chrome_options = Options()
             chrome_options.add_argument("--headless")
