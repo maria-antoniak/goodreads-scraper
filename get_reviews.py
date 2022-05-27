@@ -236,7 +236,8 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order, rating):
 def condense_reviews(reviews_directory_path):
     reviews = []
     for file_name in os.listdir(reviews_directory_path):
-        if file_name.endswith('.json') and not file_name.startswith('.') and file_name != "all_reviews.json":
+        # Check to see if reviews in file name
+        if file_name.endswith('.json') and not file_name.startswith('.') and file_name != "all_reviews.json" and "_reviews" in file_name:
             _reviews = json.load(open(reviews_directory_path + '/' + file_name, 'r'))
             reviews += _reviews
     return reviews
@@ -266,7 +267,7 @@ def main():
         parser.error("\n\nPlease add the --browser flag and choose a browser: either Firefox or Chrome\n")
 
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
-    books_already_scraped = [file_name.replace('_reviews.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_reviews')]
+    books_already_scraped = [file_name.replace('_reviews.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_reviews') and "_reviews" in file_name]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
     condensed_reviews_path   = args.output_directory_path + '/all_reviews'
     
