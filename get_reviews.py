@@ -266,7 +266,7 @@ def main():
         parser.error("\n\nPlease add the --browser flag and choose a browser: either Firefox or Chrome\n")
 
     book_ids              = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
-    books_already_scraped = [file_name.replace('.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_reviews')]
+    books_already_scraped = [file_name.replace('_reviews.json', '') for file_name in os.listdir(args.output_directory_path) if file_name.endswith('.json') and not file_name.startswith('all_reviews')]
     books_to_scrape       = [book_id for book_id in book_ids if book_id not in books_already_scraped]
     condensed_reviews_path   = args.output_directory_path + '/all_reviews'
     
@@ -304,7 +304,8 @@ def main():
                     filename_rating_suffix = f'_{args.rating_filter}_stars'
                 else:
                     filename_rating_suffix = ''
-                file_name = book_id + filename_rating_suffix + '.json'
+                # add the word reviews to file name
+                file_name = book_id + filename_rating_suffix + '_reviews.json'
 
                 json.dump(reviews, open(args.output_directory_path + '/' + file_name, 'w'))
 
