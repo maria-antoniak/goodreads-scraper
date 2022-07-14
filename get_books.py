@@ -97,6 +97,11 @@ def get_series_uri(soup):
     else:
         return ""
 
+def get_top_5_other_editions(soup):
+    other_editions = []
+    for div in soup.findAll('div', {'class': 'otherEdition'}):
+      other_editions.append(div.find('a')['href'])
+    return other_editions
 
 def get_isbn(soup):
     try:
@@ -156,9 +161,11 @@ def scrape_book(book_id):
             'book_title':           ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
             "book_series":          get_series_name(soup),
             "book_series_uri":      get_series_uri(soup),
+            'top_5_other_editions': get_top_5_other_editions(soup),
             'isbn':                 get_isbn(soup),
             'isbn13':               get_isbn13(soup),
             'year_first_published': get_year_first_published(soup),
+            'authorlink':           soup.find('a', {'class': 'authorName'})['href'],
             'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()),
             'num_pages':            get_num_pages(soup),
             'genres':               get_genres(soup),
