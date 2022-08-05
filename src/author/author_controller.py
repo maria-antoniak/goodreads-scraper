@@ -1,18 +1,15 @@
 # TODO offer config option to infer `writingLanguages` from `countryOfCitizenship` if known
 
-import pprint
 import sys
-from typing import Dict, Optional
 
 from SPARQLWrapper import JSON, SPARQLWrapper
 
+from src.author.author_config import *
 from src.author.author_model import AuthorModel
 from src.author.author_service import AuthorService
-from src.common.formatters.json.to_json import to_json
-from src.common.utils.dict_operators import deep_get
-from src.author.sparql_queries import search_query, author_details_query
-from src.author.author_config import *
+from src.author.sparql_queries import author_details_query, search_query
 from src.common.errors.errors import return_none_for_index_error
+from src.common.utils.dict_operators import deep_get
 
 
 def search_for_result(author_full_name: str):
@@ -24,7 +21,10 @@ endpoint_url = "https://query.wikidata.org/sparql"
 
 def get_results(endpoint_url, query):
 
-    vi1, vi2 = sys.version_info[0], sys.version_info[1],
+    vi1, vi2 = (
+        sys.version_info[0],
+        sys.version_info[1],
+    )
     user_agent = f"WDQS-example Python/{vi1}.{vi2}"
 
     # TODO adjust user agent; see https://w.wiki/CX6
@@ -37,8 +37,9 @@ def get_results(endpoint_url, query):
 # TODO check encoding issues such as `Patrick Suskind`
 # TODO check strange results for `Mikhail Lermontov`
 
+
 @return_none_for_index_error
-def build_author_model(author_name: str) -> Dict:
+def build_author_model(author_name: str) -> AuthorModel:
 
     query = search_query.replace("QUERY", author_name)
 
@@ -49,7 +50,6 @@ def build_author_model(author_name: str) -> Dict:
 
     author_details = get_results(endpoint_url, author_query)
     author_details_json = author_details["results"]["bindings"]
-
 
     author_service = AuthorService(author_details_json)
 
@@ -111,14 +111,13 @@ def build_author_model(author_name: str) -> Dict:
         last_words=author_service.get_last_words()
         if config_last_words is True
         else None,
+        work_period_start_year=author_service.get_work_period_start_year()
+        if config_work_period_start_year is True
+        else None,
         writing_languages=author_service.get_writing_languages()
         if config_writing_languages is True
         else None,
     )
 
     model = author_model
-    result = to_json(model)
-
-    return result
-
-pprint.pprint(build_author_model("Doris Lessing"))
+    return model

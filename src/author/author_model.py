@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import List, Optional
 
 from dataclasses_json.api import LetterCase, dataclass_json
 
@@ -28,4 +28,5 @@ class AuthorModel:
     place_of_burial: Optional[str]
     place_of_death: Optional[str]
     religion: Optional[str]
+    work_period_start_year: Optional[int]
     writing_languages: Optional[List[str]]

@@ -3,7 +3,7 @@ from typing import Dict
 
 import bs4
 
-from src.common.errors.errors import return_none_for_index_error
+from src.common.errors.errors import return_none_for_index_error, return_none_for_type_error
 from src.common.network.network import get
 from src.common.parser.parser import parse
 from src.list.list_config import *
@@ -16,6 +16,7 @@ class ListService:
         self.lists_url = lists_url
         self.GOODREADS_BASE_URL = "https://www.goodreads.com"
 
+    @return_none_for_type_error
     def get_lists(self) -> [Dict]:
         # TODO: This method needs an integration test!
         """

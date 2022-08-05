@@ -4,7 +4,8 @@ from typing import Dict
 
 import bs4
 
-from src.common.errors.errors import return_none_for_index_error, return_none_for_assertion_error
+from src.common.errors.errors import (return_none_for_assertion_error,
+                                      return_none_for_index_error)
 from src.shelf.shelf_config import *
 
 
@@ -40,4 +41,3 @@ class ShelfService:
     @staticmethod
     def _get_shelf_count(shelf: str) -> int:
         return int(shelf.split()[-2].replace(",", ""))
-

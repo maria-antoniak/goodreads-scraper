@@ -1,3 +1,4 @@
+import math
 import re
 from typing import Dict, Union
 
@@ -52,6 +53,11 @@ class BookService:
         ).string.strip()
         return int(re.search("([0-9]{3,4})", year_of_publication).group())
 
+    @staticmethod
+    @return_none_for_type_error
+    def get_century_of_publication(year_of_publication: int) -> int:
+        return math.ceil(year_of_publication / 100)
+
     @return_none_for_attribute_error
     def get_genres(self) -> [str]:
         # TODO: It might be nice build a list of dicts considering the votes here.
@@ -67,6 +73,7 @@ class BookService:
 
     @staticmethod
     @return_none_for_index_error
+    @return_none_for_type_error
     def get_primary_genre(genre_list: [str]) -> str:
         # The genre with most votes
         return genre_list[0]
@@ -116,7 +123,9 @@ class BookService:
     @return_none_for_attribute_error
     def get_average_rating(self) -> Union[float, None]:
         value = self.soup.find("span", {"itemprop": "ratingValue"}).text.strip()
-        return float(value)
+        f = float(value)
+        return round(f, 2)
+
 
     @return_none_for_attribute_error
     def get_rating_distribution(self) -> Dict[str, int]:

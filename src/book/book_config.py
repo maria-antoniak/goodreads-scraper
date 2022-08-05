@@ -10,6 +10,9 @@ config_author_first_name = config_object["BOOK"].getboolean("AUTHOR_FIRST_NAME")
 config_author_full_name = config_object["BOOK"].getboolean("AUTHOR_FULL_NAME")
 config_author_last_name = config_object["BOOK"].getboolean("AUTHOR_LAST_NAME")
 config_average_rating = config_object["BOOK"].getboolean("AVERAGE_RATING")
+config_century_of_publication = config_object["BOOK"].getboolean(
+    "CENTURY_OF_PUBLICATION"
+)
 config_genres = config_object["BOOK"].getboolean("GENRES")
 config_isbn = config_object["BOOK"].getboolean("ISBN")
 config_isbn13 = config_object["BOOK"].getboolean("ISBN13")

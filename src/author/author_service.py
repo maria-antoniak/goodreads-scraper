@@ -1,11 +1,12 @@
+import re
+import string
 from typing import Dict, List, Optional
 
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
-from src.common.utils.dict_operators import deep_get
 from src.common.errors.errors import return_none_for_attribute_error
-import string
+from src.common.utils.dict_operators import deep_get
 
 
 class AuthorService:
@@ -111,6 +112,17 @@ class AuthorService:
         return AuthorService._get_nested_result(self, "writingLanguageLabel")
 
     @return_none_for_attribute_error
+    def get_work_period_start_year(self) -> Optional[int]:
+        #  P2031
+        date = AuthorService._get_nested_result(self, "workPeriodStartLabel")
+        if date:
+            date_formatted = re.sub(
+                r"-(?P<day>\d{2})-(?P<month>\d{2})(?P<time>t.+z)", "", date
+            )
+            return int(date_formatted)
+        return None
+
+    @return_none_for_attribute_error
     def get_writing_languages(self) -> Optional[List[str]]:
         #  P6886
         return AuthorService._get_nested_result(
@@ -120,9 +132,11 @@ class AuthorService:
     @return_none_for_attribute_error
     def get_occupations(self) -> Optional[List[str]]:
         #  P106
-        return sorted(AuthorService._get_nested_result(
-            self, "occupationLabel", first_result=False
-        ))
+        return sorted(
+            AuthorService._get_nested_result(
+                self, "occupationLabel", first_result=False
+            )
+        )
 
     @return_none_for_attribute_error
     def get_literary_movements(self) -> Optional[List[str]]:
@@ -158,9 +172,11 @@ class AuthorService:
     @return_none_for_attribute_error
     def get_notable_works(self) -> Optional[List[str]]:
         #  P800
-        return sorted(AuthorService._get_nested_result(
-            self, "notableWorksLabel", first_result=False
-        ))
+        return sorted(
+            AuthorService._get_nested_result(
+                self, "notableWorksLabel", first_result=False
+            )
+        )
 
     @return_none_for_attribute_error
     def get_genres(self) -> Optional[List[str]]:

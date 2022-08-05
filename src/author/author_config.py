@@ -31,4 +31,7 @@ config_place_of_birth = config_object["AUTHOR"].getboolean("PLACE_OF_BIRTH")
 config_place_of_burial = config_object["AUTHOR"].getboolean("PLACE_OF_BURIAL")
 config_place_of_death = config_object["AUTHOR"].getboolean("PLACE_OF_DEATH")
 config_religion = config_object["AUTHOR"].getboolean("RELIGION")
+config_work_period_start_year = config_object["AUTHOR"].getboolean(
+    "WORK_PERIOD_START_YEAR"
+)
 config_writing_languages = config_object["AUTHOR"].getboolean("WRITING_LANGUAGES")

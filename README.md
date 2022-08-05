@@ -94,11 +94,11 @@ To output an aggregated CSV file in addition to a JSON file, use the flag `--for
 
 Note: JSON is the default export format if not explicitly provided
 
-`python main.py --service book ---book_ids_path example/data/goodreads_classics.txt --output_directory_path . --format csv`
+`python main.py --service book -bip example/data/goodreads_classics_sample.txt --output_directory_path user_io/output/ -f csv`
 
 or
 
-`python main.py -s book -bip example/data/goodreads_classics_sample.txt -odp . -f csv`
+`python main.py -s book -bip example/data/goodreads_classics_sample.txt -odp user_io/output/ -f csv`
 
 # Collect Book Reviews
 

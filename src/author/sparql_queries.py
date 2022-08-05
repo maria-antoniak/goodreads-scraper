@@ -41,6 +41,7 @@ SELECT DISTINCT
     ?placeOfBurial ?placeOfBurialLabel 
     ?placeOfDeath ?placeOfDeathLabel 
     ?religion ?religionLabel 
+    ?workPeriodStart ?workPeriodStartLabel 
     ?writingLanguage ?writingLanguageLabel 
 
     WHERE {
@@ -71,6 +72,7 @@ SELECT DISTINCT
     OPTIONAL { ?item wdt:P119 ?placeOfBurial. }
     OPTIONAL { ?item wdt:P20 ?placeOfDeath. }
     OPTIONAL { ?item wdt:P140 ?religion. }
+    OPTIONAL { ?item wdt:P2031 ?workPeriodStart. }
     OPTIONAL { ?item wdt:P6886 ?writingLanguage. }
 
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }

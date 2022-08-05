@@ -110,3 +110,6 @@ class TestBookService:
 
     def test_get_genre(self):
         assert self.author_service.get_genres() == ["Science Fiction"]
+
+    def test_get_work_period_start_year(self):
+        assert self.author_service.get_work_period_start_year() == "1950"

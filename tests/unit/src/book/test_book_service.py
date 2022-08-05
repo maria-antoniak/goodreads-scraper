@@ -192,3 +192,9 @@ class TestBookService:
 
     def test_get_shelves_url_should_return_none_where_soup_find_fails(self):
         assert self.book_service_empty._get_shelves_url() is None
+
+    def test_get_century_of_publication(self):
+        assert (
+            self.book_service.get_century_of_publication(1992)
+            == 20
+        )

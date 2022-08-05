@@ -45,7 +45,7 @@ def main():
         books_already_scraped = get_books_already_scraped(args.output_directory_path)
         books_ids_to_scrape = get_books_to_scrape(ids, books_already_scraped)
 
-        for book_id in books_ids_to_scrape:
+        for book_id in sorted(books_ids_to_scrape):
 
             book_model = build_book_model(book_id)
             path = f"{args.output_directory_path}/{book_id}.json"

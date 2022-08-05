@@ -60,13 +60,14 @@ def run():
             result = future.result()
 
             if isinstance(result, ResultModel):
-                logging.info(f"Found '{result.book_id}'")
+                logging.info(f"|✔| '{result.book_id}'")
                 write_to_txt(
                     path_to_output_directory=config_matches_directory_path,
                     output_filename=config_matches_filename,
                     book_id=result.book_id,
                 )
             else:
+                logging.info(f"|✕| '{result.book_title} - {result.author_name}'")
                 write_to_txt(
                     path_to_output_directory=config_no_matches_directory_path,
                     output_filename=config_no_matches_filename,
