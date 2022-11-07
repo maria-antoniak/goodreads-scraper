@@ -149,7 +149,7 @@ def get_id(bookid):
     pattern = re.compile("([^.-]+)")
     return pattern.search(bookid).group()
 
-def get_cover_image(soup):
+def get_cover_image_uri(soup):
     series = soup.find('img', id='coverImage')
     if series:
         series_uri = series.get('src')
@@ -166,7 +166,7 @@ def scrape_book(book_id):
 
     return {'book_id_title':        book_id,
             'book_id':              get_id(book_id),
-            'cover_image':          get_cover_image(soup),
+            'cover_image_uri':      get_cover_image_uri(soup),
             'book_title':           ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
             "book_series":          get_series_name(soup),
             "book_series_uri":      get_series_uri(soup),
