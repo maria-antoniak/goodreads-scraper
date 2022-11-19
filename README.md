@@ -10,6 +10,12 @@ We used this Goodreads Scraper to collect data for our article, ["The Goodreads 
 
 <br><br>
 
+# Update (Fall 2022)
+
+Goodreads recently updated their book pages with a new layout. We've heard that our scraper is still functioning, but we haven't fully tested or updated the scraper to account for these changes. 
+
+<br><br>
+
 # What You Need
 
 To run these scripts, you will need [Python 3](https://www.anaconda.com/distribution/).
