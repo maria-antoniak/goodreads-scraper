@@ -148,6 +148,14 @@ def get_year_first_published(soup):
 def get_id(bookid):
     pattern = re.compile("([^.-]+)")
     return pattern.search(bookid).group()
+
+def get_cover_image_uri(soup):
+    series = soup.find('img', id='coverImage')
+    if series:
+        series_uri = series.get('src')
+        return series_uri
+    else:
+        return ""
     
 def scrape_book(book_id):
     url = 'https://www.goodreads.com/book/show/' + book_id
@@ -158,6 +166,7 @@ def scrape_book(book_id):
 
     return {'book_id_title':        book_id,
             'book_id':              get_id(book_id),
+            'cover_image_uri':      get_cover_image_uri(soup),
             'book_title':           ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
             "book_series":          get_series_name(soup),
             "book_series_uri":      get_series_uri(soup),
