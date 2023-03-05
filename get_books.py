@@ -134,10 +134,11 @@ def get_rating_distribution(soup):
 
 
 def get_num_pages(soup):
-    if soup.find('span', {'itemprop': 'numberOfPages'}):
-        num_pages = soup.find('span', {'itemprop': 'numberOfPages'}).text.strip()
-        return int(num_pages.split()[0])
-    return ''
+    pages_element = soup.find('p', {'data-testid': 'pagesFormat'})
+    if not pages_element:
+        return None
+    num_pages = re.search(r"([0-9,]*) *pages", pages_element.text).group(1).replace(",", "")
+    return int(num_pages)
 
 
 def get_year_first_published(soup):
@@ -180,7 +181,7 @@ def scrape_book(book_id):
     return {'book_id_title':        book_id,
             'book_id':              get_id(book_id),
             'cover_image_uri':      get_cover_image_uri(soup),
-            'book_title':           ' '.join(soup.find('h1', {'data-testid': 'bookTitle'}).text.split()),
+            'book_title':           ' '.join(soup.find('h1', {'data-testid': 'bookTitle'}).text.strip().split()),
             "book_series":          get_series_name(soup),
             "book_series_uri":      get_series_uri(soup),
             'top_5_other_editions': get_top_5_other_editions(soup),
@@ -188,7 +189,7 @@ def scrape_book(book_id):
             'isbn10':               get_isbn10(soup),
             'year_first_published': get_year_first_published(soup),
             'authorlink':           soup.find('a', {'class': 'ContributorLink'})['href'],
-            'author':               soup.find('span', {'class': 'ContributorLink__name'}).string,
+            'author':               ' '.join(soup.find('span', {'class': 'ContributorLink__name'}).text.strip().split()),
             'num_pages':            get_num_pages(soup),
             'genres':               get_genres(soup),
             'shelves':              get_shelves(soup),
@@ -239,9 +240,10 @@ def main():
 
             print('=============================')
 
-        except HTTPError as e:
-            print(e)
-            exit(0)
+        except Exception as e:
+            print("failed to scrape " + book_id)
+            continue
+            
 
 
     books = condense_books(args.output_directory_path)
