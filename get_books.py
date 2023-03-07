@@ -16,9 +16,9 @@ def get_all_lists(soup):
     lists = []
     list_count_dict = {}
 
-    if soup.find('a', text='More lists with this book...'):
+    if soup.find('a', string='More lists with this book...'):
 
-        lists_url = soup.find('a', text='More lists with this book...')['href']
+        lists_url = soup.find('a', string='More lists with this book...')['href']
 
         source = urlopen('https://www.goodreads.com' + lists_url)
         soup = bs4.BeautifulSoup(source, 'lxml')
@@ -52,10 +52,10 @@ def get_shelves(soup):
 
     shelf_count_dict = {}
     
-    if soup.find('a', text='See top shelves…'):
+    if soup.find('a', string='See top shelves…'):
 
         # Find shelves text.
-        shelves_url = soup.find('a', text='See top shelves…')['href']
+        shelves_url = soup.find('a', string='See top shelves…')['href']
         source = urlopen('https://www.goodreads.com' + shelves_url)
         soup = bs4.BeautifulSoup(source, 'lxml')
         shelves = [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'shelfStat'})]
@@ -81,21 +81,23 @@ def get_genres(soup):
 
 
 def get_series_name(soup):
-    series = soup.find(id="bookSeries").find("a")
-    if series:
-        series_name = re.search(r'\((.*?)\)', series.text).group(1)
-        return series_name
-    else:
+    series = soup.find(id="bookSeries")
+    if not series:
         return ""
+    series_link = series.find("a")
+    if not series_link:
+        return ""
+    return re.search(r'\((.*?)\)', series_link.text).group(1)
 
 
 def get_series_uri(soup):
-    series = soup.find(id="bookSeries").find("a")
-    if series:
-        series_uri = series.get("href")
-        return series_uri
-    else:
+    series = soup.find(id="bookSeries")
+    if not series:
         return ""
+    series_link = series.find("a")
+    if not series_link:
+        return ""
+    return series_link.get("href")
 
 def get_top_5_other_editions(soup):
     other_editions = []
@@ -103,47 +105,52 @@ def get_top_5_other_editions(soup):
       other_editions.append(div.find('a')['href'])
     return other_editions
 
+def get_isbn10(soup):
+    try:
+        return int(re.search(r'ISBN10: *([0-9]{10})', str(soup)).group(1))
+    except:
+        return None
+
 def get_isbn(soup):
     try:
-        isbn = re.findall(r'nisbn: [0-9]{10}' , str(soup))[0].split()[1]
-        return isbn
-    except:
-        return "isbn not found"
-
-def get_isbn13(soup):
-    try:
-        isbn13 = re.findall(r'nisbn13: [0-9]{13}' , str(soup))[0].split()[1]
-        return isbn13
-    except:
-        return "isbn13 not found"
-
+        for script_tag in soup.find_all('script', {'type':'application/ld+json'}):
+            data = json.loads(script_tag.string)
+            if "isbn" in data:
+                return data["isbn"]
+        return None
+    except Exception as e:
+        return None
 
 def get_rating_distribution(soup):
-    distribution = re.findall(r'renderRatingGraph\([\s]*\[[0-9,\s]+', str(soup))[0]
-    distribution = ' '.join(distribution.split())
-    distribution = [int(c.strip()) for c in distribution.split('[')[1].split(',')]
-    distribution_dict = {'5 Stars': distribution[0],
-                         '4 Stars': distribution[1],
-                         '3 Stars': distribution[2],
-                         '2 Stars': distribution[3],
-                         '1 Star':  distribution[4]}
+    histogram_div = soup.find('div', {"class": "RatingsHistogram"})
+    distribution_dict = {
+        '5 Stars': int(re.search(r"[0-9,]*", histogram_div.find('div', {"data-testid":"labelTotal-5"}).string).group().replace(",", "")),
+        '4 Stars': int(re.search(r"[0-9,]*", histogram_div.find('div', {"data-testid":"labelTotal-4"}).string).group().replace(",", "")),
+        '3 Stars': int(re.search(r"[0-9,]*", histogram_div.find('div', {"data-testid":"labelTotal-3"}).string).group().replace(",", "")),
+        '2 Stars': int(re.search(r"[0-9,]*", histogram_div.find('div', {"data-testid":"labelTotal-2"}).string).group().replace(",", "")),
+        '1 Stars': int(re.search(r"[0-9,]*", histogram_div.find('div', {"data-testid":"labelTotal-1"}).string).group().replace(",", "")),
+    }
     return distribution_dict
 
 
 def get_num_pages(soup):
-    if soup.find('span', {'itemprop': 'numberOfPages'}):
-        num_pages = soup.find('span', {'itemprop': 'numberOfPages'}).text.strip()
-        return int(num_pages.split()[0])
-    return ''
+    pages_element = soup.find('p', {'data-testid': 'pagesFormat'})
+    if not pages_element:
+        return None
+    regex_search_result = re.search(r"([0-9,]*) *pages", pages_element.text)
+    if not regex_search_result:
+        return None
+    num_pages = regex_search_result.group(1).replace(",", "")
+    return int(num_pages)
 
 
 def get_year_first_published(soup):
-    year_first_published = soup.find('nobr', attrs={'class':'greyText'})
-    if year_first_published:
-        year_first_published = year_first_published.string
-        return re.search('([0-9]{3,4})', year_first_published).group(1)
+    publication_paragraph = soup.find('p', attrs={'data-testid':'publicationInfo'})
+    if publication_paragraph:
+        publication_sentence = publication_paragraph.string
+        return int(re.search('[0-9]{3,4}', publication_sentence).group())
     else:
-        return ''
+        return None
 
 def get_id(bookid):
     pattern = re.compile("([^.-]+)")
@@ -156,7 +163,17 @@ def get_cover_image_uri(soup):
         return series_uri
     else:
         return ""
-    
+
+def get_num_ratings(soup):
+    ratings_text = soup.find('span', {'data-testid': 'ratingsCount'}).text
+    num_ratings = re.search(r"[0-9,]*", ratings_text).group().replace(",", "")
+    return int(num_ratings)
+
+def get_num_reviews(soup):
+    reviews_text = soup.find('span', {'data-testid': 'reviewsCount'}).text
+    num_reviews = re.search(r"[0-9,]*", reviews_text).group().replace(",", "")
+    return int(num_reviews)
+
 def scrape_book(book_id):
     url = 'https://www.goodreads.com/book/show/' + book_id
     source = urlopen(url)
@@ -167,22 +184,22 @@ def scrape_book(book_id):
     return {'book_id_title':        book_id,
             'book_id':              get_id(book_id),
             'cover_image_uri':      get_cover_image_uri(soup),
-            'book_title':           ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
+            'book_title':           ' '.join(soup.find('h1', {'data-testid': 'bookTitle'}).text.strip().split()),
             "book_series":          get_series_name(soup),
             "book_series_uri":      get_series_uri(soup),
             'top_5_other_editions': get_top_5_other_editions(soup),
             'isbn':                 get_isbn(soup),
-            'isbn13':               get_isbn13(soup),
+            'isbn10':               get_isbn10(soup),
             'year_first_published': get_year_first_published(soup),
-            'authorlink':           soup.find('a', {'class': 'authorName'})['href'],
-            'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()),
+            'authorlink':           soup.find('a', {'class': 'ContributorLink'})['href'],
+            'author':               ' '.join(soup.find('span', {'class': 'ContributorLink__name'}).text.strip().split()),
             'num_pages':            get_num_pages(soup),
             'genres':               get_genres(soup),
             'shelves':              get_shelves(soup),
             'lists':                get_all_lists(soup),
-            'num_ratings':          soup.find('meta', {'itemprop': 'ratingCount'})['content'].strip(),
-            'num_reviews':          soup.find('meta', {'itemprop': 'reviewCount'})['content'].strip(),
-            'average_rating':       soup.find('span', {'itemprop': 'ratingValue'}).text.strip(),
+            'num_ratings':          get_num_ratings(soup),
+            'num_reviews':          get_num_reviews(soup),
+            'average_rating':       float(soup.find('div', {'class': 'RatingStatistics__rating'}).string.strip()),
             'rating_distribution':  get_rating_distribution(soup)}
 
 def condense_books(books_directory_path):
@@ -222,20 +239,21 @@ def main():
 
             book = scrape_book(book_id)
             # Add book metadata to file name to be more specific
-            json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'))
+            json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'), indent=4)
 
             print('=============================')
 
-        except HTTPError as e:
-            print(e)
-            exit(0)
+        except Exception as e:
+            print("failed to scrape " + book_id)
+            continue
+            
 
 
     books = condense_books(args.output_directory_path)
     if args.format == 'json':
-        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'), indent=4)
     elif args.format == 'csv':
-        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'), indent=4)
         book_df = pd.read_json(f"{condensed_books_path}.json")
         book_df.to_csv(f"{condensed_books_path}.csv", index=False, encoding='utf-8')
         
