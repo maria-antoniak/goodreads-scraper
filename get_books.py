@@ -137,7 +137,10 @@ def get_num_pages(soup):
     pages_element = soup.find('p', {'data-testid': 'pagesFormat'})
     if not pages_element:
         return None
-    num_pages = re.search(r"([0-9,]*) *pages", pages_element.text).group(1).replace(",", "")
+    regex_search_result = re.search(r"([0-9,]*) *pages", pages_element.text)
+    if not regex_search_result:
+        return None
+    num_pages = regex_search_result.group(1).replace(",", "")
     return int(num_pages)
 
 
