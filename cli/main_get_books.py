@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime
+from typing import AnyStr
 import json
 import os
 import re
@@ -7,8 +8,13 @@ import time
 
 from urllib.request import urlopen
 from urllib.error import HTTPError
+from get_web_driver import get_web_driver
 import bs4
 import pandas as pd
+from selenium.webdriver.chromium.webdriver import ChromiumDriver
+from selenium.webdriver.common.by import By
+
+from dataclasses import dataclass
 
 
 def get_all_lists(soup):
@@ -77,22 +83,21 @@ def get_genres(soup):
     return genres
 
 
-def get_series_name(soup):
+def get_series_name(soup, driver):
     series = soup.find(id="bookSeries").find("a")
-    if series:
-        series_name = re.search(r'\((.*?)\)', series.text).group(1)
-        return series_name
-    else:
+    if not series:
         return ""
+    # TODO: page has changed this will no longer work
+    series_name = re.search(r'\((.*?)\)', series.text).group(1)
+    return series_name
 
 
-def get_series_uri(soup):
+def get_series_uri(soup, driver):
     series = soup.find(id="bookSeries").find("a")
-    if series:
-        series_uri = series.get("href")
-        return series_uri
-    else:
+    if not series:
         return ""
+    series_uri = series.get("href")
+    return series_uri
 
 
 def get_top_5_other_editions(soup):
@@ -102,20 +107,22 @@ def get_top_5_other_editions(soup):
     return other_editions
 
 
-def get_isbn(soup):
-    try:
-        isbn = re.findall(r'nisbn: [0-9]{10}', str(soup))[0].split()[1]
-        return isbn
-    except:
-        return "isbn not found"
+def get_isbn(soup, driver) -> str | None:
+    # try:
+    #     isbn = re.findall(r'nisbn: [0-9]{10}', str(soup))[0].split()[1]
+    #     return isbn
+    # except:
+    #     raise RuntimeError("isbn not found")
+    return None
 
 
-def get_isbn13(soup):
-    try:
-        isbn13 = re.findall(r'nisbn13: [0-9]{13}', str(soup))[0].split()[1]
-        return isbn13
-    except:
-        return "isbn13 not found"
+def get_isbn13(soup, driver) -> str | None:
+    # try:
+    #     isbn13 = re.findall(r'nisbn13: [0-9]{13}', str(soup))[0].split()[1]
+    #     return isbn13
+    # except:
+    #     return "isbn13 not found"
+    return None
 
 
 def get_rating_distribution(soup):
@@ -146,36 +153,50 @@ def get_year_first_published(soup):
         return ''
 
 
-def get_id(bookid):
-    pattern = re.compile("([^.-]+)")
-    return pattern.search(bookid).group()
+BOOK_ID_PATTERN = re.compile("([^.-]+)")
 
 
-def get_cover_image_uri(soup):
-    series = soup.find('img', id='coverImage')
-    if series:
-        series_uri = series.get('src')
-        return series_uri
-    else:
-        return ""
+def get_id_group(book_id: str) -> AnyStr:
+    return BOOK_ID_PATTERN.search(book_id).group()
 
 
-def scrape_book(book_id):
-    url = 'https://www.goodreads.com/book/show/' + book_id
+def get_cover_image_uri(driver: ChromiumDriver) -> str | None:
+    el = driver.find_element(By.CSS_SELECTOR, "img[class='ResponsiveImage']")
+    src = el.get_attribute('src') if el is not None else None
+
+    return src
+
+
+def get_book_title(driver: ChromiumDriver) -> str:
+    el = driver.find_element(By.CSS_SELECTOR, "h1[data-testid='bookTitle']")
+    title = el.text if el is not None else None
+
+    return title
+
+
+def scrape_book(book_id: str, driver: ChromiumDriver):
+    url = f'https://www.goodreads.com/book/show/{book_id}'
+
+    driver.get(url)
     source = urlopen(url)
     soup = bs4.BeautifulSoup(source, 'html.parser')
 
     time.sleep(2)
 
-    return {'book_id_title': book_id,
-            'book_id': get_id(book_id),
-            'cover_image_uri': get_cover_image_uri(soup),
-            'book_title': ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
-            "book_series": get_series_name(soup),
-            "book_series_uri": get_series_uri(soup),
+    book_id_title = book_id
+    book_id_group = get_id_group(book_id)
+    cover_image_uri = get_cover_image_uri(driver)
+    book_title = get_book_title(driver)
+
+    return {'book_id_title': book_id_title,
+            'book_id': book_id_group,
+            'cover_image_uri': cover_image_uri,
+            'book_title': book_title,
+            "book_series": get_series_name(soup, driver),
+            "book_series_uri": get_series_uri(soup, driver),
             'top_5_other_editions': get_top_5_other_editions(soup),
-            'isbn': get_isbn(soup),
-            'isbn13': get_isbn13(soup),
+            'isbn': get_isbn(soup, driver),
+            'isbn13': get_isbn13(soup, driver),
             'year_first_published': get_year_first_published(soup),
             'authorlink': soup.find('a', {'class': 'authorName'})['href'],
             'author': ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()),
@@ -203,32 +224,60 @@ def condense_books(books_directory_path):
     return books
 
 
-def main():
-    start_time = datetime.now()
-    script_name = os.path.basename(__file__)
-
+def get_arg_parse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
     parser.add_argument('--format', type=str, action="store", default="json",
                         dest="format", choices=["json", "csv"],
                         help="set file output format")
-    args = parser.parse_args()
 
-    book_ids = [line.strip() for line in open(args.book_ids_path, 'r') if line.strip()]
+    return parser
+
+
+@dataclass
+class BooksToScrape:
+    books_to_scrape: list[str]
+    books_already_scraped: list[str]
+    book_ids: list[str]
+
+
+def get_books_to_scrape(book_ids_path: str, output_directory: str) -> BooksToScrape:
+    # TODO: seems this could be done easier with sets!
+    with open(book_ids_path, 'r') as book_ids_file:
+        book_ids = [line.strip() for line in book_ids_file if line.strip()]
     books_already_scraped = [file_name.replace('_book-metadata.json', '') for file_name in
-                             os.listdir(args.output_directory_path) if
+                             os.listdir(output_directory) if
                              file_name.endswith('.json') and not file_name.startswith('all_books')]
     books_to_scrape = [book_id for book_id in book_ids if book_id not in books_already_scraped]
-    condensed_books_path = args.output_directory_path + '/all_books'
 
-    for i, book_id in enumerate(books_to_scrape):
+    return BooksToScrape(books_to_scrape=books_to_scrape, books_already_scraped=books_already_scraped, book_ids=book_ids)
+
+
+def main():
+    start_time = datetime.now()
+    script_name = os.path.basename(__file__)
+
+    parser = get_arg_parse()
+    args = parser.parse_args()
+
+    # TODO: make browser name an arg
+    driver = get_web_driver('edge')
+
+    output_directory_path = args.output_directory_path
+    book_ids_path = args.book_ids_path
+
+    scrape_info = get_books_to_scrape(book_ids_path, output_directory_path)
+
+    condensed_books_path = f'{output_directory_path}/all_books'
+
+    for i, book_id in enumerate(scrape_info.books_to_scrape):
         try:
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(
-                i + 1 + len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
+                i + 1 + len(scrape_info.books_already_scraped)) + ' out of ' + str(len(scrape_info.book_ids)) + ' books')
 
-            book = scrape_book(book_id)
+            book = scrape_book(book_id, driver)
             # Add book metadata to file name to be more specific
             json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'))
 
@@ -240,9 +289,9 @@ def main():
 
     books = condense_books(args.output_directory_path)
     if args.format == 'json':
-        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'), indent=4)
     elif args.format == 'csv':
-        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'), indent=4)
         book_df = pd.read_json(f"{condensed_books_path}.json")
         book_df.to_csv(f"{condensed_books_path}.csv", index=False, encoding='utf-8')
 

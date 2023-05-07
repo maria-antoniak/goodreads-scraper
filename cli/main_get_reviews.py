@@ -13,15 +13,15 @@ from selenium.webdriver.support.ui import Select
 from urllib.error import HTTPError
 from selenium.webdriver.common.by import By
 import pandas as pd
-import geckodriver_autoinstaller
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chromium.webdriver import ChromiumDriver
 
-RATING_STARS_DICT = {'it was amazing': 5,
-                     'really liked it': 4,
-                     'liked it': 3,
-                     'it was ok': 2,
-                     'did not like it': 1,
-                     '': None}
+RATING_STARS: dict[str, int | None] = {'it was amazing': 5,
+                                       'really liked it': 4,
+                                       'liked it': 3,
+                                       'it was ok': 2,
+                                       'did not like it': 1,
+                                       '': None}
 
 
 def switch_reviews_mode(driver, book_id, sort_order, rating=None):
@@ -42,11 +42,11 @@ def switch_reviews_mode(driver, book_id, sort_order, rating=None):
     return True
 
 
-def get_rating(node):
-    if len(node.find_all('span', {'class': 'staticStars'})) > 0:
-        rating = node.find_all('span', {'class': 'staticStars'})[0]['title']
-        return RATING_STARS_DICT[rating]
-    return ''
+def get_rating(node) -> str | None:
+    if len(node.find_all('span', {'class': 'staticStars'})) == 0:
+        return ''
+    rating = node.find_all('span', {'class': 'staticStars'})[0]['title']
+    return RATING_STARS[rating]
 
 
 def get_user_name(node):
@@ -230,8 +230,6 @@ def get_reviews_first_ten_pages(driver, book_id, sort_order, rating):
     else:
         return reviews
 
-    return reviews
-
 
 def condense_reviews(reviews_directory_path):
     reviews = []
@@ -244,20 +242,38 @@ def condense_reviews(reviews_directory_path):
     return reviews
 
 
-def main():
-    start_time = datetime.now()
-    script_name = os.path.basename(__file__)
+def get_web_driver(browser_name: str) -> ChromiumDriver:
+    if browser_name == 'chrome':
+        driver = webdriver.Chrome(ChromeDriverManager().install())
+    elif browser_name == 'edge':
+        driver = webdriver.Edge()
+    else:
+        raise ValueError('Please select a web browser: Chrome or Edge')
 
+    return driver
+
+
+def get_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument('--book_ids_path', type=str)
     parser.add_argument('--output_directory_path', type=str)
+    # TODO: choice to limit us here?
     parser.add_argument('--browser', type=str, help="choose a browser")
     parser.add_argument('--rating_filter', default=None, type=int)
     parser.add_argument('--sort_order', default='default', type=str)
+    # TODO: choice to limit us here?
     parser.add_argument('--format', type=str, action="store", default="json",
                         dest="format",
                         help="set file output format")
 
+    return parser
+
+
+def main():
+    start_time = datetime.now()
+    script_name = os.path.basename(__file__)
+
+    parser = get_arg_parser()
     args = parser.parse_args()
 
     if not args.book_ids_path:
@@ -274,30 +290,12 @@ def main():
                              file_name.endswith('.json') and not file_name.startswith(
                                  'all_reviews') and "_reviews" in file_name]
     books_to_scrape = [book_id for book_id in book_ids if book_id not in books_already_scraped]
-    condensed_reviews_path = args.output_directory_path + '/all_reviews'
+    condensed_reviews_path = f'{args.output_directory_path}/all_reviews'
 
-    # Set up driver
-    if args.browser is not None:
-        if args.browser.lower() == 'chrome':
-            driver = webdriver.Chrome(ChromeDriverManager().install())
-        elif args.browser.lower() == 'firefox':
-            geckodriver_autoinstaller.install()
-            driver = webdriver.Firefox()
-        # Get an option to work with Google Colab
-        elif args.browser.lower() == "colab":
-            from selenium.webdriver.chrome.options import Options
-            chrome_options = Options()
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument('--no-sandbox')
-            driver = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver', options=chrome_options)
-        else:
-            print('Please select a web browser: Chrome or Firefox')
-    else:
-        print('Please select a web browser: Chrome or Firefox')
+    driver = get_web_driver(args.browser.lower())
 
     for i, book_id in enumerate(books_to_scrape):
         try:
-
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(
                 i + 1 + len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')

@@ -263,18 +263,6 @@ files = [
 test = ["pytest (>=6)"]
 
 [[package]]
-name = "geckodriver-autoinstaller"
-version = "0.1.0"
-description = "Automatically install geckodriver that supports the currently installed version of chrome."
-category = "main"
-optional = false
-python-versions = ">=3"
-files = [
-    {file = "geckodriver-autoinstaller-0.1.0.tar.gz", hash = "sha256:08953404903750a7e0905913d86eab13849c75ed61eb281c45697d9f5b5e2eb2"},
-    {file = "geckodriver_autoinstaller-0.1.0-py3-none-any.whl", hash = "sha256:609236aab9c111af10685cab1ab5551ce86b471101b6add34642545bc7e84bdc"},
-]
-
-[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -973,4 +961,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1b01a8e61288910c9e4af2607117f04fbd87db3c14463270af95f9137066fc50"
+content-hash = "27ee60fdd06e748d6b5e57eab17db91f0fd725d6ae0c6fc77f73b96b066c9509"
