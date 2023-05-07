@@ -1,3 +1,8 @@
+# Goodreads Snarfer 
+
+Forking from Goodreads Scraper.  <b>This README will be out of date for a while</b>. 
+The original README.md contents follow:
+
 # Goodreads Scraper
 
 These Python scripts can be used to collect book reviews and metadata from Goodreads.

@@ -1,9 +1,0 @@
-beautifulsoup4
-selenium
-lxml
-geckodriver-autoinstaller
-webdriver_manager
-pandas
-regex
-credentials
-
