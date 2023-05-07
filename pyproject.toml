@@ -17,6 +17,7 @@ regex = "^2023.5.5"
 credentials = "^1.1"
 geckodriver-autoinstaller = "^0.1.0"
 webdriver-manager = "^3.8.6"
+mypy = "^1.2.0"
 
 
 [build-system]
