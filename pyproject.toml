@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "goodreads-snarfer"
+version = "0.1.0"
+description = "Pull in information from GoodReads. (Forked from https://github.com/maria-antoniak/goodreads-scraper)"
+authors = ["Leonard Janke <leonard.janke@proton.me>"]
+license = "GPL-3"
+readme = "README.md"
+packages = [{include = "goodreads_snarfer"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+selenium = "^4.9.0"
+beautifulsoup4 = "^4.12.2"
+lxml = "^4.9.2"
+pandas = "^2.0.1"
+regex = "^2023.5.5"
+credentials = "^1.1"
+geckodriver-autoinstaller = "^0.1.0"
+webdriver-manager = "^3.8.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
