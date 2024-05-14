@@ -5,6 +5,8 @@ import math
 import sqlite3
 import time
 import os
+import pandas as pd
+import argparse
 
 
 class ExtractBookId:
@@ -14,6 +16,7 @@ class ExtractBookId:
     Usage:
         1. Create an instance of ExtractBookId.
         2. Call the method `scrape_page()` to start scraping.
+        3. If You want to convert the ids in the db to txt format run db_to_txt method
 
     Example:
         >>> extractor = ExtractBookId()
@@ -23,15 +26,15 @@ class ExtractBookId:
         Ensure that you have an active internet connection to fetch data from Goodreads.
         The data will be stored in books_id.db
     """
-    def __init__(self):
+    def __init__(self,list_amt_to_scrape):
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         }
-        self.collection=50 # Change this according to your needs, represents how many collections do u want to extract
-        self.all_topic_nums=[i for i in range(1,self.collection)]
+        self.all_topic_nums=list_amt_to_scrape
         self.request_delay = 10
-    
+
+
     def _clear_console(self):
         print("Clearing console...")
         os.system('cls' if os.name == 'nt' else 'clear')  # Windows has cls and Linux/Mac has clear
@@ -43,7 +46,6 @@ class ExtractBookId:
             page_no=0
             pages=True
             first=True
-            Group_ids=[]
             num=0
             while pages is True:
                 
@@ -126,7 +128,21 @@ class ExtractBookId:
         time.sleep(self.request_delay)
         print(f'Sleeping for {self.request_delay} seconds')
 
+    def db_to_txt(self):
 
+        # Connect to the SQLite database
+        conn = sqlite3.connect('books_id.db')
+
+        # Use Pandas to read SQL query results directly into a DataFrame
+        df = pd.read_sql_query("SELECT * FROM books", conn)
+
+        # Close the connection
+        conn.close()
+
+        # Now df contains all the data from the database table
+        print(df)
+        ids=df['id']
+        ids.to_csv('book_ids.txt', index=False, header=False)
             
     def _find_pages(self,soup):
             '''
@@ -140,43 +156,6 @@ class ExtractBookId:
                 # Assume 'soup' is a BeautifulSoup object representing the parsed HTML content of the web page
                 number_of_books, number_of_votes = find_pages(soup)
             ''' 
-
-            # number_of_books = 0
-            # number_of_votes = 0
-                
-            # try:
-            #     stacked_div = soup.find('div', class_='stacked').div
-            #     if stacked_div:
-            #         div_text = stacked_div.text
-                    
-            #         div_text = ''.join([item for item in stacked_div.contents if not item.name == 'a'])
-                    
-            #         div_text_list = div_text.split('·')
-                    
-            #         div_text_list = [item.strip() for item in div_text_list if item.strip()]
-                    
-            #         div_text_list=div_text_list[:-1]   
-            #     else:
-            #         return number_of_books,number_of_votes
-
-                
-            #     for item in div_text_list:
-            #         if 'books' in item:
-            #             # Extract the number of books
-            #             try:
-            #                 number_of_books = int(item.strip().split()[0].replace(',', ''))  # Remove commas from the number
-            #             except ValueError:
-            #                 number_of_books = 0  # Set to None if conversion to int fails
-            #         elif 'voters' in item:
-            #             # Extract the number of votes
-            #             try:
-            #                 number_of_votes = int(item.strip().split()[0].replace(',', ''))  # Remove commas from the number
-            #             except ValueError:
-            #                 number_of_votes = 0  # Set to None if conversion to int fails
-            # except:
-            #     return number_of_books,number_of_votes
-            # finally:
-            #     return number_of_books,number_of_votes
             number_of_books = 0
             number_of_votes = 0
             
@@ -282,9 +261,52 @@ class ExtractBookId:
             # Close the connection
             if conn:
                 conn.close()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Scrape book IDs, list names, votes, and number of books from Goodreads.")
+    parser.add_argument("-c", "--custom-scrap", choices=["yes", "no"], default="no",
+                        help="Whether to perform custom scraping for a specific list (default: no).")
+    parser.add_argument("-id", "--list-id", type=int,
+                         help="The ID of the list to scrape (required if custom-scrap is 'yes'). For more information, visit: https://www.goodreads.com/list?ref=nav_brws_lists")
+    parser.add_argument("-t", "--txt-convert", choices=["yes", "no"], default="no",
+                        help="Whether to convert the database to a text file (default: no).")
+    return parser.parse_args()
+
+
 def main():
-    ext=ExtractBookId()
-    ext.scrape_page()
+    args = parse_args()
+
+    if args.custom_scrap == "yes":
+        if args.list_id is None:
+            print("Error: --list-id argument is required when custom-scrap is 'yes'.")
+            exit(1)
+        else:
+            if not isinstance(args.list_id, int):
+                print("Error: --list-id argument must be an integer.")
+                exit(1)
+            else:
+                list_id = args.list_id
+                print(f"Custom scraping for list ID: {list_id}")
+                list_amt_to_scrape = [list_id]
+                
+    else:
+        random_scrape = 50
+        list_amt_to_scrape = [i for i in range(1, random_scrape)]
+    
+    scrape = ExtractBookId(list_amt_to_scrape)
+    scrape.scrape_page()
+
+    if args.txt_convert == "yes":
+        if os.path.exists('books_id.db'):
+            print("Converting database to text file...")
+            scrape.db_to_txt()
+            print("Conversion completed successfully.")
+        else:
+            print("Error: Database file 'books_id.db' not found.")
+            exit(1)
+
 
 if __name__ == "__main__":
     main()
