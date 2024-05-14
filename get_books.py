@@ -101,11 +101,12 @@ def get_series_uri(soup):
     else:
         return ""
 
-def get_top_5_other_editions(soup):
-    other_editions = []
-    for div in soup.findAll('div', {'class': 'otherEdition'}):
-      other_editions.append(div.find('a')['href'])
-    return other_editions
+
+# def get_top_5_other_editions(soup):
+#     other_editions = []
+#     for div in soup.findAll('div', {'class': 'otherEdition'}):
+#       other_editions.append(div.find('a')['href'])
+#     return other_editions
 
 
 def get_publication_info(soup):
@@ -203,12 +204,11 @@ def scrape_book(book_id):
             'book_title':           ' '.join(soup.find('h1', {'data-testid': 'bookTitle'}).text.split()),#done
             # "book_series":          get_series_name(soup),   # cannot find
             # "book_series_uri":      get_series_uri(soup),    # cannot find
-            'top_5_other_editions': get_top_5_other_editions(soup),
+            # 'top_5_other_editions': get_top_5_other_editions(soup),# inside DOM element
             # 'isbn':                 get_isbn(soup),   # inside DOM element
             # 'isbn13':               get_isbn13(soup), # inside DOM element
             'format':               get_format_info(soup),#Added
             'publication_info':     get_publication_info(soup),#Added
-                                    
             'authorlink':           contributor_info(soup)['href'],#done
             'author':               contributor_info(soup).find('span', {'class': 'ContributorLink__name'}).text.strip(),#done
             'num_pages':            get_num_pages(soup),#Added/done
@@ -255,12 +255,17 @@ def main():
         try:
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
-
+        
             book = scrape_book(book_id)
             # Add book metadata to file name to be more specific
             json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'))
 
             print('=============================')
+        # This will handle if the Page doesn't exist or if there is no book title on the Goodreads website, 
+        # (we get an attribute error representing there is no H1 tag on the page), Right now There are no H1 tags on the pages which dont exist.
+        except AttributeError as e: 
+            print(e)
+            continue
 
         except HTTPError as e:
             print(e)
