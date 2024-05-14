@@ -182,11 +182,12 @@ To use the `get_book_ids.py` script, follow these steps:
 Here's an example of how to use the script for custom scraping and database conversion:
 ```bash
 python get_book_ids.py -c yes -id 12345 -t yes
+ ```
 
 
 
 
-# Credit
+# Credits
 
 This code is written by Maria Antoniak and Melanie Walsh. The code is licensed under a [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/#).
 
