@@ -282,7 +282,9 @@ class ExtractBookId:
             # Close the connection
             if conn:
                 conn.close()
-
-if __name__ == "__main__":
+def main():
     ext=ExtractBookId()
     ext.scrape_page()
+
+if __name__ == "__main__":
+    main()
