@@ -187,7 +187,12 @@ def get_cover_image_uri(soup):
     else:
         return ""
     
-    
+def book_details(soup):
+    try:
+        return soup.find('div',class_='DetailsLayoutRightParagraph').text
+    except:
+        return ' '
+
 def contributor_info(soup):
     contributor = soup.find('a', {'class': 'ContributorLink'})
     return contributor  
@@ -202,6 +207,7 @@ def scrape_book(book_id):
             # 'book_id':              get_id(book_id),# redundant
             'cover_image_uri':      get_cover_image_uri(soup),#done
             'book_title':           ' '.join(soup.find('h1', {'data-testid': 'bookTitle'}).text.split()),#done
+            'book_details':         book_details(soup), #Added
             # "book_series":          get_series_name(soup),   # cannot find
             # "book_series_uri":      get_series_uri(soup),    # cannot find
             # 'top_5_other_editions': get_top_5_other_editions(soup),# inside DOM element
@@ -258,7 +264,7 @@ def main():
         
             book = scrape_book(book_id)
             # Add book metadata to file name to be more specific
-            json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'))
+            json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'),indent=4) # Added indent to make it more readable
 
             print('=============================')
         # This will handle if the Page doesn't exist or if there is no book title on the Goodreads website, 
@@ -274,7 +280,7 @@ def main():
 
     books = condense_books(args.output_directory_path)
     if args.format == 'json':
-        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'),indent=4) 
     elif args.format == 'csv':
         json.dump(books, open(f"{condensed_books_path}.json", 'w'))
         book_df = pd.read_json(f"{condensed_books_path}.json")
