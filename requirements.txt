@@ -7,3 +7,4 @@ pandas
 regex
 credentials
 argparse
+langdetect
