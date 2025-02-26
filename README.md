@@ -10,9 +10,9 @@ We used this Goodreads Scraper to collect data for our article, ["The Goodreads 
 
 <br><br>
 
-# Update (Fall 2022)
+# Update (January 2025)
 
-Goodreads recently updated their book pages with a new layout. We've heard that our scraper is still functioning, but we haven't fully tested or updated the scraper to account for these changes. 
+This project is **unmaintained** and no longer functioning. The Goodreads website was updated a couple years ago, and the new formatting broke many parts of our scraper. **We do not plan to make updates.**
 
 <br><br>
 
