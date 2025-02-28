@@ -10,74 +10,78 @@ from urllib.error import HTTPError
 import bs4
 import pandas as pd
 
+#Doesn't Work 
+# def get_all_lists(soup):
 
-def get_all_lists(soup):
+#     lists = []
+#     list_count_dict = {}
 
-    lists = []
-    list_count_dict = {}
+#     if soup.find('a', text='More lists with this book...'):
 
-    if soup.find('a', text='More lists with this book...'):
+#         lists_url = soup.find('a', text='More lists with this book...')['href']
 
-        lists_url = soup.find('a', text='More lists with this book...')['href']
+#         source = urlopen('https://www.goodreads.com' + lists_url)
+#         soup = bs4.BeautifulSoup(source, 'lxml')
+#         lists += [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'cell'})]
 
-        source = urlopen('https://www.goodreads.com' + lists_url)
-        soup = bs4.BeautifulSoup(source, 'lxml')
-        lists += [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'cell'})]
+#         i = 0
+#         while soup.find('a', {'class': 'next_page'}) and i <= 10:
 
-        i = 0
-        while soup.find('a', {'class': 'next_page'}) and i <= 10:
+#             time.sleep(2)
+#             next_url = 'https://www.goodreads.com' + soup.find('a', {'class': 'next_page'})['href']
+#             source = urlopen(next_url)
+#             soup = bs4.BeautifulSoup(source, 'lxml')
 
-            time.sleep(2)
-            next_url = 'https://www.goodreads.com' + soup.find('a', {'class': 'next_page'})['href']
-            source = urlopen(next_url)
-            soup = bs4.BeautifulSoup(source, 'lxml')
+#             lists += [node.text for node in soup.find_all('div', {'class': 'cell'})]
+#             i += 1
 
-            lists += [node.text for node in soup.find_all('div', {'class': 'cell'})]
-            i += 1
+#         # Format lists text.
+#         for _list in lists:
+#             # _list_name = ' '.join(_list.split()[:-8])
+#             # _list_rank = int(_list.split()[-8][:-2]) 
+#             # _num_books_on_list = int(_list.split()[-5].replace(',', ''))
+#             # list_count_dict[_list_name] = _list_rank / float(_num_books_on_list)     # TODO: switch this back to raw counts
+#             _list_name = _list.split()[:-2][0]
+#             _list_count = int(_list.split()[-2].replace(',', ''))
+#             list_count_dict[_list_name] = _list_count
 
-        # Format lists text.
-        for _list in lists:
-            # _list_name = ' '.join(_list.split()[:-8])
-            # _list_rank = int(_list.split()[-8][:-2]) 
-            # _num_books_on_list = int(_list.split()[-5].replace(',', ''))
-            # list_count_dict[_list_name] = _list_rank / float(_num_books_on_list)     # TODO: switch this back to raw counts
-            _list_name = _list.split()[:-2][0]
-            _list_count = int(_list.split()[-2].replace(',', ''))
-            list_count_dict[_list_name] = _list_count
+#     return list_count_dict
 
-    return list_count_dict
+#Doesn't work
+# def get_shelves(soup):
 
-
-def get_shelves(soup):
-
-    shelf_count_dict = {}
+#     shelf_count_dict = {}
     
-    if soup.find('a', text='See top shelves…'):
+#     if soup.find('a', text='See top shelves…'):
 
-        # Find shelves text.
-        shelves_url = soup.find('a', text='See top shelves…')['href']
-        source = urlopen('https://www.goodreads.com' + shelves_url)
-        soup = bs4.BeautifulSoup(source, 'lxml')
-        shelves = [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'shelfStat'})]
+#         # Find shelves text.
+#         shelves_url = soup.find('a', text='See top shelves…')['href']
+#         source = urlopen('https://www.goodreads.com' + shelves_url)
+#         soup = bs4.BeautifulSoup(source, 'lxml')
+#         shelves = [' '.join(node.text.strip().split()) for node in soup.find_all('div', {'class': 'shelfStat'})]
         
-        # Format shelves text.
-        shelf_count_dict = {}
-        for _shelf in shelves:
-            _shelf_name = _shelf.split()[:-2][0]
-            _shelf_count = int(_shelf.split()[-2].replace(',', ''))
-            shelf_count_dict[_shelf_name] = _shelf_count
+#         # Format shelves text.
+#         shelf_count_dict = {}
+#         for _shelf in shelves:
+#             _shelf_name = _shelf.split()[:-2][0]
+#             _shelf_count = int(_shelf.split()[-2].replace(',', ''))
+#             shelf_count_dict[_shelf_name] = _shelf_count
 
-    return shelf_count_dict
+#     return shelf_count_dict
 
 
 def get_genres(soup):
-    genres = []
-    for node in soup.find_all('div', {'class': 'left'}):
-        current_genres = node.find_all('a', {'class': 'actionLinkLite bookPageGenreLink'})
-        current_genre = ' > '.join([g.text for g in current_genres])
-        if current_genre.strip():
-            genres.append(current_genre)
-    return genres
+    genres_div = soup.find("div", {"data-testid": "genresList"})
+    
+    if genres_div:
+        
+        genre_links = genres_div.find_all("a", class_="Button--tag-inline")
+        
+        genres = [link.text.strip() for link in genre_links]
+        
+        return genres
+    else:
+        return []
 
 
 def get_series_name(soup):
@@ -97,66 +101,101 @@ def get_series_uri(soup):
     else:
         return ""
 
-def get_top_5_other_editions(soup):
-    other_editions = []
-    for div in soup.findAll('div', {'class': 'otherEdition'}):
-      other_editions.append(div.find('a')['href'])
-    return other_editions
 
-def get_isbn(soup):
-    try:
-        isbn = re.findall(r'nisbn: [0-9]{10}' , str(soup))[0].split()[1]
-        return isbn
-    except:
-        return "isbn not found"
+# def get_top_5_other_editions(soup):
+#     other_editions = []
+#     for div in soup.findAll('div', {'class': 'otherEdition'}):
+#       other_editions.append(div.find('a')['href'])
+#     return other_editions
 
-def get_isbn13(soup):
-    try:
-        isbn13 = re.findall(r'nisbn13: [0-9]{13}' , str(soup))[0].split()[1]
-        return isbn13
-    except:
-        return "isbn13 not found"
+
+def get_publication_info(soup):
+    publication_info_list = []
+    a = soup.find_all('div', class_='FeaturedDetails')
+    for item in a:
+        publication_info = item.find('p', {'data-testid': 'publicationInfo'}).text
+        publication_info_list.append(publication_info)
+    return publication_info_list
+
+def get_num_pages(soup):
+    number_of_pages_list = []
+    featured_details = soup.find_all('div', class_='FeaturedDetails')
+    for item in featured_details:
+        format_info = item.find('p', {'data-testid': 'pagesFormat'})
+        if format_info:
+            format_text = format_info.text
+            parts = format_text.split(', ')
+            if len(parts) == 2:
+                number_of_pages, _ = parts
+                # Extract the number from the string
+                number_of_pages = ''.join(filter(str.isdigit, number_of_pages))
+                number_of_pages_list.append(number_of_pages)
+            elif len(parts) == 1:
+                # Check if it's a number
+                if parts[0].isdigit():
+                    number_of_pages_list.append(parts[0])
+                else:
+                    number_of_pages_list.append(None)  
+            else:
+                number_of_pages_list.append(None) 
+        else:
+            number_of_pages_list.append(None)  
+    return number_of_pages_list
+
+def get_format_info(soup):
+    format_info_list = []
+    a = soup.find_all('div', class_='FeaturedDetails')
+    for item in a:
+        format_info = item.find('p', {'data-testid': 'pagesFormat'}).text
+        format_info_list.append(format_info)
+    return format_info_list
 
 
 def get_rating_distribution(soup):
-    distribution = re.findall(r'renderRatingGraph\([\s]*\[[0-9,\s]+', str(soup))[0]
-    distribution = ' '.join(distribution.split())
-    distribution = [int(c.strip()) for c in distribution.split('[')[1].split(',')]
-    distribution_dict = {'5 Stars': distribution[0],
-                         '4 Stars': distribution[1],
-                         '3 Stars': distribution[2],
-                         '2 Stars': distribution[3],
-                         '1 Star':  distribution[4]}
-    return distribution_dict
+    rating_numbers = {}
 
+    try:
+        rating_bars = soup.find_all('div', class_='RatingsHistogram__bar')
 
-def get_num_pages(soup):
-    if soup.find('span', {'itemprop': 'numberOfPages'}):
-        num_pages = soup.find('span', {'itemprop': 'numberOfPages'}).text.strip()
-        return int(num_pages.split()[0])
-    return ''
+        # Iterate through each rating bar
+        for rating_bar in rating_bars:
+            try:
+                # Extract the rating (number of stars) from the aria-label attribute
+                rating = rating_bar['aria-label'].split()[0]
 
+                # Extract the number of ratings from the aria-label attribute of the labelTotal div
+                label_total = rating_bar.find('div', class_='RatingsHistogram__labelTotal')
+                num_ratings = label_total.get_text().split(' ')[0]
 
-def get_year_first_published(soup):
-    year_first_published = soup.find('nobr', attrs={'class':'greyText'})
-    if year_first_published:
-        year_first_published = year_first_published.string
-        return re.search('([0-9]{3,4})', year_first_published).group(1)
-    else:
-        return ''
+                # Store the rating number in the dictionary
+                rating_numbers[rating] = num_ratings
+            except (KeyError, IndexError) as e:
+                print(f"Error occurred while extracting rating number for {rating}: {e}")
+                # Set rating number to 0 if not found
+                rating_numbers[rating] = '0'
+    except AttributeError as e:
+        print(f"Error occurred while finding rating bars: {e}")
 
-def get_id(bookid):
-    pattern = re.compile("([^.-]+)")
-    return pattern.search(bookid).group()
+    return rating_numbers
+
 
 def get_cover_image_uri(soup):
-    series = soup.find('img', id='coverImage')
+    series = soup.find('img', class_='ResponsiveImage')
     if series:
         series_uri = series.get('src')
         return series_uri
     else:
         return ""
     
+def book_details(soup):
+    try:
+        return soup.find('div',class_='DetailsLayoutRightParagraph').text
+    except:
+        return ' '
+
+def contributor_info(soup):
+    contributor = soup.find('a', {'class': 'ContributorLink'})
+    return contributor  
 def scrape_book(book_id):
     url = 'https://www.goodreads.com/book/show/' + book_id
     source = urlopen(url)
@@ -164,26 +203,28 @@ def scrape_book(book_id):
 
     time.sleep(2)
 
-    return {'book_id_title':        book_id,
-            'book_id':              get_id(book_id),
-            'cover_image_uri':      get_cover_image_uri(soup),
-            'book_title':           ' '.join(soup.find('h1', {'id': 'bookTitle'}).text.split()),
-            "book_series":          get_series_name(soup),
-            "book_series_uri":      get_series_uri(soup),
-            'top_5_other_editions': get_top_5_other_editions(soup),
-            'isbn':                 get_isbn(soup),
-            'isbn13':               get_isbn13(soup),
-            'year_first_published': get_year_first_published(soup),
-            'authorlink':           soup.find('a', {'class': 'authorName'})['href'],
-            'author':               ' '.join(soup.find('span', {'itemprop': 'name'}).text.split()),
-            'num_pages':            get_num_pages(soup),
-            'genres':               get_genres(soup),
-            'shelves':              get_shelves(soup),
-            'lists':                get_all_lists(soup),
-            'num_ratings':          soup.find('meta', {'itemprop': 'ratingCount'})['content'].strip(),
-            'num_reviews':          soup.find('meta', {'itemprop': 'reviewCount'})['content'].strip(),
-            'average_rating':       soup.find('span', {'itemprop': 'ratingValue'}).text.strip(),
-            'rating_distribution':  get_rating_distribution(soup)}
+    return { 'book_id':              book_id,#done
+            # 'book_id':              get_id(book_id),# redundant
+            'cover_image_uri':      get_cover_image_uri(soup),#done
+            'book_title':           ' '.join(soup.find('h1', {'data-testid': 'bookTitle'}).text.split()),#done
+            'book_details':         book_details(soup), #Added
+            # "book_series":          get_series_name(soup),   # cannot find
+            # "book_series_uri":      get_series_uri(soup),    # cannot find
+            # 'top_5_other_editions': get_top_5_other_editions(soup),# inside DOM element
+            # 'isbn':                 get_isbn(soup),   # inside DOM element
+            # 'isbn13':               get_isbn13(soup), # inside DOM element
+            'format':               get_format_info(soup),#Added
+            'publication_info':     get_publication_info(soup),#Added
+            'authorlink':           contributor_info(soup)['href'],#done
+            'author':               contributor_info(soup).find('span', {'class': 'ContributorLink__name'}).text.strip(),#done
+            'num_pages':            get_num_pages(soup),#Added/done
+            'genres':               get_genres(soup),#done
+            # 'shelves':              get_shelves(soup),#doesn't work
+            # 'lists':                get_all_lists(soup),#doesn't work
+            'num_ratings':          ''.join(filter(str.isdigit, soup.find('span', {'data-testid': 'ratingsCount'}).text)),#done
+            'num_reviews':          ''.join(filter(str.isdigit, soup.find('span', {'data-testid': 'reviewsCount'}).text)),#done
+            'average_rating':       soup.find('div', {'class': 'RatingStatistics__rating'}).text.strip(),#done
+            'rating_distribution':  get_rating_distribution(soup)}#done
 
 def condense_books(books_directory_path):
 
@@ -196,6 +237,7 @@ def condense_books(books_directory_path):
             books.append(_book)
 
     return books
+
 
 def main():
 
@@ -219,12 +261,17 @@ def main():
         try:
             print(str(datetime.now()) + ' ' + script_name + ': Scraping ' + book_id + '...')
             print(str(datetime.now()) + ' ' + script_name + ': #' + str(i+1+len(books_already_scraped)) + ' out of ' + str(len(book_ids)) + ' books')
-
+        
             book = scrape_book(book_id)
             # Add book metadata to file name to be more specific
-            json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'))
+            json.dump(book, open(args.output_directory_path + '/' + book_id + '_book-metadata.json', 'w'),indent=4) # Added indent to make it more readable
 
             print('=============================')
+        # This will handle if the Page doesn't exist or if there is no book title on the Goodreads website, 
+        # (we get an attribute error representing there is no H1 tag on the page), Right now There are no H1 tags on the pages which dont exist.
+        except AttributeError as e: 
+            print(e)
+            continue
 
         except HTTPError as e:
             print(e)
@@ -233,7 +280,7 @@ def main():
 
     books = condense_books(args.output_directory_path)
     if args.format == 'json':
-        json.dump(books, open(f"{condensed_books_path}.json", 'w'))
+        json.dump(books, open(f"{condensed_books_path}.json", 'w'),indent=4) 
     elif args.format == 'csv':
         json.dump(books, open(f"{condensed_books_path}.json", 'w'))
         book_df = pd.read_json(f"{condensed_books_path}.json")

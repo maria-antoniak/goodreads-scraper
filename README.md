@@ -55,15 +55,14 @@ This script outputs a JSON file for each book with the following information:
 - book ID and title
 - book ID 
 - book title
-- ISBN
-- ISBN13
 - year the book was first published
+- format info
+- cover page
+- publication_type
 - title
 - author
 - number of pages in the book
 - genres
-- top shelves
-- lists
 - total number of ratings
 - total number of reviews
 - average rating
@@ -140,7 +139,55 @@ This will create a directory called `test-output` in which you'll find the scrap
 
 <br><br>
 
-# Credit
+# Extracting Goodreads Book IDs
+
+The `get_book_ids.py` script allows you to extract Goodreads book IDs based on specified criteria. Below is a description of how to use the script along with its functionality:
+
+## Usage
+
+To use the `get_book_ids.py` script, follow these steps:
+
+1. **Parsing Command-line Arguments**: The script utilizes command-line arguments for customization. Run the script with the following command:
+    ```bash
+    python get_book_ids.py [-c {yes,no}] [-id LIST_ID] [-t {yes,no}]
+    ```
+
+2. **Custom Scraping**: 
+    - By default, the script performs random scraping of Goodreads book IDs from various collections. 
+    - Optionally, you can enable custom scraping mode using the `-c` or `--custom-scrap` argument. If custom scraping is enabled, you need to specify the list ID using the `-id` or `--list-id` argument. For example:
+        ```bash
+        python get_book_ids.py -c yes -id 12345
+        ```
+    - The `--list-id` argument must be provided when custom scraping is 'yes'. If not provided or if the ID is not an integer, an error message will be displayed.
+
+3. **Database Conversion**:
+    - After scraping book IDs, you have the option to convert the collected data from the SQLite database (`books_id.db`) to a text file (`book_ids.txt`). 
+    - Use the `-t` or `--txt-convert` argument to specify whether to convert the database to a text file. For example:
+        ```bash
+        python get_book_ids.py -t yes
+        ```
+    - If the database file (`books_id.db`) does not exist, an error message will be displayed.
+
+4. **Running the Script**:
+    - Once you have set your desired options, execute the script to perform the scraping and database conversion tasks. For example:
+        ```bash
+        python get_book_ids.py
+        ```
+
+5. **Output**:
+    - The script outputs the scraped book IDs and related information either to the database alone or, if specified, additionally to a text file containing the IDs.From the Text file we can use the ids to do further scraping with the help of `get_books.py`.
+
+## Example
+
+Here's an example of how to use the script for custom scraping and database conversion:
+```bash
+python get_book_ids.py -c yes -id 12345 -t yes
+ ```
+
+
+
+
+# Credits
 
 This code is written by Maria Antoniak and Melanie Walsh. The code is licensed under a [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/#).
 

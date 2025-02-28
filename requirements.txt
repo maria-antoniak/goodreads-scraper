@@ -6,4 +6,5 @@ webdriver_manager
 pandas
 regex
 credentials
-
+argparse
+langdetect
